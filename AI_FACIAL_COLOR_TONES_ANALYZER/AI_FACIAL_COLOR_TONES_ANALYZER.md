@@ -1,36 +1,4 @@
-[Skip to content](https://docs.perfectcorp.com/reference/ai_skin_tone_analysis#content)
-
 # AI Facial Color Tones Analyzer
-
-Copy
-
-- Copy for LLM
-
-
-
-Copy page as Markdown for LLMs
-
-- [View as Markdown\\
-\\
-Open this page as Markdown](https://docs.perfectcorp.com/reference/ai_skin_tone_analysis.md)
-- [Open in ChatGPT\\
-\\
-Get insights from ChatGPT](https://chat.openai.com/?q=Read+https%3A%2F%2Fdocs.perfectcorp.com%2Freference%2Fai_skin_tone_analysis.md+and+answer+questions+based+on+the+content.)
-- [Open in Claude\\
-\\
-Get insights from Claude](https://claude.ai/new?q=Read+https%3A%2F%2Fdocs.perfectcorp.com%2Freference%2Fai_skin_tone_analysis.md+and+answer+questions+based+on+the+content.)
-- Connect to Cursor
-
-
-
-Install MCP server on Cursor
-
-- Connect to VS Code
-
-
-
-Install MCP server on VS Code
-
 
 # Overview
 
