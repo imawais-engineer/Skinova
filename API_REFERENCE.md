@@ -1,42 +1,9 @@
-[Skip to content](https://docs.perfectcorp.com/reference/ai_skin_analysis/section/overview/js-camera-kit#content)
-
-[AI Skin Analysis](https://docs.perfectcorp.com/reference/ai_skin_analysis)
-
 # AI Skin Analysis
 
-Copy
+## Overview
 
-- Copy for LLM
-
-
-
-Copy page as Markdown for LLMs
-
-- [View as Markdown\\
-\\
-Open this page as Markdown](https://docs.perfectcorp.com/reference/ai_skin_analysis.md)
-- [Open in ChatGPT\\
-\\
-Get insights from ChatGPT](https://chat.openai.com/?q=Read+https%3A%2F%2Fdocs.perfectcorp.com%2Freference%2Fai_skin_analysis.md+and+answer+questions+based+on+the+content.)
-- [Open in Claude\\
-\\
-Get insights from Claude](https://claude.ai/new?q=Read+https%3A%2F%2Fdocs.perfectcorp.com%2Freference%2Fai_skin_analysis.md+and+answer+questions+based+on+the+content.)
-- Connect to Cursor
-
-
-
-Install MCP server on Cursor
-
-- Connect to VS Code
-
-
-
-Install MCP server on VS Code
-
-
-# Overview
-
-![](https://d3ss46vukfdtpo.cloudfront.net/static/media/img_demostore_skincarelive_topbanner.0cffe3a7.jpg) AI skincare analysis technology harnesses the power of artificial intelligence to analyze various aspects of the skin, from texture and pigmentation to hydration and pore size, with remarkable precision. Using advanced algorithms and machine learning, AI Skin Analysis can evaluate facial skin concerns from a single front facing selfie, providing accurate skin concern scores and detection masks to enable personalized product recommendations and skincare routines tailored to each individual's skin type and concerns.
+![](https://d3ss46vukfdtpo.cloudfront.net/static/media/img_demostore_skincarelive_topbanner.0cffe3a7.jpg) 
+AI skincare analysis technology harnesses the power of artificial intelligence to analyze various aspects of the skin, from texture and pigmentation to hydration and pore size, with remarkable precision. Using advanced algorithms and machine learning, AI Skin Analysis can evaluate facial skin concerns from a single front facing selfie, providing accurate skin concern scores and detection masks to enable personalized product recommendations and skincare routines tailored to each individual's skin type and concerns.
 
 This not only enhances the effectiveness of skincare products but also empowers users to make informed decisions about their skincare regimen. With the integration of AI skin analysis, individuals can now embark on a journey towards healthier, more radiant skin, guided by data-driven insights and the promise of more effective skincare solutions.
 
