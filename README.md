@@ -1,389 +1,414 @@
-# Skinova
-Understand Your Skin. Improve with Intelligence.
-Perfect. We'll build SKINOVA as a product that could realistically win the YouCam Skin AI Track.
+# SKINOVA
 
-Project
+<p align="center">
+  <img src="assets/logo.png" alt="Skinova Logo" width="180"/>
+</p>
 
-SKINOVA
+<h1 align="center">SKINOVA</h1>
 
-Your Personal AI Skin Intelligence Platform
+<p align="center">
+<b>Understand Your Skin. Improve with Intelligence.</b>
+</p>
 
-Tagline:
-
-> Understand Your Skin. Improve with Intelligence.
-
-
-
-
----
-
-Vision
-
-SKINOVA is not another skin scanner.
-
-It is an AI Skin Intelligence Platform that helps users:
-
-Understand their skin
-
-Track improvements
-
-Build personalized routines
-
-Learn why recommendations work
-
-Monitor progress over time
-
-
-This aligns directly with the hackathon's requirement for consumer value, while providing opportunities for future retail integrations.
-
+<p align="center">
+AI-powered Skin Intelligence Platform built with <b>YouCam AI APIs</b>, <b>OpenAI</b>, and modern web technologies.
+</p>
 
 ---
 
-Core Problem
+## Overview
 
-Most people ask:
+**SKINOVA** is an AI Skin Intelligence Platform designed to help users understand, monitor, and improve their skin through personalized AI-powered insights.
 
-Why is my skin changing?
+Unlike traditional skin scanner applications that only generate one-time reports, Skinova combines multiple AI services into a continuous skincare companion capable of analyzing skin, explaining results, creating routines, tracking progress, and providing intelligent skincare guidance.
 
-Why do products stop working?
-
-What routine should I follow?
-
-Is my skin improving?
-
-Which ingredients are suitable for me?
-
-
-Today's apps mostly provide a one-time analysis.
-
-SKINOVA provides ongoing guidance.
-
+This project is being developed for the **YouCam API Skin AI Hackathon 2026**.
 
 ---
 
-Core Value Proposition
+# Vision
 
-> Your AI-powered skin companion that analyzes, explains, tracks, and guides your skincare journey.
+Empower everyone with a professional AI skin companion capable of:
 
-
-
-
----
-
-MVP Features
-
-1. AI Skin Scan (YouCam Skin AI)
-
-Selfie upload
-
-Skin analysis
-
-Skin score
-
-Detect:
-
-Acne
-
-Wrinkles
-
-Dark circles
-
-Redness
-
-Oiliness
-
-Dryness
-
-Texture
-
-Pores
-
-
-
+- Understanding skin health
+- Explaining AI analysis in human language
+- Creating personalized skincare routines
+- Tracking long-term skin progress
+- Educating users about ingredients
+- Providing intelligent skincare coaching
 
 ---
 
-2. AI Explain
+# Core Problem
 
-Instead of:
+Millions of people struggle to answer questions like:
 
-> Acne: 62%
+- Why is my skin changing?
+- Which skincare products actually suit me?
+- Is my routine working?
+- What ingredient should I avoid?
+- Is my skin improving over time?
 
+Current applications typically stop after providing an analysis.
 
-
-SKINOVA explains:
-
-> Your skin shows mild acne around the chin and forehead. This commonly appears due to excess oil production, clogged pores, or hormonal changes. A gentle cleansing routine combined with non-comedogenic moisturizers may help reduce future breakouts.
-
-
-
-
----
-
-3. Personalized Routine
-
-Morning
-
-Cleanser
-
-Serum
-
-Moisturizer
-
-Sunscreen
-
-
-Night
-
-Cleanser
-
-Treatment
-
-Moisturizer
-
-
+**Skinova continues the journey.**
 
 ---
 
-4. Progress Timeline
+# Key Features
 
-Upload photos weekly.
+## AI Skin Scan
 
-View:
+Powered by **YouCam AI Skin Analysis**
 
-Acne ↓
+Features
 
-Redness ↓
-
-Texture ↑
-
-Hydration ↑
-
-
-
----
-
-5. AI Skin Coach
-
-Chat interface:
-
-> Why is my skin oily?
-
-
-
-> Is Vitamin C good for me?
-
-
-
-> Can I use Niacinamide?
-
-
-
-> Why is my acne worse this week?
-
-
-
-The assistant uses the latest analysis to provide personalized guidance.
-
+- Acne Detection
+- Wrinkle Detection
+- Dark Circles
+- Redness
+- Oiliness
+- Dryness
+- Pores
+- Skin Texture
+- Overall Skin Health Score
 
 ---
 
-6. Ingredient Intelligence
+## AI Skin Simulation
 
-Search an ingredient.
+Visualize expected improvements based on personalized skincare recommendations.
 
-Example:
+Users can compare:
 
-Niacinamide
-
-Benefits
-
-Side effects
-
-Best skin types
-
-Compatible ingredients
-
-Ingredients to avoid combining
-
-
+- Current Skin
+- Predicted Skin Improvement
 
 ---
 
-7. Product Advisor
+## AI Skin Intelligence
 
-User selects:
+Instead of showing numbers only,
 
-Budget
+Example
 
-Skin goal
+> Acne Score: 61%
 
-Country
+Skinova explains:
 
-
-SKINOVA recommends products that fit the detected skin profile and explains the reasoning.
-
+> Your skin shows mild inflammatory acne concentrated around the chin and forehead. This pattern commonly appears due to excess oil production and clogged pores. A gentle cleansing routine combined with Niacinamide may help reduce future breakouts.
 
 ---
 
-Future Features (Post-Hackathon)
+## Personalized Routine Generator
 
-Daily reminders
+Morning Routine
 
-UV index awareness
+- Cleanser
+- Serum
+- Moisturizer
+- Sunscreen
 
-AI skin journal
+Night Routine
 
-Before/after comparison
+- Cleanser
+- Treatment
+- Moisturizer
 
-Family profiles
-
-Dermatologist sharing
-
-Smart mirror integration
-
-
+Generated dynamically using AI based on skin analysis.
 
 ---
 
-Technology Stack
+## AI Skin Coach
+
+Interactive AI assistant capable of answering questions such as
+
+- Why is my skin oily?
+- Can I use Vitamin C?
+- Is Niacinamide suitable?
+- Why is my acne worse this week?
+- What ingredient should I avoid?
+
+---
+
+## Ingredient Intelligence
+
+Search any skincare ingredient.
+
+Examples
+
+- Niacinamide
+- Retinol
+- Salicylic Acid
+- Hyaluronic Acid
+
+Learn
+
+- Benefits
+- Side Effects
+- Skin Compatibility
+- Usage Tips
+- Ingredient Conflicts
+
+---
+
+## Progress Tracking
+
+Monitor skin improvements through periodic scans.
+
+Metrics include
+
+- Acne
+- Redness
+- Hydration
+- Texture
+- Wrinkles
+
+Timeline visualization allows users to compare previous analyses.
+
+---
+
+## Product Advisor
+
+Based on
+
+- Skin Condition
+- Goals
+- Budget
+- Country
+
+Skinova recommends skincare products together with AI explanations.
+
+---
+
+# AI APIs Used
+
+## Primary APIs
+
+| API | Purpose |
+|------|----------|
+| AI_SKIN_ANALYSIS | Core skin diagnosis |
+| AI_SKIN_SIMULATION | Skin improvement visualization |
+| AI_FITZPATRICK_SKIN_TYPE_ANALYSIS | Skin type classification |
+| AI_FACIAL_COLOR_TONES_ANALYZER | Skin tone detection |
+| AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER | Additional facial insights |
+| AI_PHOTO_ENHANCE | Improve image quality before analysis |
+
+Each API has its own dedicated documentation folder containing:
+
+- Markdown Documentation
+- OpenAPI Specification (YAML)
+- OpenAPI Specification (JSON)
+
+---
+
+# Project Structure
+
+```text
+Skinova/
+
+├── AI_SKIN_ANALYSIS/
+│   ├── AI_SKIN_ANALYSIS.md
+│   ├── openapi.yaml
+│   └── openapi.json
+│
+├── AI_SKIN_SIMULATION/
+│
+├── AI_FITZPATRICK_SKIN_TYPE_ANALYSIS/
+│
+├── AI_FACIAL_COLOR_TONES_ANALYZER/
+│
+├── AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER/
+│
+├── AI_PHOTO_ENHANCE/
+│
+├── app/
+├── backend/
+├── docs/
+├── public/
+├── .env.example
+├── README.md
+└── LICENSE
+```
+
+---
+
+# Technology Stack
+
+## Frontend
+
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+
+---
+
+## Backend
+
+- FastAPI
+- Python
+
+---
+
+## Database
+
+- Supabase PostgreSQL
+
+---
+
+## Storage
+
+- Supabase Storage
+
+---
+
+## Authentication
+
+- Supabase Auth
+
+---
+
+## AI
+
+- OpenAI Responses API
+
+---
+
+## Deployment
 
 Frontend
 
-Next.js 15
-
-React
-
-Tailwind CSS
-
-shadcn/ui
-
+- Vercel
 
 Backend
 
-FastAPI (Python)
-
-
-Database
-
-Supabase PostgreSQL
-
-
-Storage
-
-Supabase Storage
-
-
-Authentication
-
-Supabase Auth
-
-
-AI
-
-OpenAI Responses API
-
-
-Skin Analysis
-
-YouCam Skin AI API
-
-
-Deployment
-
-Vercel (frontend)
-
-Railway or Render (backend)
-
-
+- Railway
+- Render
 
 ---
 
-Demo Flow (3 Minutes)
+# Environment Variables
 
-1. User signs in.
+Copy
 
+```bash
+cp .env.example .env
+```
 
-2. Uploads a selfie.
+Configure
 
-
-3. YouCam Skin AI performs the analysis.
-
-
-4. SKINOVA summarizes the findings in plain language.
-
-
-5. Generates a personalized morning and evening routine.
-
-
-6. User asks the AI coach a follow-up question.
-
-
-7. Displays progress tracking with a previous scan.
-
-
-8. Shows personalized product recommendations.
-
-
-
-This tells a complete story rather than demonstrating isolated features.
-
+```env
+API_KEY=
+SECRET_KEY=
+BASE_URL=
+```
 
 ---
 
-Development Roadmap
+# Development Roadmap
 
-Phase 1 — Foundation (Days 1–3)
+## Phase 1
 
-Project setup
+- Project Initialization
+- Authentication
+- Dashboard
+- Image Upload
 
-Authentication
+---
 
-Dashboard
+## Phase 2
 
-Image upload
+- AI Skin Analysis Integration
+- Results Dashboard
+- Scan History
 
+---
 
-Phase 2 — Core Integration (Days 4–7)
+## Phase 3
 
-Integrate YouCam Skin AI
+- AI Explanations
+- Routine Generator
+- AI Skin Coach
+- Ingredient Intelligence
 
-Display analysis results
+---
 
-Store scan history
+## Phase 4
 
+- Skin Simulation
+- Progress Timeline
+- Product Recommendations
+- Dashboard Polish
 
-Phase 3 — AI Layer (Days 8–12)
+---
 
-AI explanations
+## Phase 5
 
-Personalized routines
+- Testing
+- Performance Optimization
+- Documentation
+- Demo Video
+- Devpost Submission
 
-Ingredient intelligence
+---
 
+# Demo Flow
 
-Phase 4 — Product Experience (Days 13–17)
+1. User signs in
+2. Uploads selfie
+3. AI Photo Enhance improves image quality
+4. AI Skin Analysis generates report
+5. AI explains findings
+6. Personalized skincare routine generated
+7. User chats with AI Skin Coach
+8. Progress history displayed
+9. AI Skin Simulation predicts future improvement
+10. Product recommendations generated
 
-Progress tracking
+---
 
-Product advisor
+# Why Skinova?
 
-Dashboard polish
+Skinova is not another skin scanner.
 
+It is an intelligent skincare companion that combines multiple AI services into a seamless experience focused on education, personalization, and long-term skin health.
 
-Phase 5 — Submission (Days 18–28)
+The goal is to demonstrate meaningful AI integration, exceptional user experience, and real consumer value.
 
-Testing
+---
 
-Documentation
+# Repository Status
 
-Screenshots
+Current Development Phase
 
-Demo video
+- Documentation ✅
+- API Research ✅
+- OpenAPI Specifications ✅
+- Environment Configuration ✅
+- Architecture Design ✅
+- Frontend Development ⏳
+- Backend Development ⏳
+- AI Integration ⏳
 
-Devpost submission
+---
 
+# Hackathon
 
-Goal
+Built for
 
-Instead of submitting "an app that analyzes skin," we'll build SKINOVA as an AI-powered skin intelligence platform that demonstrates real consumer value, polished user experience, and meaningful use of the YouCam Skin AI API—all closely aligned with the hackathon's judging criteria.
+**YouCam API Skin AI Hackathon 2026**
+
+---
+
+# License
+
+This project is released under the MIT License.
+
+---
+
+<p align="center">
+<b>SKINOVA</b><br>
+Understand Your Skin. Improve with Intelligence.
+</p>
