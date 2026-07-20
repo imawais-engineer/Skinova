@@ -1,38 +1,6 @@
-[Skip to content](https://docs.perfectcorp.com/reference/ai_photo_enhance#content)
-
 # AI Photo Enhance
 
-Copy
-
-- Copy for LLM
-
-
-
-Copy page as Markdown for LLMs
-
-- [View as Markdown\\
-\\
-Open this page as Markdown](https://docs.perfectcorp.com/reference/ai_photo_enhance.md)
-- [Open in ChatGPT\\
-\\
-Get insights from ChatGPT](https://chat.openai.com/?q=Read+https%3A%2F%2Fdocs.perfectcorp.com%2Freference%2Fai_photo_enhance.md+and+answer+questions+based+on+the+content.)
-- [Open in Claude\\
-\\
-Get insights from Claude](https://claude.ai/new?q=Read+https%3A%2F%2Fdocs.perfectcorp.com%2Freference%2Fai_photo_enhance.md+and+answer+questions+based+on+the+content.)
-- Connect to Cursor
-
-
-
-Install MCP server on Cursor
-
-- Connect to VS Code
-
-
-
-Install MCP server on VS Code
-
-
-# Overview
+## Overview
 
 AI Photo Enhance uses advanced AI and deep learning to analyze image details and improve resolution, making low-resolution images clear & fix motion blur.
 
