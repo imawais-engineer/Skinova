@@ -1,1 +1,73 @@
-#GIT-IGNORE-CODE
+# =========================
+# SKINOVA .gitignore
+# =========================
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node.js
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.next/
+out/
+dist/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+build/
+tmp/
+temp/
+.cache/
+
+# Supabase
+.supabase/
+
+# Vercel
+.vercel/
+
+# Docker
+*.pid
+
+# Archives
+*.zip
+*.tar
+*.gz
+
+# Local secrets
+secrets/
+*.pem
+*.key
