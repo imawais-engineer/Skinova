@@ -1,0 +1,1 @@
+# AI Fitzpatrick Skin Type Analysis
