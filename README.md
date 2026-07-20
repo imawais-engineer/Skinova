@@ -1,5 +1,3 @@
-# SKINOVA
-
 <h1 align="center">SKINOVA</h1>
 
 <p align="center">
