@@ -1,9 +1,5 @@
 # SKINOVA
 
-<p align="center">
-  <img src="assets/logo.png" alt="Skinova Logo" width="180"/>
-</p>
-
 <h1 align="center">SKINOVA</h1>
 
 <p align="center">
