@@ -1,408 +1,149 @@
-<h1 align="center">SKINOVA</h1>
+# Skinova
 
-<p align="center">
-<b>Understand Your Skin. Improve with Intelligence.</b>
-</p>
+Skinova is a dashboard-first consumer skincare intelligence app for the YouCam API Skin AI & Apparel VTO Hackathon.
 
-<p align="center">
-AI-powered Skin Intelligence Platform built with <b>YouCam AI APIs</b>, <b>OpenAI</b>, and modern web technologies.
-</p>
+Selected hackathon track: **FIRST TRACK - Skin AI**.
 
----
+Skinova converts a selfie scan into skin insights, routine guidance, progress tracking, and a realistic improvement story. It is positioned as skincare education and consumer guidance, not medical diagnosis.
 
-## Overview
+## Hackathon Fit
 
-**SKINOVA** is an AI Skin Intelligence Platform designed to help users understand, monitor, and improve their skin through personalized AI-powered insights.
+- Working web prototype built with Next.js, TypeScript, and Tailwind CSS.
+- Uses YouCam Skin AI workflow design: file metadata, presigned upload, task creation, polling, and result interpretation.
+- Demonstrates consumer value beyond one API call: scan, explain, guide, track, and simulate.
+- Keeps YouCam API keys server-side only.
+- Includes mock fallback for reliable judging demos and real API smoke testing for integration validation.
 
-Unlike traditional skin scanner applications that only generate one-time reports, Skinova combines multiple AI services into a continuous skincare companion capable of analyzing skin, explaining results, creating routines, tracking progress, and providing intelligent skincare guidance.
+Official hackathon sources:
 
-This project is being developed for the **YouCam API Skin AI Hackathon 2026**.
+- Overview: https://youcam-api.devpost.com/
+- Rules: https://youcam-api.devpost.com/rules
+- Resources: https://youcam-api.devpost.com/resources
 
----
+## Product Flow
 
-# Vision
+1. Dashboard explains Skinova's value and YouCam API usage.
+2. Skin Scan uploads a selfie or runs a demo-safe scan.
+3. Results converts YouCam-style scores into plain-language skincare education.
+4. Routine generates morning and night guidance.
+5. Skin Coach answers limited local skincare questions with safety boundaries.
+6. Progress shows trend history and improvement simulation story.
+7. Settings shows server-side API configuration status without exposing secrets.
 
-Empower everyone with a professional AI skin companion capable of:
-
-- Understanding skin health
-- Explaining AI analysis in human language
-- Creating personalized skincare routines
-- Tracking long-term skin progress
-- Educating users about ingredients
-- Providing intelligent skincare coaching
-
----
-
-# Core Problem
-
-Millions of people struggle to answer questions like:
-
-- Why is my skin changing?
-- Which skincare products actually suit me?
-- Is my routine working?
-- What ingredient should I avoid?
-- Is my skin improving over time?
-
-Current applications typically stop after providing an analysis.
-
-**Skinova continues the journey.**
-
----
-
-# Key Features
-
-## AI Skin Scan
-
-Powered by **YouCam AI Skin Analysis**
-
-Features
-
-- Acne Detection
-- Wrinkle Detection
-- Dark Circles
-- Redness
-- Oiliness
-- Dryness
-- Pores
-- Skin Texture
-- Overall Skin Health Score
-
----
-
-## AI Skin Simulation
-
-Visualize expected improvements based on personalized skincare recommendations.
-
-Users can compare:
-
-- Current Skin
-- Predicted Skin Improvement
-
----
-
-## AI Skin Intelligence
-
-Instead of showing numbers only,
-
-Example
-
-> Acne Score: 61%
-
-Skinova explains:
-
-> Your skin shows mild inflammatory acne concentrated around the chin and forehead. This pattern commonly appears due to excess oil production and clogged pores. A gentle cleansing routine combined with Niacinamide may help reduce future breakouts.
-
----
-
-## Personalized Routine Generator
-
-Morning Routine
-
-- Cleanser
-- Serum
-- Moisturizer
-- Sunscreen
-
-Night Routine
-
-- Cleanser
-- Treatment
-- Moisturizer
-
-Generated dynamically using AI based on skin analysis.
-
----
-
-## AI Skin Coach
-
-Interactive AI assistant capable of answering questions such as
-
-- Why is my skin oily?
-- Can I use Vitamin C?
-- Is Niacinamide suitable?
-- Why is my acne worse this week?
-- What ingredient should I avoid?
-
----
-
-## Ingredient Intelligence
-
-Search any skincare ingredient.
-
-Examples
-
-- Niacinamide
-- Retinol
-- Salicylic Acid
-- Hyaluronic Acid
-
-Learn
-
-- Benefits
-- Side Effects
-- Skin Compatibility
-- Usage Tips
-- Ingredient Conflicts
-
----
-
-## Progress Tracking
-
-Monitor skin improvements through periodic scans.
-
-Metrics include
-
-- Acne
-- Redness
-- Hydration
-- Texture
-- Wrinkles
-
-Timeline visualization allows users to compare previous analyses.
-
----
-
-## Product Advisor
-
-Based on
-
-- Skin Condition
-- Goals
-- Budget
-- Country
-
-Skinova recommends skincare products together with AI explanations.
-
----
-
-# AI APIs Used
-
-## Primary APIs
-
-| API | Purpose |
-|------|----------|
-| AI_SKIN_ANALYSIS | Core skin diagnosis |
-| AI_SKIN_SIMULATION | Skin improvement visualization |
-| AI_FITZPATRICK_SKIN_TYPE_ANALYSIS | Skin type classification |
-| AI_FACIAL_COLOR_TONES_ANALYZER | Skin tone detection |
-| AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER | Additional facial insights |
-| AI_PHOTO_ENHANCE | Improve image quality before analysis |
-
-Each API has its own dedicated documentation folder containing:
-
-- Markdown Documentation
-- OpenAPI Specification (YAML)
-- OpenAPI Specification (JSON)
-
----
-
-# Project Structure
-
-```text
-Skinova/
-
-├── AI_SKIN_ANALYSIS/
-│   ├── AI_SKIN_ANALYSIS.md
-│   ├── openapi.yaml
-│   └── openapi.json
-│
-├── AI_SKIN_SIMULATION/
-│
-├── AI_FITZPATRICK_SKIN_TYPE_ANALYSIS/
-│
-├── AI_FACIAL_COLOR_TONES_ANALYZER/
-│
-├── AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER/
-│
-├── AI_PHOTO_ENHANCE/
-│
-├── app/
-├── backend/
-├── docs/
-├── public/
-├── .env.example
-├── README.md
-└── LICENSE
-```
-
----
-
-# Technology Stack
-
-## Frontend
+## Stack
 
 - Next.js 15
 - React 19
 - TypeScript
 - Tailwind CSS
-- shadcn/ui
+- Lucide icons
+- Server-side YouCam API routes
 
----
+Supabase persistence, authentication, and authorization are intentionally deferred until after the functional prototype is validated.
 
-## Backend
+## Environment
 
-- FastAPI
-- Python
-
----
-
-## Database
-
-- Supabase PostgreSQL
-
----
-
-## Storage
-
-- Supabase Storage
-
----
-
-## Authentication
-
-- Supabase Auth
-
----
-
-## AI
-
-- OpenAI Responses API
-
----
-
-## Deployment
-
-Frontend
-
-- Vercel
-
-Backend
-
-- Railway
-- Render
-
----
-
-# Environment Variables
-
-Copy
+Create `.env` from `.env.example`.
 
 ```bash
 cp .env.example .env
 ```
 
-Configure
+Required names:
 
 ```env
-API_KEY=
-SECRET_KEY=
-BASE_URL=
+API_KEY=YOUCAM_API_KEY
+SECRET_KEY=YOUCAM_SECRET_KEY
+BASE_URL=https://yce-api-01.makeupar.com
+SKINOVA_DEMO_MODE=true
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
----
+Set `SKINOVA_DEMO_MODE=false` only when you want the app to create live YouCam tasks. The API key is used only in server routes and scripts.
 
-# Development Roadmap
+## Local Setup
 
-## Phase 1
+```bash
+npm install
+npm run dev
+```
 
-- Project Initialization
-- Authentication
-- Dashboard
-- Image Upload
+Open http://localhost:3000.
 
----
+## Verification
 
-## Phase 2
+```bash
+npm run typecheck
+npm run build
+npm run verify:ui
+npm run youcam:smoke
+```
 
-- AI Skin Analysis Integration
-- Results Dashboard
-- Scan History
+`npm run youcam:smoke` validates the real YouCam Skin Analysis file metadata request using `.env`, but prints only sanitized status fields.
 
----
+`npm run verify:ui` expects the app to be running at `http://localhost:3000` or `SKINOVA_TEST_URL`. It clicks the demo scan in desktop and mobile viewports, captures screenshots in `/tmp`, and fails on horizontal overflow.
 
-## Phase 3
+For a full real upload/task/poll smoke test, add a valid front-facing test image:
 
-- AI Explanations
-- Routine Generator
-- AI Skin Coach
-- Ingredient Intelligence
+```text
+Testing/INPUT/selfie.jpg
+Testing/INPUT/selfie.jpeg
+Testing/INPUT/selfie.png
+```
 
----
+Then run:
 
-## Phase 4
+```bash
+npm run youcam:smoke:full
+```
 
-- Skin Simulation
-- Progress Timeline
-- Product Recommendations
-- Dashboard Polish
+You can also test with a temporary remote image URL without storing it in the repo:
 
----
+```bash
+YOUCAM_TEST_IMAGE_URL=https://example.com/front-facing-selfie.jpg npm run youcam:smoke:full
+```
 
-## Phase 5
+Or use a temporary local image outside the repo:
 
-- Testing
-- Performance Optimization
-- Documentation
-- Demo Video
-- Devpost Submission
+```bash
+YOUCAM_TEST_IMAGE_PATH=/tmp/front-facing-selfie.jpg npm run youcam:smoke:full
+```
 
----
+Do not commit private selfies or `.env`.
 
-# Demo Flow
+## YouCam API Workflow
 
-1. User signs in
-2. Uploads selfie
-3. AI Photo Enhance improves image quality
-4. AI Skin Analysis generates report
-5. AI explains findings
-6. Personalized skincare routine generated
-7. User chats with AI Skin Coach
-8. Progress history displayed
-9. AI Skin Simulation predicts future improvement
-10. Product recommendations generated
+The app implements these server-side routes:
 
----
+- `POST /api/youcam/upload-metadata`
+- `POST /api/youcam/task`
+- `GET /api/youcam/task-status/[taskId]?workflow=skin-analysis`
+- `POST /api/youcam/analyze`
 
-# Why Skinova?
+The current demo focuses on `AI_SKIN_ANALYSIS`. Supporting local docs are included for:
 
-Skinova is not another skin scanner.
+- `AI_SKIN_ANALYSIS`
+- `AI_SKIN_SIMULATION`
+- `AI_FITZPATRICK_SKIN_TYPE_ANALYSIS`
+- `AI_FACIAL_COLOR_TONES_ANALYZER`
+- `AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER`
+- `AI_PHOTO_ENHANCE`
 
-It is an intelligent skincare companion that combines multiple AI services into a seamless experience focused on education, personalization, and long-term skin health.
+## Demo Script
 
-The goal is to demonstrate meaningful AI integration, exceptional user experience, and real consumer value.
+See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
 
----
+## Submission Package
 
-# Repository Status
+See [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md) and [docs/COMPLIANCE_REVIEW.md](docs/COMPLIANCE_REVIEW.md).
 
-Current Development Phase
+## Known Limitations
 
-- Documentation ✅
-- API Research ✅
-- OpenAPI Specifications ✅
-- Environment Configuration ✅
-- Architecture Design ✅
-- Frontend Development ⏳
-- Backend Development ⏳
-- AI Integration ⏳
+- Prototype data is local mock data unless live YouCam mode is enabled.
+- No authentication or persistent user accounts yet.
+- No medical diagnosis, treatment claims, or disease detection.
+- Full real scan testing requires a valid local test selfie and YouCam API units.
 
----
+## License
 
-# Hackathon
-
-Built for
-
-**YouCam API Skin AI Hackathon 2026**
-
----
-
-# License
-
-This project is released under the MIT License.
-
----
-
-<p align="center">
-<b>SKINOVA</b><br>
-Understand Your Skin. Improve with Intelligence.
-</p>
+MIT, unless replaced by a different project license before submission.
