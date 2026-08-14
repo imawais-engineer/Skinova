@@ -4,9 +4,11 @@ import { useState } from "react";
 import { CheckCircle2, Loader2, UploadCloud } from "lucide-react";
 import { Panel, ScoreBar, StatusBadge } from "./ui";
 import type { AnalysisResult } from "../lib/skinova-data";
+import { saveScanSession } from "../lib/scan-session";
 
 type AnalyzeResponse = {
   status?: string;
+  mode?: "demo" | "live";
   analysis?: AnalysisResult;
   error?: string;
   pollingUrl?: string | null;
@@ -18,6 +20,16 @@ export function ScanExperience() {
   const [status, setStatus] = useState<"idle" | "running" | "done" | "error">("idle");
   const [message, setMessage] = useState("Choose a clear selfie to begin.");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [scanMode, setScanMode] = useState<"demo" | "live" | null>(null);
+
+  function persistScanResult(result: AnalysisResult, mode: "demo" | "live") {
+    saveScanSession({
+      analysis: result,
+      mode,
+      scannedAt: new Date().toISOString()
+    });
+    setScanMode(mode);
+  }
 
   async function analyzeSelectedFile() {
     if (!file) {
@@ -47,10 +59,18 @@ export function ScanExperience() {
       if (data.pollingUrl) {
         setMessage("Skin scan started. Waiting for results...");
         const finalResult = await pollLiveTask(data.pollingUrl);
-        setAnalysis(finalResult.analysis || data.analysis || null);
+        const nextAnalysis = finalResult.analysis || data.analysis || null;
+        if (nextAnalysis) {
+          persistScanResult(nextAnalysis, data.mode || "live");
+        }
+        setAnalysis(nextAnalysis);
         setMessage(finalResult.message);
         setStatus(finalResult.ok ? "done" : "error");
         return;
+      }
+
+      if (data.analysis) {
+        persistScanResult(data.analysis, data.mode || "demo");
       }
 
       setAnalysis(data.analysis || null);
@@ -113,7 +133,7 @@ export function ScanExperience() {
             </p>
           </div>
           <StatusBadge tone={status === "done" ? "mint" : status === "error" ? "rose" : "cyan"}>
-            {status === "running" ? "Running" : status === "done" ? "Complete" : status === "error" ? "Needs attention" : "Ready"}
+            {status === "running" ? "Running" : status === "done" ? (scanMode === "demo" ? "Demo complete" : "Complete") : status === "error" ? "Needs attention" : "Ready"}
           </StatusBadge>
         </div>
 
@@ -173,6 +193,12 @@ export function ScanExperience() {
                 <ScoreBar key={concern.type} label={concern.type} score={concern.score} detail={concern.explanation} />
               ))}
             </div>
+            <a
+              href="/results"
+              className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              Open full results
+            </a>
           </div>
         ) : (
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-8 text-center">

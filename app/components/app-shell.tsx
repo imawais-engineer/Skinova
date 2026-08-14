@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Activity,
@@ -26,6 +27,14 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [mode, setMode] = useState<"demo" | "live" | null>(null);
+
+  useEffect(() => {
+    fetch("/api/skinova/health")
+      .then((response) => response.json())
+      .then((data: { mode?: "demo" | "live" }) => setMode(data.mode || "demo"))
+      .catch(() => setMode("demo"));
+  }, []);
 
   return (
     <div className="min-h-screen lg:flex">
@@ -40,8 +49,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <span className="block truncate text-xs text-slate-400">YouCam Skin AI companion</span>
             </span>
           </Link>
-          <div className="hidden rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200 lg:mt-6 lg:inline-flex">
-            Online
+          <div
+            className={[
+              "hidden rounded-full border px-3 py-1 text-xs font-medium lg:mt-6 lg:inline-flex",
+              mode === "live"
+                ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-200"
+                : "border-cyan-300/20 bg-cyan-400/10 text-cyan-100"
+            ].join(" ")}
+          >
+            {mode === "live" ? "Live mode" : mode === "demo" ? "Demo mode" : "Online"}
           </div>
         </div>
 

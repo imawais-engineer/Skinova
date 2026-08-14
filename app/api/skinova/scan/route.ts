@@ -25,7 +25,16 @@ export async function POST(request: NextRequest) {
   }
 
   if (runtime.shouldMock) {
-    return NextResponse.json({ error: "Skin scan service is unavailable. Please try again later." }, { status: 503 });
+    const taskId = `mock-skinova-${Date.now()}`;
+    return NextResponse.json(
+      {
+        status: "processing",
+        mode: "demo",
+        message: "Demo scan started. Results use representative Skinova guidance.",
+        pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`
+      },
+      { status: 202 }
+    );
   }
 
   const metadata = await createUploadMetadata({

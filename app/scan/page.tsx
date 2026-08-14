@@ -6,8 +6,8 @@ export default function ScanPage() {
     <div>
       <PageHeader
         eyebrow="Skin scan"
-        title="Run a live skin scan."
-        description="Upload a clear selfie to receive skin scores, plain-language insights, and personalized skincare guidance."
+        title="Run a skin scan."
+        description="Upload a clear selfie to receive skin scores, plain-language insights, and personalized skincare guidance. Demo mode works without YouCam credentials."
       />
       <ScanExperience />
     </div>
