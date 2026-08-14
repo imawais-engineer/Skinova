@@ -1,6 +1,32 @@
 import { NextResponse } from "next/server";
 import { getTaskStatus } from "../../../../lib/youcam";
 
+function mapYouCamError(error: unknown) {
+  const code = typeof error === "string" ? error : "";
+
+  if (code === "error_src_face_too_small") {
+    return "The face in your photo is too small. Use a closer front-facing selfie with your face centered and filling most of the frame.";
+  }
+
+  if (code === "error_src_face_out_of_bound") {
+    return "The face in your photo is cut off or out of frame. Center your full face with even lighting and try again.";
+  }
+
+  if (code === "error_lighting_dark") {
+    return "The photo is too dark for analysis. Retake it in brighter, even lighting.";
+  }
+
+  if (code === "error_below_min_image_size") {
+    return "The image resolution is too small. Use a higher-quality photo and try again.";
+  }
+
+  if (code === "error_exceed_max_image_size") {
+    return "The image file is too large. Use a smaller photo and try again.";
+  }
+
+  return "Skin scan processing failed. Use a clear, front-facing image and try again.";
+}
+
 export async function GET(_request: Request, context: { params: Promise<{ taskId: string }> }) {
   const { taskId } = await context.params;
   const result = await getTaskStatus("skin-analysis", taskId);
@@ -12,10 +38,11 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
     data?: { task_status?: string; status?: string; error?: unknown };
   };
   const taskStatus = body.task_status || body.status || body.data?.task_status || body.data?.status || "processing";
+  const youCamError = body.error || body.data?.error;
 
-  if (result.status >= 400 || taskStatus === "error" || body.error || body.data?.error) {
+  if (result.status >= 400 || taskStatus === "error" || youCamError) {
     return NextResponse.json(
-      { status: "error", error: "Skin scan processing failed. Use a clear, front-facing image and try again." },
+      { status: "error", error: mapYouCamError(youCamError) },
       { status: result.status >= 400 ? result.status : 502 }
     );
   }

@@ -73,6 +73,8 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(
     {
       status: "processing",
+      mode: "live",
+      message: "Live scan started. Waiting for YouCam Skin Analysis results.",
       pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`
     },
     { status: 202 }
