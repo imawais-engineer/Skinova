@@ -1,5 +1,5 @@
-import { PageHeader } from "../components/ui";
-import { CoachExperience } from "../components/coach-experience";
+import { PageHeader } from "../../components/ui";
+import { CoachExperience } from "../../components/coach-experience";
 
 export default function CoachPage() {
   return (

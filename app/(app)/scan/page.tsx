@@ -1,5 +1,5 @@
-import { PageHeader } from "../components/ui";
-import { ScanExperience } from "../components/scan-experience";
+import { PageHeader } from "../../components/ui";
+import { ScanExperience } from "../../components/scan-experience";
 
 export default function ScanPage() {
   return (

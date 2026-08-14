@@ -5,7 +5,7 @@ const cases = [
   { name: "desktop", width: 1440, height: 1000 },
   { name: "mobile", width: 390, height: 900 }
 ];
-const routes = ["/", "/scan", "/health"];
+const routes = ["/", "/login", "/signup"];
 
 const browser = await chromium.launch({ headless: true });
 const results = [];

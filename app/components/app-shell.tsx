@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Activity,
   BarChart3,
@@ -12,11 +13,13 @@ import {
   HeartPulse,
   Home,
   LineChart,
+  LogOut,
   Sparkles
 } from "lucide-react";
+import type { SessionUser } from "../lib/session";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: Home },
   { href: "/scan", label: "Skin Scan", icon: Camera },
   { href: "/results", label: "Results", icon: BarChart3 },
   { href: "/routine", label: "Routine", icon: ClipboardList },
@@ -25,9 +28,11 @@ const navItems = [
   { href: "/health", label: "Health", icon: HeartPulse }
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, user }: { children: React.ReactNode; user: SessionUser }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mode, setMode] = useState<"demo" | "live" | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     fetch("/api/skinova/health")
@@ -36,11 +41,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .catch(() => setMode("demo"));
   }, []);
 
+  async function handleLogout() {
+    setLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/");
+      router.refresh();
+    } finally {
+      setLoggingOut(false);
+    }
+  }
+
   return (
     <div className="min-h-screen lg:flex">
       <aside className="glass-panel sticky top-0 z-20 border-x-0 border-t-0 lg:fixed lg:inset-y-0 lg:left-0 lg:w-72 lg:border-y-0 lg:border-l-0">
         <div className="flex items-center justify-between gap-4 px-5 py-4 lg:block lg:px-6 lg:py-7">
-          <Link href="/" className="flex min-w-0 items-center gap-3">
+          <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/15 text-cyan-200 ring-1 ring-cyan-300/25">
               <Sparkles className="h-5 w-5" aria-hidden="true" />
             </span>
@@ -85,13 +101,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="hidden px-6 py-6 lg:block">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="flex items-center gap-2 text-sm font-medium text-white">
-              <Activity className="h-4 w-4 text-emerald-300" aria-hidden="true" />
-              Care Journey
-            </div>
-            <p className="mt-2 text-xs leading-5 text-slate-400">
-              Complete consumer experience: scan, explain, guide, track, and visualize progress.
-            </p>
+            <p className="text-sm font-medium text-white">{user.name}</p>
+            <p className="mt-1 truncate text-xs text-slate-400">{user.email}</p>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-200 transition hover:bg-white/[0.06] disabled:opacity-60"
+            >
+              <LogOut className="h-4 w-4" aria-hidden="true" />
+              {loggingOut ? "Signing out..." : "Log out"}
+            </button>
           </div>
         </div>
       </aside>

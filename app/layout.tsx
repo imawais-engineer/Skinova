@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppShell } from "./components/app-shell";
 
 export const metadata: Metadata = {
-  title: "Skinova",
-  description: "AI skincare intelligence companion for personalized skin insights."
+  title: "Skinova — Understand Your Skin. Improve with Intelligence.",
+  description:
+    "AI-powered skincare intelligence that helps you understand your skin and make better skincare decisions."
 };
 
 export default function RootLayout({
@@ -14,9 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AppShell>{children}</AppShell>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
