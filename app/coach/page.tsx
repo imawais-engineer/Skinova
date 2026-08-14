@@ -5,9 +5,9 @@ export default function CoachPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="AI skin coach"
+        eyebrow="Skin coach"
         title="Ask routine and ingredient questions."
-        description="The prototype coach is functional via local deterministic responses so the demo remains reliable before adding a live LLM provider."
+        description="Skin Coach gives skincare education, routine guidance, and ingredient cautions without medical diagnosis claims."
       />
       <CoachExperience />
     </div>

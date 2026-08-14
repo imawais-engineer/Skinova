@@ -13,7 +13,7 @@ const starterMessages: CoachMessage[] = [
   {
     role: "coach",
     content:
-      "Ask about acne, redness, routines, or ingredients. I will respond with skincare education based on the Skinova demo analysis."
+      "Ask about acne, redness, routines, or ingredients. I will respond with skincare education based on the latest Skinova analysis."
   }
 ];
 
@@ -46,7 +46,7 @@ export function CoachExperience() {
     } catch {
       setMessages((current) => [
         ...current,
-        { role: "coach", content: "The local coach route is unavailable. Restart the dev server and try again." }
+        { role: "coach", content: "Skin Coach is unavailable right now. Please try again in a moment." }
       ]);
     } finally {
       setLoading(false);
@@ -60,9 +60,9 @@ export function CoachExperience() {
           <Bot className="h-5 w-5" aria-hidden="true" />
         </span>
         <div className="min-w-0">
-          <h2 className="text-xl font-semibold text-white">Functional local Skin Coach</h2>
+          <h2 className="text-xl font-semibold text-white">Functional Skin Coach</h2>
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            This is intentionally local and deterministic for the prototype. It avoids unsupported medical claims and keeps the demo reliable.
+            Get skincare education and routine guidance without unsupported medical claims.
           </p>
         </div>
       </div>

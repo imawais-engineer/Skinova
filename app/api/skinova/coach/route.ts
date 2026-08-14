@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const coachContract = {
-  version: "skinova-coach-local-v1",
   scope: "skincare education, routine guidance, and ingredient caution",
   safety: "Educational guidance only. Consult a qualified professional for medical concerns."
 };
@@ -48,12 +47,10 @@ export async function POST(request: NextRequest) {
   const answer = asksForDiagnosis
     ? "Skinova cannot diagnose medical conditions or replace professional care. It can help with routine education and general skincare questions."
     : matched?.answer ||
-      "Skinova can help interpret analysis trends and routine choices. For this demo, ask about acne, redness, routines, or ingredients. This is skincare education, not medical diagnosis.";
+      "Skinova can help interpret analysis trends and routine choices. Ask about acne, redness, routines, or ingredients. This is skincare education, not medical diagnosis.";
 
   return NextResponse.json({
-    contract: coachContract.version,
     answer,
-    safety: coachContract.safety,
-    scope: coachContract.scope
+    safety: coachContract.safety
   });
 }

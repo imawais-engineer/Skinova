@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
-import { apiHighlights, dashboardMetrics, demoTimeline, progressEntries } from "./lib/skinova-data";
+import { careTimeline, dashboardMetrics, experienceHighlights, progressEntries } from "./lib/skinova-data";
 import { MetricCard, PageHeader, Panel, StatusBadge } from "./components/ui";
 
 export default function DashboardPage() {
@@ -11,7 +11,7 @@ export default function DashboardPage() {
       <PageHeader
         eyebrow="YouCam Skin AI Hackathon"
         title="Skinova turns skin analysis into a guided skincare journey."
-        description="A complete dashboard-first consumer experience: upload a selfie, run a YouCam-style analysis, understand the results, generate a routine, and track progress over time."
+        description="A complete dashboard-first consumer experience: upload a selfie, understand the results, generate a routine, and track progress over time."
         action={{ href: "/scan", label: "Start scan" }}
       />
 
@@ -25,10 +25,10 @@ export default function DashboardPage() {
         <Panel className="gradient-border">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <StatusBadge tone="mint">Minimum winning demo</StatusBadge>
+              <StatusBadge tone="mint">Minimum winning flow</StatusBadge>
               <h2 className="mt-4 text-2xl font-semibold text-white">Selfie to action plan in under three minutes</h2>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
-                Skinova avoids being a single API wrapper by turning YouCam Skin AI results into explanations, routines, progress trends, and an improvement simulation story.
+                Skinova turns skin intelligence into explanations, routines, progress trends, and an improvement story consumers can act on.
               </p>
             </div>
             <Link
@@ -41,7 +41,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-7 grid gap-3 md:grid-cols-4">
-            {demoTimeline.map((step, index) => (
+            {careTimeline.map((step, index) => (
               <div key={step.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-300/12 text-sm font-semibold text-cyan-100">
                   {index + 1}
@@ -64,7 +64,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <div className="mt-5 space-y-3">
-            {["Personalized routine generated", "API key handled server-side", "Mock fallback ready", "Demo video path defined"].map((item) => (
+            {["Personalized routine generated", "Live scan flow ready", "Health checks online", "Video path defined"].map((item) => (
               <div key={item} className="flex items-center gap-3 text-sm text-slate-300">
                 <CheckCircle2 className="h-4 w-4 text-emerald-300" aria-hidden="true" />
                 <span>{item}</span>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-4">
-        {apiHighlights.map((item) => {
+        {experienceHighlights.map((item) => {
           const Icon = item.icon;
           return (
             <Panel key={item.label}>

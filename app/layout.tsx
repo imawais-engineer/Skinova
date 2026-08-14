@@ -4,7 +4,7 @@ import { AppShell } from "./components/app-shell";
 
 export const metadata: Metadata = {
   title: "Skinova",
-  description: "AI skincare intelligence companion powered by YouCam Skin AI APIs."
+  description: "AI skincare intelligence companion for personalized skin insights."
 };
 
 export default function RootLayout({

@@ -9,7 +9,7 @@
 - Add results page and routine page.
 - Add functional local skin coach.
 - Add progress/history page.
-- Add settings/API status page.
+- Add health/readiness page.
 
 Validation:
 
@@ -24,7 +24,7 @@ Validation:
 - Add task creation route.
 - Add task polling route.
 - Add error mapping.
-- Add mock fallback when credentials are missing or demo mode is enabled.
+- Return product-safe unavailable states when live scan service cannot run.
 
 Validation:
 
@@ -68,7 +68,7 @@ Validation:
 3. Analysis results.
 4. Routine generation.
 5. Progress/simulation.
-6. Settings/API explanation.
+6. Health/readiness view.
 7. Demo script and submission docs.
 
 ## Data Model
@@ -115,5 +115,5 @@ Validation:
 - Build passes.
 - Typecheck passes.
 - Main demo path works.
-- API mock fallback works.
+- Product-safe unavailable states work.
 - UI is readable and responsive.

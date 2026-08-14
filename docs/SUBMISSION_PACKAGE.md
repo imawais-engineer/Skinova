@@ -16,7 +16,7 @@ Skinova's selected track is **Skin AI**. The app implements the YouCam Skin Anal
 - polling
 - result normalization into consumer-facing guidance
 
-The demo defaults to mock-safe mode so judges can run the app without consuming API units. Real metadata and full upload/task/poll smoke testing passed with YouCam credentials from `.env`; the smoke scripts print sanitized status only.
+The app is configured for live scan testing when credentials and a valid front-facing selfie are available. Real metadata smoke testing passed with YouCam credentials from `.env`; the smoke scripts print sanitized status only.
 
 ## Repository URL
 
@@ -36,6 +36,7 @@ https://github.com/imawais-engineer/Skinova
 - Show routine page.
 - Show coach page.
 - Show progress page.
+- Show Health page.
 - Mention safety: education only, not medical diagnosis.
 - Keep video between 1 and 3 minutes.
 - Upload publicly to YouTube, Vimeo, or Youku.
@@ -50,7 +51,7 @@ Capture:
 - Routine
 - Skin Coach with one answer
 - Progress
-- Settings/API configuration
+- Health
 
 Store local copies in:
 
@@ -63,11 +64,12 @@ public/screenshots/
 1. Clone the repository.
 2. Run `npm install`.
 3. Copy `.env.example` to `.env`.
-4. Leave `SKINOVA_DEMO_MODE=true` for the reliable demo path.
-5. Run `npm run dev`.
-6. Open `http://localhost:3000`.
-7. Click "Start scan" and run the demo scan.
-8. Review Results, Routine, Coach, Progress, and Settings.
+4. Add the required YouCam credentials for live scan testing.
+5. Set live scan mode for the local test environment.
+6. Run `npm run dev`.
+7. Open `http://localhost:3000`.
+8. Click "Start scan" and upload a valid front-facing selfie.
+9. Review Results, Routine, Coach, Progress, and Health.
 
 Optional live API check:
 
@@ -78,7 +80,7 @@ Optional live API check:
 
 ## Known Limitations
 
-- Prototype uses local mock analysis for default judge safety.
+- Static example analysis remains available for non-scan pages.
 - Persistent scan history is not implemented yet.
 - Authentication is not implemented yet.
 - Product recommendations are intentionally deferred.

@@ -75,7 +75,7 @@ Local API documentation used:
 - API credentials are read only on the server or local smoke-test script.
 - `.env` values are never printed.
 - Client code calls local API routes, not YouCam directly.
-- Demo mode is enabled by default to avoid accidental unit usage.
+- Live scan mode should be enabled only in environments intended to run real scan tests.
 
 ## Real API Smoke Result
 

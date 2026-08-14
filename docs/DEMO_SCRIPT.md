@@ -8,13 +8,13 @@ Show the dashboard first screen.
 
 ## 0:20-0:50 - YouCam Skin AI Workflow
 
-"Skinova uses YouCam Skin AI as the intelligence layer. The app supports the real YouCam workflow: file metadata, presigned upload, task creation, polling, and result interpretation. Demo mode keeps judging reliable, and live mode works when credentials and a valid selfie are available."
+"Skinova uses YouCam Skin AI as the intelligence layer. The app supports the real scan path: secure upload preparation, live processing, polling, and result interpretation. The public app shows product health, not backend configuration."
 
-Open Settings, then Skin Scan.
+Open Health, then Skin Scan.
 
 ## 0:50-1:20 - Scan
 
-Run "Run demo scan" or upload a valid selfie if live API mode is ready.
+Upload a valid front-facing selfie.
 
 "The scan converts skin indicators into a consumer-friendly view. The app avoids medical claims and focuses on education and routine guidance."
 
@@ -34,7 +34,7 @@ Open Routine.
 
 Open Skin Coach and ask: "Why is my skin red this week?"
 
-"The coach is functional locally for this prototype, bounded to education, ingredients, and routines."
+"The coach is bounded to education, ingredients, and routines."
 
 ## 2:35-2:55 - Progress
 

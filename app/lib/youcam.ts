@@ -348,7 +348,7 @@ export function normalizeYouCamTaskResult(payload: unknown): AnalysisResult | nu
       type: toConcernLabel(item.type || "skin indicator"),
       score: clampScore(item.ui_score || 0),
       direction: item.ui_score && item.ui_score >= 75 ? "improving" : item.ui_score && item.ui_score >= 60 ? "stable" : "watch",
-      explanation: `${toConcernLabel(item.type || "skin indicator")} returned a YouCam UI score of ${clampScore(item.ui_score || 0)}. Skinova converts this into education and routine guidance, not diagnosis.`
+      explanation: `${toConcernLabel(item.type || "skin indicator")} returned a visible care score of ${clampScore(item.ui_score || 0)}. Skinova converts this into education and routine guidance, not diagnosis.`
     }));
 
   if (!concerns.length) {
@@ -359,12 +359,12 @@ export function normalizeYouCamTaskResult(payload: unknown): AnalysisResult | nu
 
   return {
     overallScore,
-    skinType: "Live YouCam result",
-    tone: "Available when tone/Fitzpatrick workflow is enabled",
+    skinType: "Live scan result",
+    tone: "Personalization context available after scan",
     summary:
-      "Live YouCam Skin AI results were received and normalized into Skinova's consumer guidance view. Use the raw task response for masks and provider-specific fields.",
+      "Skinova received live skin signals and normalized them into a consumer guidance view for education, routine planning, and progress tracking.",
     concerns,
-    workflow: analysisResult.workflow
+    readingSteps: analysisResult.readingSteps
   };
 }
 

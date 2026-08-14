@@ -9,7 +9,7 @@ export default function ProgressPage() {
         eyebrow="Progress tracking"
         title="Skinova continues after the first scan."
         description="The progress view demonstrates long-term consumer value: trends, goals, and simulation-backed improvement expectations."
-        action={{ href: "/settings", label: "API settings" }}
+        action={{ href: "/health", label: "App health" }}
       />
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">

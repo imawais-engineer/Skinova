@@ -8,9 +8,9 @@ import {
   Bot,
   Camera,
   ClipboardList,
+  HeartPulse,
   Home,
   LineChart,
-  Settings,
   Sparkles
 } from "lucide-react";
 
@@ -21,7 +21,7 @@ const navItems = [
   { href: "/routine", label: "Routine", icon: ClipboardList },
   { href: "/coach", label: "Skin Coach", icon: Bot },
   { href: "/progress", label: "Progress", icon: LineChart },
-  { href: "/settings", label: "Settings", icon: Settings }
+  { href: "/health", label: "Health", icon: HeartPulse }
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -41,7 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="hidden rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200 lg:mt-6 lg:inline-flex">
-            Demo-ready
+            Online
           </div>
         </div>
 
@@ -71,10 +71,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <div className="flex items-center gap-2 text-sm font-medium text-white">
               <Activity className="h-4 w-4 text-emerald-300" aria-hidden="true" />
-              Judging Focus
+              Care Journey
             </div>
             <p className="mt-2 text-xs leading-5 text-slate-400">
-              Complete consumer workflow: scan, explain, guide, track, and simulate improvement.
+              Complete consumer experience: scan, explain, guide, track, and visualize progress.
             </p>
           </div>
         </div>

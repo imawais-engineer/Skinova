@@ -6,59 +6,33 @@ import { Panel, ScoreBar, StatusBadge } from "./ui";
 import type { AnalysisResult } from "../lib/skinova-data";
 
 type AnalyzeResponse = {
-  mode: string;
+  status?: string;
   analysis?: AnalysisResult;
   error?: string;
   pollingUrl?: string | null;
-  taskId?: string | null;
-  task_status?: string;
-  task?: {
-    analysis?: AnalysisResult;
-    task_status?: string;
-    data?: {
-      task_id?: string;
-      task_status?: string;
-    };
-  };
   message?: string;
 };
 
 export function ScanExperience() {
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<"idle" | "running" | "done" | "error">("idle");
-  const [message, setMessage] = useState("Select a selfie or run the demo scan.");
+  const [message, setMessage] = useState("Choose a clear selfie to begin.");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-
-  async function runDemoScan() {
-    setStatus("running");
-    setMessage("Running demo-safe YouCam-style analysis...");
-
-    try {
-      const response = await fetch("/api/skinova/analyze", { method: "POST" });
-      const data = (await response.json()) as AnalyzeResponse;
-      setAnalysis(data.analysis || data.task?.analysis || null);
-      setMessage(data.message || "Demo scan complete.");
-      setStatus("done");
-    } catch {
-      setStatus("error");
-      setMessage("Demo scan failed. Check the local dev server and try again.");
-    }
-  }
 
   async function analyzeSelectedFile() {
     if (!file) {
       setStatus("error");
-      setMessage("Choose a photo first, or use the demo scan.");
+      setMessage("Choose a photo first.");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
     setStatus("running");
-    setMessage("Preparing YouCam workflow. Demo mode will avoid consuming API units unless disabled.");
+    setMessage("Preparing secure skin scan...");
 
     try {
-      const response = await fetch("/api/youcam/analyze", {
+      const response = await fetch("/api/skinova/scan", {
         method: "POST",
         body: formData
       });
@@ -66,25 +40,25 @@ export function ScanExperience() {
 
       if (!response.ok || data.error) {
         setStatus("error");
-        setMessage(data.error || "YouCam analysis request failed.");
+        setMessage(data.error || "The scan could not be completed. Use a clear, front-facing image and try again.");
         return;
       }
 
-      if (data.mode === "live" && data.pollingUrl) {
-        setMessage("Live YouCam task created. Polling task status...");
+      if (data.pollingUrl) {
+        setMessage("Skin scan started. Waiting for results...");
         const finalResult = await pollLiveTask(data.pollingUrl);
-        setAnalysis(finalResult.analysis || data.task?.analysis || data.analysis || null);
+        setAnalysis(finalResult.analysis || data.analysis || null);
         setMessage(finalResult.message);
         setStatus(finalResult.ok ? "done" : "error");
         return;
       }
 
-      setAnalysis(data.task?.analysis || data.analysis || null);
-      setMessage("Mock YouCam workflow completed. Add API credentials and disable demo mode for live processing.");
+      setAnalysis(data.analysis || null);
+      setMessage(data.message || "Skin scan completed.");
       setStatus("done");
     } catch {
       setStatus("error");
-      setMessage("The scan workflow failed. Use demo mode or check API configuration.");
+      setMessage("The scan could not be completed. Use a clear, front-facing image and try again.");
     }
   }
 
@@ -93,39 +67,38 @@ export function ScanExperience() {
       await new Promise((resolve) => setTimeout(resolve, attempt === 1 ? 1500 : 3000));
       const response = await fetch(pollingUrl);
       const data = (await response.json()) as AnalyzeResponse;
-      const taskStatus = data.task?.task_status || data.task?.data?.task_status || data.task_status;
 
       if (data.analysis) {
         return {
           ok: true,
           analysis: data.analysis,
-          message: "Live YouCam analysis completed and was converted into Skinova guidance."
+          message: "Skin scan completed and was converted into Skinova guidance."
         };
       }
 
-      if (taskStatus === "success") {
+      if (data.status === "success") {
         return {
           ok: true,
-          analysis: data.task?.analysis || data.analysis || null,
-          message: "Live YouCam task completed. Raw result is available from the polling endpoint."
+          analysis: data.analysis || null,
+          message: "Skin scan completed."
         };
       }
 
-      if (!response.ok || taskStatus === "error" || data.error) {
+      if (!response.ok || data.status === "error" || data.error) {
         return {
           ok: false,
           analysis: null,
-          message: data.error || "Live YouCam task returned an error. Check image quality and API configuration."
+          message: data.error || "The scan could not be completed. Use a clear, front-facing image and try again."
         };
       }
 
-      setMessage(`Live YouCam task is ${taskStatus || "running"}... polling attempt ${attempt}/8.`);
+      setMessage(`Skin scan is ${data.status || "running"}... checking results ${attempt}/8.`);
     }
 
     return {
       ok: false,
       analysis: null,
-      message: "Live YouCam task is still running. Poll again from the task status endpoint or use demo mode for judging."
+      message: "The scan is still processing. Try again in a moment."
     };
   }
 
@@ -136,7 +109,7 @@ export function ScanExperience() {
           <div>
             <h2 className="text-xl font-semibold text-white">Selfie scan</h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">
-              Use a clear front-facing image. The functional prototype defaults to a safe mock workflow so the demo does not depend on API units.
+              Use a clear front-facing image. Skinova analyzes your photo and returns personalized skincare guidance.
             </p>
           </div>
           <StatusBadge tone={status === "done" ? "mint" : status === "error" ? "rose" : "cyan"}>
@@ -156,22 +129,14 @@ export function ScanExperience() {
           />
         </label>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <button
-            type="button"
-            onClick={runDemoScan}
-            disabled={status === "running"}
-            className="inline-flex h-11 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {status === "running" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
-            Run demo scan
-          </button>
+        <div className="mt-5">
           <button
             type="button"
             onClick={analyzeSelectedFile}
             disabled={status === "running"}
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-white/12 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
+            {status === "running" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
             Analyze selected photo
           </button>
         </div>
@@ -181,7 +146,7 @@ export function ScanExperience() {
         </div>
 
         <div className="mt-5 grid gap-3 text-sm text-slate-300">
-          {["Front-facing selfie", "Even lighting", "No medical diagnosis claims", "Server-side API key handling"].map((item) => (
+          {["Front-facing selfie", "Even lighting", "Educational guidance only", "Privacy-conscious processing"].map((item) => (
             <div key={item} className="flex items-center gap-3">
               <CheckCircle2 className="h-4 w-4 text-emerald-300" aria-hidden="true" />
               <span>{item}</span>
@@ -212,7 +177,7 @@ export function ScanExperience() {
         ) : (
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-8 text-center">
             <p className="text-sm leading-6 text-slate-400">
-              Run a demo scan to show YouCam-style scores, plain-language insights, and routine guidance.
+              Choose a selfie to show skin scores, plain-language insights, and routine guidance.
             </p>
           </div>
         )}

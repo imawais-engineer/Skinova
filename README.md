@@ -12,7 +12,7 @@ Skinova converts a selfie scan into skin insights, routine guidance, progress tr
 - Uses YouCam Skin AI workflow design: file metadata, presigned upload, task creation, polling, and result interpretation.
 - Demonstrates consumer value beyond one API call: scan, explain, guide, track, and simulate.
 - Keeps YouCam API keys server-side only.
-- Includes mock fallback for reliable judging demos and real API smoke testing for integration validation.
+- Uses product-level public routes with real API smoke testing for integration validation.
 
 Official hackathon sources:
 
@@ -22,13 +22,13 @@ Official hackathon sources:
 
 ## Product Flow
 
-1. Dashboard explains Skinova's value and YouCam API usage.
-2. Skin Scan uploads a selfie or runs a demo-safe scan.
-3. Results converts YouCam-style scores into plain-language skincare education.
+1. Dashboard explains Skinova's value.
+2. Skin Scan uploads a clear selfie for live analysis.
+3. Results converts skin scores into plain-language skincare education.
 4. Routine generates morning and night guidance.
 5. Skin Coach answers limited local skincare questions with safety boundaries.
 6. Progress shows trend history and improvement simulation story.
-7. Settings shows server-side API configuration status without exposing secrets.
+7. Health shows user-facing app readiness.
 
 ## Stack
 
@@ -55,11 +55,11 @@ Required names:
 API_KEY=YOUCAM_API_KEY
 SECRET_KEY=YOUCAM_SECRET_KEY
 BASE_URL=https://yce-api-01.makeupar.com
-SKINOVA_DEMO_MODE=true
+SKINOVA_DEMO_MODE=false
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-Set `SKINOVA_DEMO_MODE=false` only when you want the app to create live YouCam tasks. The API key is used only in server routes and scripts.
+Use live mode only in environments intended to create real YouCam tasks. The API key is used only in server routes and scripts.
 
 ## Local Setup
 
@@ -81,7 +81,7 @@ npm run youcam:smoke
 
 `npm run youcam:smoke` validates the real YouCam Skin Analysis file metadata request using `.env`, but prints only sanitized status fields.
 
-`npm run verify:ui` expects the app to be running at `http://localhost:3000` or `SKINOVA_TEST_URL`. It clicks the demo scan in desktop and mobile viewports, captures screenshots in `/tmp`, and fails on horizontal overflow.
+`npm run verify:ui` expects the app to be running at `http://localhost:3000` or `SKINOVA_TEST_URL`. It checks Dashboard, Skin Scan, and Health in desktop and mobile viewports, captures screenshots in `/tmp`, and fails on horizontal overflow.
 
 For a full real upload/task/poll smoke test, add a valid front-facing test image:
 
@@ -113,12 +113,12 @@ Do not commit private selfies or `.env`.
 
 ## YouCam API Workflow
 
-The app implements these server-side routes:
+The browser-facing app uses product-level routes:
 
-- `POST /api/youcam/upload-metadata`
-- `POST /api/youcam/task`
-- `GET /api/youcam/task-status/[taskId]?workflow=skin-analysis`
-- `POST /api/youcam/analyze`
+- `POST /api/skinova/scan`
+- `GET /api/skinova/scan-status/[taskId]`
+
+Low-level provider routes are not used as public UI contracts.
 
 The current demo focuses on `AI_SKIN_ANALYSIS`. Supporting local docs are included for:
 
@@ -139,7 +139,7 @@ See [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md) and [docs/COMPLIANC
 
 ## Known Limitations
 
-- Prototype data is local mock data unless live YouCam mode is enabled.
+- Static dashboard/result examples remain available while live scan testing requires a valid selfie.
 - No authentication or persistent user accounts yet.
 - No medical diagnosis, treatment claims, or disease detection.
 - Full real scan testing requires a valid local test selfie and YouCam API units.

@@ -7,7 +7,7 @@ export default function ResultsPage() {
     <div>
       <PageHeader
         eyebrow="Analysis results"
-        title="Plain-language insights from YouCam-style skin scores."
+        title="Plain-language insights from skin scores."
         description="Scores become actions: explanation, routine priorities, and progress markers a consumer can understand."
         action={{ href: "/routine", label: "View routine" }}
       />
@@ -45,10 +45,10 @@ export default function ResultsPage() {
       <Panel className="mt-5">
         <div className="flex items-center gap-3">
           <Sparkles className="h-5 w-5 text-violet-200" aria-hidden="true" />
-          <h2 className="text-xl font-semibold text-white">YouCam workflow explanation</h2>
+          <h2 className="text-xl font-semibold text-white">How Skinova reads your scan</h2>
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-4">
-          {analysisResult.workflow.map((step) => (
+          {analysisResult.readingSteps.map((step) => (
             <div key={step} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">
               {step}
             </div>

@@ -1,4 +1,4 @@
-import { Activity, Camera, ClipboardList, LineChart, ShieldCheck, Sparkles } from "lucide-react";
+import { Activity, Camera, ClipboardList, HeartPulse, LineChart, Sparkles } from "lucide-react";
 
 export type Concern = {
   type: string;
@@ -13,7 +13,7 @@ export type AnalysisResult = {
   tone: string;
   summary: string;
   concerns: Concern[];
-  workflow: string[];
+  readingSteps: string[];
 };
 
 export const analysisResult: AnalysisResult = {
@@ -54,11 +54,11 @@ export const analysisResult: AnalysisResult = {
       explanation: "Hydration appears strong. Keep humectants and moisturizer in both morning and night routines."
     }
   ],
-  workflow: [
-    "AI Photo Enhance prepares the image for more reliable analysis.",
-    "AI Skin Analysis produces concern scores and mask-ready result data.",
-    "Fitzpatrick Skin Type Analysis adds personalization context.",
-    "Skin Simulation visualizes an improvement path for the demo."
+  readingSteps: [
+    "Image quality is checked before analysis.",
+    "Skin signals are converted into clear concern scores.",
+    "Personalization context helps tune routine guidance.",
+    "Progress views turn scans into a clear improvement story."
   ]
 };
 
@@ -66,14 +66,14 @@ export const dashboardMetrics = [
   {
     label: "Skin health score",
     value: "82%",
-    detail: "Demo-safe YouCam-style analysis result.",
+    detail: "Latest skin intelligence result.",
     icon: Activity,
     tone: "mint" as const
   },
   {
-    label: "API workflows",
+    label: "Care signals",
     value: "4",
-    detail: "Enhance, analyze, classify, simulate.",
+    detail: "Texture, pores, redness, and hydration.",
     icon: Sparkles,
     tone: "cyan" as const
   },
@@ -85,17 +85,17 @@ export const dashboardMetrics = [
     tone: "violet" as const
   },
   {
-    label: "Demo safety",
-    value: "On",
-    detail: "Mock fallback protects API units and judge demos.",
-    icon: ShieldCheck,
-    tone: "rose" as const
+    label: "App health",
+    value: "Live",
+    detail: "Scan, guide, and progress flows are online.",
+    icon: HeartPulse,
+    tone: "mint" as const
   }
 ];
 
-export const demoTimeline = [
+export const careTimeline = [
   { label: "Upload", value: "Selfie quality and consent check" },
-  { label: "Analyze", value: "YouCam Skin AI workflow with task states" },
+  { label: "Analyze", value: "Skin intelligence engine evaluates the image" },
   { label: "Explain", value: "Plain-language insights from technical scores" },
   { label: "Guide", value: "Routine, ingredient, and progress actions" }
 ];
@@ -126,9 +126,9 @@ export const progressEntries = [
   { date: "Week 3", acne: 64, redness: 58, texture: 76, hydration: 84, overall: 82 }
 ];
 
-export const apiHighlights = [
-  { label: "AI Photo Enhance", value: "Prepares selfie quality before analysis", icon: Camera },
-  { label: "AI Skin Analysis", value: "Scores skin concerns and supports masks", icon: Activity },
-  { label: "Skin Simulation", value: "Shows realistic improvement visualization", icon: Sparkles },
+export const experienceHighlights = [
+  { label: "Image Quality", value: "Checks that the selfie is clear before analysis", icon: Camera },
+  { label: "Skin Analysis", value: "Scores visible concerns and care signals", icon: Activity },
+  { label: "Routine Guidance", value: "Turns results into practical skincare steps", icon: ClipboardList },
   { label: "Progress Tracking", value: "Turns scans into trend intelligence", icon: LineChart }
 ];

@@ -5,9 +5,9 @@ export default function ScanPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Core workflow"
-        title="Run a demo-safe skin scan."
-        description="This flow demonstrates the YouCam integration shape while remaining reliable for judging, local testing, and screenshot capture."
+        eyebrow="Skin scan"
+        title="Run a live skin scan."
+        description="Upload a clear selfie to receive skin scores, plain-language insights, and personalized skincare guidance."
       />
       <ScanExperience />
     </div>
