@@ -4,7 +4,7 @@
 
 "Skinova is built for the Skin AI track. Many skincare users get a score from a scanner but still do not know what it means, which routine to follow, or whether their skin is improving."
 
-Show the dashboard first screen.
+Show the landing page, then sign up and open the dashboard.
 
 ## 0:20-0:50 - YouCam Skin AI Workflow
 
