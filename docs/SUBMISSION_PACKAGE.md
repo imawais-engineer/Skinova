@@ -20,16 +20,16 @@ The app is configured for live scan testing when credentials and a valid front-f
 
 ## Repository URL
 
-Use the final public repository URL:
-
 ```text
 https://github.com/imawais-engineer/Skinova
 ```
 
 ## Demo Video Checklist
 
-- Show dashboard first.
+- Show landing page first.
 - State selected track: Skin AI.
+- Sign up or log in.
+- Show dashboard.
 - Show scan flow.
 - Explain YouCam Skin Analysis workflow.
 - Show results page.
@@ -45,8 +45,10 @@ https://github.com/imawais-engineer/Skinova
 
 Capture:
 
+- Landing page
+- Sign up or login
 - Dashboard
-- Skin Scan after demo scan completed
+- Skin Scan after scan completed
 - Results
 - Routine
 - Skin Coach with one answer
@@ -61,30 +63,62 @@ public/screenshots/
 
 ## Judge Testing Instructions
 
-1. Clone the repository.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env`.
-4. Add the required YouCam credentials for live scan testing.
-5. Set live scan mode for the local test environment.
-6. Run `npm run dev`.
-7. Open `http://localhost:3000`.
-8. Click "Start scan" and upload a valid front-facing selfie.
-9. Review Results, Routine, Coach, Progress, and Health.
+### One-command setup
 
-Optional live API check:
+Requires Node.js 20+ and git.
 
-1. Add YouCam credentials to `.env`.
-2. Run `npm run youcam:smoke`.
-3. Add `Testing/INPUT/selfie.jpg` for full live upload/task/poll testing.
-4. Run `npm run youcam:smoke:full`.
+```bash
+git clone https://github.com/imawais-engineer/Skinova.git && cd Skinova && npm run setup
+```
+
+This command:
+
+1. Clones the repository
+2. Creates `.env` from `.env.example`
+3. Generates `AUTH_SECRET` automatically
+4. Sets `DATABASE_PATH=./data/skinova.db`
+5. Installs dependencies
+6. Starts the dev server at http://localhost:3000
+
+### Configure YouCam (optional, for live scans)
+
+Edit `.env` before or after first run:
+
+```env
+API_KEY=your_youcam_api_key
+SKINOVA_DEMO_MODE=false
+```
+
+Demo mode works without YouCam credentials (`SKINOVA_DEMO_MODE=true`).
+
+### End-to-end judge flow
+
+1. Open http://localhost:3000
+2. Click **Get Started**
+3. Create an account (name, email, password 8+ characters)
+4. Land on **/dashboard**
+5. Open **Skin Scan** and upload a clear front-facing selfie
+6. Review **Results**, **Routine**, **Coach**, **Progress**, and **Health**
+7. Confirm **Health** shows demo or live scan mode
+
+### Optional API smoke test
+
+```bash
+npm run youcam:smoke
+```
+
+Full upload/task/poll test (requires valid selfie at `Testing/INPUT/selfie.jpg`):
+
+```bash
+npm run youcam:smoke:full
+```
 
 ## Known Limitations
 
-- Static example analysis remains available for non-scan pages.
-- Persistent scan history is not implemented yet.
-- Authentication is not implemented yet.
-- Product recommendations are intentionally deferred.
-- Full live task testing requires valid YouCam units and a valid local selfie.
+- Scan history is session-based, not yet stored per user in the database
+- Privacy and Terms pages are placeholders
+- Product recommendations are intentionally deferred
+- Full live task testing requires valid YouCam units and a valid front-facing selfie
 
 ## License And Attribution
 

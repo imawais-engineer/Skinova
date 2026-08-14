@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "setup": "bash scripts/setup-and-run.sh",
     "typecheck": "tsc --noEmit",
     "verify:ui": "node scripts/verify-ui.mjs",
     "youcam:smoke": "node --env-file=.env scripts/youcam-smoke-test.mjs",
