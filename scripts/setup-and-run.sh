@@ -19,14 +19,18 @@ if grep -q '^AUTH_SECRET=generate_with_openssl_rand_base64_32' .env || ! grep -q
   echo "Generated AUTH_SECRET in .env"
 fi
 
-if ! grep -q '^DATABASE_PATH=' .env; then
-  echo "DATABASE_PATH=./data/skinova.db" >> .env
-fi
-
-mkdir -p data
-
 echo "Installing dependencies..."
 npm install
+
+if grep -q '^DATABASE_URL=postgresql' .env; then
+  echo "Initializing Neon database schema..."
+  npm run db:init
+else
+  echo ""
+  echo "Add your Neon DATABASE_URL to .env before signing up."
+  echo "See docs/VERCEL_NEON_DEPLOY.md"
+  echo ""
+fi
 
 echo ""
 echo "Starting Skinova at http://localhost:3000"

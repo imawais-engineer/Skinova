@@ -33,12 +33,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Passwords do not match." }, { status: 400 });
   }
 
-  if (findUserByEmail(email)) {
+  if (await findUserByEmail(email)) {
     return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
   }
 
   const passwordHash = await hashPassword(password);
-  const user = createUser({
+  const user = await createUser({
     id: randomUUID(),
     name,
     email,

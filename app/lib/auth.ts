@@ -53,7 +53,7 @@ export async function getSession(): Promise<SessionUser | null> {
     return null;
   }
 
-  const user = findUserById(session.id);
+  const user = await findUserById(session.id);
 
   if (!user) {
     return null;

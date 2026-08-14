@@ -1,6 +1,4 @@
-import fs from "fs";
-import path from "path";
-import Database from "better-sqlite3";
+import { neon } from "@neondatabase/serverless";
 
 export type UserRecord = {
   id: string;
@@ -10,51 +8,89 @@ export type UserRecord = {
   created_at: string;
 };
 
-const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), "data", "skinova.db");
+let schemaReady: Promise<void> | null = null;
 
-fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+function getDatabaseUrl() {
+  const url = process.env.DATABASE_URL?.trim();
 
-const globalForDb = globalThis as typeof globalThis & { skinovaDb?: Database.Database };
+  if (!url) {
+    throw new Error("DATABASE_URL is not configured.");
+  }
 
-const db =
-  globalForDb.skinovaDb ??
-  new Database(dbPath, {
-    verbose: process.env.NODE_ENV === "development" ? undefined : undefined
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForDb.skinovaDb = db;
+  return url;
 }
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE COLLATE NOCASE,
-    password_hash TEXT NOT NULL,
-    created_at TEXT NOT NULL
-  )
-`);
-
-export function findUserByEmail(email: string): UserRecord | undefined {
-  return db.prepare("SELECT * FROM users WHERE email = ? COLLATE NOCASE").get(email.trim().toLowerCase()) as
-    | UserRecord
-    | undefined;
+function getSql() {
+  return neon(getDatabaseUrl());
 }
 
-export function findUserById(id: string): UserRecord | undefined {
-  return db.prepare("SELECT * FROM users WHERE id = ?").get(id) as UserRecord | undefined;
+async function ensureSchema() {
+  if (!schemaReady) {
+    schemaReady = (async () => {
+      const sql = getSql();
+      await sql`
+        CREATE TABLE IF NOT EXISTS users (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+      `;
+    })();
+  }
+
+  await schemaReady;
 }
 
-export function createUser(input: { id: string; name: string; email: string; passwordHash: string }): UserRecord {
-  const createdAt = new Date().toISOString();
-  db.prepare("INSERT INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)").run(
-    input.id,
-    input.name.trim(),
-    input.email.trim().toLowerCase(),
-    input.passwordHash,
-    createdAt
-  );
+export async function findUserByEmail(email: string): Promise<UserRecord | undefined> {
+  await ensureSchema();
+  const sql = getSql();
+  const rows = await sql`
+    SELECT id, name, email, password_hash, created_at::text AS created_at
+    FROM users
+    WHERE LOWER(email) = LOWER(${email.trim()})
+    LIMIT 1
+  `;
 
-  return findUserById(input.id)!;
+  return rows[0] as UserRecord | undefined;
+}
+
+export async function findUserById(id: string): Promise<UserRecord | undefined> {
+  await ensureSchema();
+  const sql = getSql();
+  const rows = await sql`
+    SELECT id, name, email, password_hash, created_at::text AS created_at
+    FROM users
+    WHERE id = ${id}
+    LIMIT 1
+  `;
+
+  return rows[0] as UserRecord | undefined;
+}
+
+export async function createUser(input: {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+}): Promise<UserRecord> {
+  await ensureSchema();
+  const sql = getSql();
+  const rows = await sql`
+    INSERT INTO users (id, name, email, password_hash)
+    VALUES (
+      ${input.id},
+      ${input.name.trim()},
+      ${input.email.trim().toLowerCase()},
+      ${input.passwordHash}
+    )
+    RETURNING id, name, email, password_hash, created_at::text AS created_at
+  `;
+
+  return rows[0] as UserRecord;
+}
+
+export async function initializeDatabase() {
+  await ensureSchema();
 }

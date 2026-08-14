@@ -18,9 +18,13 @@ What `npm run setup` does:
 
 1. Creates `.env` from `.env.example` if missing
 2. Generates `AUTH_SECRET` with `openssl rand -base64 32`
-3. Ensures `DATABASE_PATH=./data/skinova.db`
-4. Runs `npm install`
+3. Runs `npm install`
+4. Runs `npm run db:init` when `DATABASE_URL` is set
 5. Starts the app at http://localhost:3000
+
+### Deploy on Vercel (recommended for public demo)
+
+Skinova uses **Neon Postgres** (free tier) for user accounts. See [docs/VERCEL_NEON_DEPLOY.md](docs/VERCEL_NEON_DEPLOY.md).
 
 ### Already have the repo?
 
@@ -35,7 +39,9 @@ git pull origin main
 cp .env.example .env
 export AUTH_SECRET="$(openssl rand -base64 32)"
 perl -0pi -e "s/^AUTH_SECRET=.*/AUTH_SECRET=$ENV{AUTH_SECRET}/m" .env
+# Add DATABASE_URL from https://neon.tech
 npm install
+npm run db:init
 npm run dev
 ```
 
@@ -64,14 +70,14 @@ BASE_URL=https://yce-api-01.makeupar.com
 SKINOVA_DEMO_MODE=false
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 AUTH_SECRET=your_generated_secret
-DATABASE_PATH=./data/skinova.db
+DATABASE_URL=postgresql://user:password@host.neon.tech/neondb?sslmode=require
 ```
 
 | Variable | Purpose |
 |----------|---------|
 | `API_KEY` | YouCam API key (server-side only) |
 | `AUTH_SECRET` | Signs auth session cookies — generate with `openssl rand -base64 32` |
-| `DATABASE_PATH` | SQLite user database path (default `./data/skinova.db`, gitignored) |
+| `DATABASE_URL` | Neon Postgres connection string ([free tier](https://neon.tech)) |
 | `SKINOVA_DEMO_MODE` | Set `true` to run scans without YouCam credentials |
 
 Use live YouCam mode only in environments intended to create real scan tasks.
@@ -99,7 +105,7 @@ Use live YouCam mode only in environments intended to create real scan tasks.
 - React 19
 - TypeScript
 - Tailwind CSS
-- SQLite + bcrypt + JWT session cookies (auth)
+- Neon Postgres + bcrypt + JWT session cookies (auth)
 - Lucide icons
 - Server-side YouCam API routes
 
@@ -154,7 +160,7 @@ See [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md) and [docs/COMPLIANC
 
 ## Known limitations
 
-- Scan history is session-based, not yet persisted per user in the database
+- Scan history is session-based in the browser, not yet stored per user in Neon
 - Privacy and Terms pages are placeholders
 - No email verification or password reset yet
 - Full live scan testing requires valid YouCam units and a front-facing selfie (face should fill most of the frame)

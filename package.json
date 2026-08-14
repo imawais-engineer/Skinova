@@ -7,14 +7,15 @@
     "build": "next build",
     "start": "next start",
     "setup": "bash scripts/setup-and-run.sh",
+    "db:init": "node --env-file=.env scripts/init-db.mjs",
     "typecheck": "tsc --noEmit",
     "verify:ui": "node scripts/verify-ui.mjs",
     "youcam:smoke": "node --env-file=.env scripts/youcam-smoke-test.mjs",
     "youcam:smoke:full": "node --env-file=.env scripts/youcam-smoke-test.mjs --full"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^13.0.3",
     "jose": "^6.2.8",
     "lucide-react": "^0.468.0",
     "next": "^15.3.5",
@@ -29,7 +30,6 @@
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "@types/bcryptjs": "^2.4.6",
-    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",

@@ -76,9 +76,19 @@ This command:
 1. Clones the repository
 2. Creates `.env` from `.env.example`
 3. Generates `AUTH_SECRET` automatically
-4. Sets `DATABASE_PATH=./data/skinova.db`
+4. Sets `DATABASE_URL` and runs `npm run db:init` when configured
 5. Installs dependencies
 6. Starts the dev server at http://localhost:3000
+
+### Configure Neon (required for sign up)
+
+1. Create a free database at https://neon.tech
+2. Add `DATABASE_URL` to `.env`
+3. Run `npm run db:init`
+
+### Deploy on Vercel
+
+See [docs/VERCEL_NEON_DEPLOY.md](docs/VERCEL_NEON_DEPLOY.md).
 
 ### Configure YouCam (optional, for live scans)
 
