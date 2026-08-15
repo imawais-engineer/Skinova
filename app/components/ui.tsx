@@ -5,26 +5,31 @@ export function PageHeader({
   eyebrow,
   title,
   description,
-  action
+  action,
+  density = "default"
 }: {
   eyebrow: string;
   title: string;
   description: string;
   action?: { href: string; label: string };
+  density?: "default" | "compact";
 }) {
+  const titleClass =
+    density === "compact"
+      ? "mt-1 max-w-4xl text-xl font-semibold tracking-normal text-white sm:text-2xl lg:text-3xl"
+      : "mt-1.5 max-w-4xl text-2xl font-semibold tracking-normal text-white sm:text-3xl md:text-4xl";
+
   return (
-    <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-      <div className="min-w-0">
+    <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+      <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-cyan-200">{eyebrow}</p>
-        <h1 className="mt-1.5 max-w-4xl text-2xl font-semibold tracking-normal text-white sm:text-3xl md:text-4xl">
-          {title}
-        </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">{description}</p>
+        <h1 className={titleClass}>{title}</h1>
+        <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-300 sm:mt-2">{description}</p>
       </div>
       {action ? (
         <Link
           href={action.href}
-          className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-cyan-200"
+          className="inline-flex h-10 shrink-0 items-center justify-center self-start rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-cyan-200 sm:self-auto"
         >
           {action.label}
         </Link>
