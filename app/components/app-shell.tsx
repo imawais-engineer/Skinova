@@ -16,6 +16,7 @@ import {
 import type { AppMode } from "../lib/app-mode";
 import type { SessionUser } from "../lib/session";
 import { SkinovaLogo } from "./skinova-logo";
+import { ScrollToTop } from "./scroll-to-top";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -53,6 +54,7 @@ export function AppShell({
 
   return (
     <div className="min-h-screen lg:flex">
+      <ScrollToTop />
       <aside className="glass-panel sticky top-0 z-20 border-x-0 border-t-0 lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:h-screen lg:w-64 lg:flex-col lg:overflow-hidden lg:border-y-0 lg:border-l-0">
         <div className="relative z-10 shrink-0 border-b border-white/10 px-4 pb-4 pt-3 lg:px-4 lg:pt-3.5">
           <div className="flex items-center justify-between gap-2">
@@ -112,7 +114,7 @@ export function AppShell({
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:ml-64 lg:px-8 lg:py-8">
+      <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:ml-64 lg:px-8 lg:py-8">
         <div className="mx-auto max-w-7xl">{children}</div>
       </main>
     </div>

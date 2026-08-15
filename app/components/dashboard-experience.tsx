@@ -15,7 +15,7 @@ export function DashboardExperience({ userName }: { userName: string }) {
   const topConcerns = analysis?.concerns.slice(0, 3) ?? [];
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader
         eyebrow="Your Skinova workspace"
         title={`Welcome back, ${userName}.`}
@@ -23,44 +23,7 @@ export function DashboardExperience({ userName }: { userName: string }) {
         action={{ href: "/scan", label: "Start scan" }}
       />
 
-      {ready && !session ? (
-        <EmptyScanState message="No scan results yet. Run a live scan or load demo sample data to populate your dashboard, results, routine, and progress views." />
-      ) : null}
-
-      {analysis ? (
-        <div className="mb-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard
-            icon={experienceHighlights[1].icon}
-            label="Skin health score"
-            value={`${analysis.overallScore}%`}
-            detail={`Latest ${session?.mode === "demo" ? "demo" : "live"} scan result.`}
-            tone="mint"
-          />
-          <MetricCard
-            icon={experienceHighlights[0].icon}
-            label="Care signals"
-            value={`${analysis.concerns.length}`}
-            detail="Tracked concerns from your most recent analysis."
-            tone="cyan"
-          />
-          <MetricCard
-            icon={experienceHighlights[2].icon}
-            label="Routine steps"
-            value={`${(routine?.morning.length ?? 0) + (routine?.night.length ?? 0)}`}
-            detail="Morning and night steps generated from your scan."
-            tone="violet"
-          />
-          <MetricCard
-            icon={experienceHighlights[3].icon}
-            label="Scan status"
-            value={session?.mode === "live" ? "Live" : "Demo"}
-            detail="Results, routine, and progress are synced to this session."
-            tone="mint"
-          />
-        </div>
-      ) : null}
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)]">
         <Panel className="gradient-border">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
@@ -142,7 +105,44 @@ export function DashboardExperience({ userName }: { userName: string }) {
         </Panel>
       </div>
 
-      <div className="mt-6 grid gap-5 lg:grid-cols-4">
+      {ready && !session ? (
+        <EmptyScanState message="No scan results yet. Run a live scan or load demo sample data to populate your dashboard, results, routine, and progress views." />
+      ) : null}
+
+      {analysis ? (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <MetricCard
+            icon={experienceHighlights[1].icon}
+            label="Skin health score"
+            value={`${analysis.overallScore}%`}
+            detail={`Latest ${session?.mode === "demo" ? "demo" : "live"} scan result.`}
+            tone="mint"
+          />
+          <MetricCard
+            icon={experienceHighlights[0].icon}
+            label="Care signals"
+            value={`${analysis.concerns.length}`}
+            detail="Tracked concerns from your most recent analysis."
+            tone="cyan"
+          />
+          <MetricCard
+            icon={experienceHighlights[2].icon}
+            label="Routine steps"
+            value={`${(routine?.morning.length ?? 0) + (routine?.night.length ?? 0)}`}
+            detail="Morning and night steps generated from your scan."
+            tone="violet"
+          />
+          <MetricCard
+            icon={experienceHighlights[3].icon}
+            label="Scan status"
+            value={session?.mode === "live" ? "Live" : "Demo"}
+            detail="Results, routine, and progress are synced to this session."
+            tone="mint"
+          />
+        </div>
+      ) : null}
+
+      <div className="grid gap-5 lg:grid-cols-4">
         {experienceHighlights.map((item) => {
           const Icon = item.icon;
           return (
