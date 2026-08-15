@@ -15,6 +15,7 @@ import {
   X
 } from "lucide-react";
 import { SkinovaLogo } from "./skinova-logo";
+import { ScrollToTop } from "./scroll-to-top";
 
 const navLinks = [
   { href: "#product", label: "Product" },
@@ -68,6 +69,7 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen">
+      <ScrollToTop />
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#050812]/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/">
@@ -132,19 +134,19 @@ export function LandingPage() {
         ) : null}
       </header>
 
-      <main>
-        <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:px-8 lg:py-24">
-          <div>
+      <main className="flex flex-col">
+        <section className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:px-6 sm:py-12 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] xl:items-start xl:gap-10 xl:px-8 xl:py-16">
+          <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">AI-Powered Skin Intelligence</p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-4xl xl:text-5xl">
               Understand Your Skin.
               <span className="block text-cyan-200">Improve with Intelligence.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-6 text-slate-300">
+            <p className="mt-4 max-w-2xl text-base leading-6 text-slate-300">
               Skinova transforms a simple selfie into understandable skin insights and actionable skincare guidance. Built
               for consumers who want clarity, not confusion.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/signup"
                 className="inline-flex h-12 items-center justify-center rounded-xl bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
@@ -161,16 +163,16 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="glass-panel gradient-border rounded-3xl p-6 sm:p-8">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-              <div className="flex items-center justify-between gap-4">
-                <div>
+          <div className="glass-panel gradient-border min-w-0 rounded-3xl p-5 sm:p-6">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
                   <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Product preview</p>
-                  <p className="mt-2 text-xl font-semibold text-white">Your skincare intelligence workspace</p>
+                  <p className="mt-2 text-lg font-semibold text-white sm:text-xl">Your skincare intelligence workspace</p>
                 </div>
-                <Activity className="h-6 w-6 text-cyan-200" aria-hidden="true" />
+                <Activity className="h-5 w-5 shrink-0 text-cyan-200 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {["Scan", "Insights", "Routine", "Progress"].map((item) => (
                   <div key={item} className="rounded-xl border border-white/10 bg-[#0a1022]/80 px-4 py-3 text-sm text-slate-200">
                     {item}
@@ -184,16 +186,16 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="product" className="border-y border-white/10 bg-white/[0.02] py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section id="product" className="border-y border-white/10 bg-white/[0.02] py-12 sm:py-16">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 xl:px-8">
             <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold text-white sm:text-4xl">Skincare data is everywhere. Clarity is not.</h2>
-              <p className="mt-4 text-base leading-7 text-slate-300">
+              <h2 className="text-2xl font-semibold text-white sm:text-3xl xl:text-4xl">Skincare data is everywhere. Clarity is not.</h2>
+              <p className="mt-3 text-base leading-7 text-slate-300">
                 Many people receive skin scores, product recommendations, or conflicting advice without knowing what it
                 means or what to do next. Skinova is the layer that turns analysis into understandable guidance.
               </p>
             </div>
-            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {[
                 "You do not always understand what your skin analysis means.",
                 "You buy products without enough context.",
@@ -209,15 +211,15 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section id="how-it-works" className="py-12 sm:py-16">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 xl:px-8">
             <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold text-white sm:text-4xl">How Skinova works</h2>
-              <p className="mt-4 text-base leading-7 text-slate-300">
+              <h2 className="text-2xl font-semibold text-white sm:text-3xl xl:text-4xl">How Skinova works</h2>
+              <p className="mt-3 text-base leading-7 text-slate-300">
                 A clear path from selfie to better skincare decisions.
               </p>
             </div>
-            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {steps.map((step) => (
                 <div key={step.number} className="glass-panel rounded-2xl p-5">
                   <p className="text-sm font-semibold text-cyan-200">{step.number}</p>
@@ -229,17 +231,17 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section className="border-y border-white/10 bg-white/[0.02] py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
-              <div>
-                <h2 className="text-3xl font-semibold text-white sm:text-4xl">Powered by YouCam Skin AI</h2>
-                <p className="mt-4 text-base leading-7 text-slate-300">
+        <section className="border-y border-white/10 bg-white/[0.02] py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8">
+            <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:items-start">
+              <div className="min-w-0">
+                <h2 className="text-2xl font-semibold text-white sm:text-3xl xl:text-4xl">Powered by YouCam Skin AI</h2>
+                <p className="mt-3 text-base leading-7 text-slate-300">
                   Skinova is not an AI model. It is the consumer experience built around YouCam API skin analysis —
                   translating technical output into education, routines, and progress.
                 </p>
               </div>
-              <div className="rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.04] p-6 font-mono text-sm leading-7 text-slate-200">
+              <div className="min-w-0 rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.04] p-5 font-mono text-sm leading-7 text-slate-200 sm:p-6">
                 <p>Selfie</p>
                 <p>↓ Secure upload workflow</p>
                 <p>↓ YouCam Skin AI analysis</p>
@@ -251,15 +253,15 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="features" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section id="features" className="py-12 sm:py-16">
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 xl:px-8">
             <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold text-white sm:text-4xl">Product capabilities</h2>
-              <p className="mt-4 text-base leading-7 text-slate-300">
+              <h2 className="text-2xl font-semibold text-white sm:text-3xl xl:text-4xl">Product capabilities</h2>
+              <p className="mt-3 text-base leading-7 text-slate-300">
                 A complete skincare intelligence experience — not a single API wrapper.
               </p>
             </div>
-            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {capabilities.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -279,11 +281,11 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="about" className="border-y border-white/10 bg-white/[0.02] py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section id="about" className="border-y border-white/10 bg-white/[0.02] py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8">
             <div className="max-w-3xl">
-              <h2 className="text-3xl font-semibold text-white sm:text-4xl">Analyze → Understand → Decide → Improve</h2>
-              <p className="mt-4 text-base leading-7 text-slate-300">
+              <h2 className="text-2xl font-semibold text-white sm:text-3xl xl:text-4xl">Analyze → Understand → Decide → Improve</h2>
+              <p className="mt-3 text-base leading-7 text-slate-300">
                 Skinova solves a real consumer problem: turning skin analysis into better understanding, clearer guidance,
                 and continuous improvement over time.
               </p>
@@ -291,10 +293,10 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="glass-panel rounded-3xl p-8 sm:p-10">
-              <div className="flex items-start gap-4">
+        <section className="py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 xl:px-8">
+            <div className="glass-panel rounded-3xl p-5 sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                 <ShieldCheck className="h-6 w-6 shrink-0 text-emerald-200" aria-hidden="true" />
                 <div>
                   <h2 className="text-2xl font-semibold text-white">Education, not diagnosis</h2>
@@ -308,10 +310,10 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section className="pb-20 pt-4">
-          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-semibold text-white sm:text-4xl">Ready to understand your skin?</h2>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <section className="pb-16 pt-4 sm:pb-20">
+          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 xl:px-8">
+            <h2 className="text-2xl font-semibold text-white sm:text-3xl xl:text-4xl">Ready to understand your skin?</h2>
+            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href="/signup"
                 className="inline-flex h-12 items-center justify-center rounded-xl bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"

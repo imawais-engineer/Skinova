@@ -139,7 +139,7 @@ export function ScanExperience() {
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+    <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
       <Panel>
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -201,7 +201,7 @@ export function ScanExperience() {
           <p className="mt-2 text-xs leading-5 text-slate-400">
             Demo-safe samples help judges and testers complete a successful scan without getting stuck on photo quality issues.
           </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {scanSamples.map((sample) => (
               <button
                 key={sample.id}

@@ -12,7 +12,7 @@ export function RoutineExperience() {
   const plan = session ? generateRoutineFromAnalysis(session.analysis) : null;
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <PageHeader
         eyebrow="Personalized guidance"
         title="A routine generated from the analysis."
@@ -25,8 +25,8 @@ export function RoutineExperience() {
       ) : null}
 
       {session && plan ? (
-        <>
-          <Panel className="mb-5 border-emerald-300/20 bg-emerald-300/[0.05]">
+        <div className="flex flex-col gap-8">
+          <Panel className="border-emerald-300/20 bg-emerald-300/[0.05]">
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge tone="mint">{session.mode === "demo" ? "Demo routine" : "Live routine"}</StatusBadge>
               <p className="text-sm text-emerald-50/90">
@@ -35,17 +35,17 @@ export function RoutineExperience() {
             </div>
           </Panel>
 
-          <div className="grid gap-5 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
             <RoutineCard title="Morning routine" items={plan.morning} />
             <RoutineCard title="Night routine" items={plan.night} />
           </div>
 
-          <Panel className="mt-5">
+          <Panel>
             <div className="flex items-center gap-3">
               <ShieldCheck className="h-5 w-5 text-emerald-200" aria-hidden="true" />
               <h2 className="text-xl font-semibold text-white">Ingredient safety notes</h2>
             </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {plan.avoid.map((item) => (
                 <div key={item} className="rounded-2xl border border-rose-300/15 bg-rose-300/[0.06] p-4 text-sm leading-6 text-rose-50/90">
                   {item}
@@ -53,7 +53,7 @@ export function RoutineExperience() {
               ))}
             </div>
           </Panel>
-        </>
+        </div>
       ) : null}
     </div>
   );

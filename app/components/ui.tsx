@@ -13,7 +13,7 @@ export function PageHeader({
   action?: { href: string; label: string };
 }) {
   return (
-    <header className="mb-5 flex flex-col gap-3 md:mb-6 md:flex-row md:items-end md:justify-between">
+    <header className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
       <div className="min-w-0">
         <p className="text-sm font-medium text-cyan-200">{eyebrow}</p>
         <h1 className="mt-1.5 max-w-4xl text-2xl font-semibold tracking-normal text-white sm:text-3xl md:text-4xl">

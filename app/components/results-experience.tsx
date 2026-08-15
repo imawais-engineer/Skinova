@@ -11,7 +11,7 @@ export function ResultsExperience() {
   const result = session?.analysis;
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <PageHeader
         eyebrow="Analysis results"
         title="Plain-language insights from skin scores."
@@ -24,8 +24,8 @@ export function ResultsExperience() {
       ) : null}
 
       {session && result ? (
-        <>
-          <Panel className="mb-5 border-emerald-300/20 bg-emerald-300/[0.05]">
+        <div className="flex flex-col gap-8">
+          <Panel className="border-emerald-300/20 bg-emerald-300/[0.05]">
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge tone="mint">{session.mode === "demo" ? "Demo scan" : "Live scan"}</StatusBadge>
               <p className="text-sm text-emerald-50/90">
@@ -34,12 +34,12 @@ export function ResultsExperience() {
             </div>
           </Panel>
 
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
             <Panel className="gradient-border">
               <StatusBadge tone="mint">Overall score</StatusBadge>
-              <p className="mt-6 text-6xl font-semibold text-white">{result.overallScore}%</p>
+              <p className="mt-5 text-4xl font-semibold text-white sm:text-5xl">{result.overallScore}%</p>
               <p className="mt-4 text-sm leading-6 text-slate-300">{result.summary}</p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                   <p className="text-xs text-slate-400">Skin type</p>
                   <p className="mt-2 text-sm font-semibold text-white">{result.skinType}</p>
@@ -71,12 +71,12 @@ export function ResultsExperience() {
             </Panel>
           </div>
 
-          <Panel className="mt-5">
+          <Panel>
             <div className="flex items-center gap-3">
               <Sparkles className="h-5 w-5 text-violet-200" aria-hidden="true" />
               <h2 className="text-xl font-semibold text-white">How Skinova reads your scan</h2>
             </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-4">
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {result.readingSteps.map((step) => (
                 <div key={step} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">
                   {step}
@@ -84,7 +84,7 @@ export function ResultsExperience() {
               ))}
             </div>
           </Panel>
-        </>
+        </div>
       ) : null}
     </div>
   );

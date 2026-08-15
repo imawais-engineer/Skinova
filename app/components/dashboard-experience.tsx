@@ -15,7 +15,7 @@ export function DashboardExperience({ userName }: { userName: string }) {
   const topConcerns = analysis?.concerns.slice(0, 3) ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-8">
       <PageHeader
         eyebrow="Your Skinova workspace"
         title={`Welcome back, ${userName}.`}
@@ -23,9 +23,9 @@ export function DashboardExperience({ userName }: { userName: string }) {
         action={{ href: "/scan", label: "Start scan" }}
       />
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)]">
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)]">
         <Panel className="gradient-border">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
             <div>
               <StatusBadge tone="mint">Your care journey</StatusBadge>
               <h2 className="mt-4 text-2xl font-semibold text-white">Selfie to action plan in under three minutes</h2>
@@ -42,7 +42,7 @@ export function DashboardExperience({ userName }: { userName: string }) {
             </Link>
           </div>
 
-          <div className="mt-7 grid gap-3 md:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {careTimeline.map((step, index) => (
               <div key={step.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-300/12 text-sm font-semibold text-cyan-100">
@@ -110,7 +110,7 @@ export function DashboardExperience({ userName }: { userName: string }) {
       ) : null}
 
       {analysis ? (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             icon={experienceHighlights[1].icon}
             label="Skin health score"
@@ -142,7 +142,7 @@ export function DashboardExperience({ userName }: { userName: string }) {
         </div>
       ) : null}
 
-      <div className="grid gap-5 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {experienceHighlights.map((item) => {
           const Icon = item.icon;
           return (
