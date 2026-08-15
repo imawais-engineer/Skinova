@@ -56,14 +56,14 @@ export function HealthExperience() {
   ];
 
   return (
-    <div className="page-stack">
+    <div>
       <PageHeader
         eyebrow="App health"
         title={isHealthy ? "Skinova is online and ready for testing." : "Checking Skinova readiness..."}
         description="Service readiness for the public Skinova experience."
       />
 
-      <div className="section-grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <Panel className="gradient-border">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -71,12 +71,12 @@ export function HealthExperience() {
               <h2 className="mt-5 text-3xl font-semibold text-white">
                 {mode === "live" ? "Live experience" : "Demo experience"}
               </h2>
-              <p className="mt-4 text-sm leading-7 text-slate-300">
+              <p className="mt-3 text-sm leading-6 text-slate-300">
                 {health?.message ||
                   "Skinova checks scan readiness, guidance flows, and privacy boundaries before judges run the demo."}
               </p>
               {health ? (
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap gap-2">
                   <StatusBadge tone={mode === "live" ? "mint" : "cyan"}>
                     {mode === "live" ? "Live scan" : "Demo scan"}
                   </StatusBadge>
@@ -101,8 +101,8 @@ export function HealthExperience() {
                   <Icon className="h-5 w-5 text-cyan-200" aria-hidden="true" />
                   <StatusBadge tone={item.value === "Unavailable" ? "rose" : "mint"}>{item.value}</StatusBadge>
                 </div>
-                <p className="mt-5 text-sm font-semibold text-white">{item.label}</p>
-                <p className="mt-3 text-xs leading-6 text-slate-400">{item.detail}</p>
+                <p className="mt-4 text-sm font-semibold text-white">{item.label}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-400">{item.detail}</p>
               </Panel>
             );
           })}

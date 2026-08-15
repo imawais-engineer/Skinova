@@ -68,28 +68,26 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
 
   return (
     <Panel>
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3">
         <SkinovaLogo size="sm" showWordmark={false} />
         <div className="min-w-0">
           <h2 className="text-xl font-semibold text-white">Skin Coach</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-400">
+          <p className="mt-2 text-sm leading-6 text-slate-400">
             Get skincare education and routine guidance without unsupported medical claims.
           </p>
           {session ? (
-            <p className="mt-3 text-xs text-emerald-200/90">
+            <p className="mt-2 text-xs text-emerald-200/90">
               Using your latest scan score of {session.analysis.overallScore}%.
             </p>
           ) : (
-            <p className="mt-3 text-xs text-amber-100/80">
-              Run a scan first for more personalized coaching.
-            </p>
+            <p className="mt-2 text-xs text-amber-100/80">Run a scan first for more personalized coaching.</p>
           )}
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-5">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Try a sample question</p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {coachSamplePrompts.map((prompt) => (
             <button
               key={prompt}
@@ -104,12 +102,12 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         </div>
       </div>
 
-      <div className="mt-8 space-y-4">
+      <div className="mt-5 max-h-[28rem] space-y-3 overflow-y-auto pr-1">
         {messages.map((message, index) => (
           <div
             key={`${message.role}-${index}`}
             className={[
-              "max-w-3xl rounded-2xl px-5 py-4 text-sm leading-7",
+              "max-w-3xl rounded-2xl px-4 py-3 text-sm leading-6",
               message.role === "user"
                 ? "ml-auto bg-cyan-300 text-slate-950"
                 : "bg-white/[0.05] text-slate-200 ring-1 ring-white/10"
@@ -120,7 +118,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         ))}
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <input
           value={input}
           onChange={(event) => setInput(event.target.value)}
@@ -136,7 +134,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
           type="button"
           onClick={() => void sendMessage()}
           disabled={loading}
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="mr-2 h-4 w-4" aria-hidden="true" />}
           Send
@@ -144,7 +142,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
       </div>
 
       {!session ? (
-        <p className="mt-5 text-center text-xs text-slate-500">
+        <p className="mt-4 text-center text-xs text-slate-500">
           <Link href="/scan" className="text-cyan-200 underline underline-offset-2">
             Run a skin scan
           </Link>{" "}

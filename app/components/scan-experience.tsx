@@ -139,7 +139,7 @@ export function ScanExperience() {
   }
 
   return (
-    <div className="section-grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
       <Panel>
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -153,7 +153,7 @@ export function ScanExperience() {
           </StatusBadge>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.05] p-5">
+        <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.05] p-4">
           <h3 className="text-sm font-semibold text-cyan-100">{skinScanRequirements.title}</h3>
           <p className="mt-2 text-xs leading-6 text-slate-300">{skinScanRequirements.summary}</p>
           <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-300">
@@ -166,7 +166,7 @@ export function ScanExperience() {
           </ul>
         </div>
 
-        <label className="mt-8 flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-6 py-10 text-center transition hover:bg-cyan-300/[0.08]">
+        <label className="mt-6 flex min-h-52 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-5 py-8 text-center transition hover:bg-cyan-300/[0.08]">
           <UploadCloud className="h-9 w-9 text-cyan-200" aria-hidden="true" />
           <span className="mt-4 text-sm font-medium text-white">{file ? file.name : "Choose your own selfie"}</span>
           <span className="mt-2 text-xs leading-5 text-slate-400">JPG or PNG. Face centered, well lit, high resolution.</span>
@@ -181,7 +181,7 @@ export function ScanExperience() {
           />
         </label>
 
-        <div className="mt-8">
+        <div className="mt-5">
           <button
             type="button"
             onClick={analyzeSelectedFile}
@@ -193,7 +193,7 @@ export function ScanExperience() {
           </button>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <div className="flex items-center gap-2">
             <ImageIcon className="h-4 w-4 text-violet-200" aria-hidden="true" />
             <h3 className="text-sm font-semibold text-white">Try one of these</h3>
@@ -201,7 +201,7 @@ export function ScanExperience() {
           <p className="mt-2 text-xs leading-5 text-slate-400">
             Demo-safe samples help judges and testers complete a successful scan without getting stuck on photo quality issues.
           </p>
-          <div className="mt-5 grid gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
             {scanSamples.map((sample) => (
               <button
                 key={sample.id}

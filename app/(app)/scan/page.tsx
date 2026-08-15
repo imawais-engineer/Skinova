@@ -1,13 +1,13 @@
-import dynamic from "next/dynamic";
 import { PageHeader } from "../../components/ui";
+import dynamic from "next/dynamic";
 
 const ScanExperience = dynamic(() => import("../../components/scan-experience").then((mod) => mod.ScanExperience), {
-  loading: () => <div className="h-96 animate-pulse rounded-2xl bg-white/6" />
+  loading: () => <div className="h-72 animate-pulse rounded-2xl bg-white/6" />
 });
 
 export default function ScanPage() {
   return (
-    <div className="page-stack">
+    <div>
       <PageHeader
         eyebrow="Skin scan"
         title="Run a skin scan."

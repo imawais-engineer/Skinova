@@ -69,7 +69,7 @@ export function LandingPage() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#050812]/85 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-10 lg:py-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/">
             <SkinovaLogo size="sm" />
           </Link>
@@ -133,14 +133,14 @@ export function LandingPage() {
       </header>
 
       <main>
-        <section className="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16 lg:px-10 lg:py-28">
+        <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:px-8 lg:py-24">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">AI-Powered Skin Intelligence</p>
             <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
               Understand Your Skin.
               <span className="block text-cyan-200">Improve with Intelligence.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300">
+            <p className="mt-6 max-w-2xl text-base leading-6 text-slate-300">
               Skinova transforms a simple selfie into understandable skin insights and actionable skincare guidance. Built
               for consumers who want clarity, not confusion.
             </p>
@@ -329,8 +329,8 @@ export function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-white/10 py-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-10">
+      <footer className="border-t border-white/10 py-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
             <SkinovaLogo size="sm" subtitle="YouCam Skin AI companion" />
             <p className="mt-4 text-xs text-slate-400">Built for the YouCam API Skin AI & Apparel VTO Hackathon.</p>

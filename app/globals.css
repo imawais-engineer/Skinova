@@ -60,26 +60,3 @@ textarea {
     linear-gradient(#000 0 0);
   mask-composite: exclude;
 }
-
-.page-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-@media (min-width: 768px) {
-  .page-stack {
-    gap: 3rem;
-  }
-}
-
-.section-grid {
-  display: grid;
-  gap: 1.75rem;
-}
-
-@media (min-width: 1024px) {
-  .section-grid {
-    gap: 2rem;
-  }
-}
