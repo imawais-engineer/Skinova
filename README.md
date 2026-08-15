@@ -1,5 +1,7 @@
 # Skinova
 
+![Skinova project cover](./public/screenshots/project-cover.png)
+
 Skinova is a consumer skincare intelligence app for the **YouCam API Skin AI & Apparel VTO Hackathon**.
 
 Selected hackathon track: **FIRST TRACK - Skin AI**.

@@ -1,5 +1,10 @@
+import dynamic from "next/dynamic";
 import { getSession } from "../../lib/auth";
-import { DashboardExperience } from "../../components/dashboard-experience";
+
+const DashboardExperience = dynamic(
+  () => import("../../components/dashboard-experience").then((mod) => mod.DashboardExperience),
+  { loading: () => <div className="h-96 animate-pulse rounded-2xl bg-white/6" /> }
+);
 
 export default async function DashboardPage() {
   const session = await getSession();

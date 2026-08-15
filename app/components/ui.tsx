@@ -13,13 +13,13 @@ export function PageHeader({
   action?: { href: string; label: string };
 }) {
   return (
-    <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <header className="mb-8 flex flex-col gap-5 md:mb-10 md:flex-row md:items-end md:justify-between md:gap-8">
       <div className="min-w-0">
         <p className="text-sm font-medium text-cyan-200">{eyebrow}</p>
-        <h1 className="mt-2 max-w-4xl text-3xl font-semibold tracking-normal text-white md:text-5xl">
+        <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-normal text-white md:mt-4 md:text-5xl">
           {title}
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300 md:text-base">{description}</p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 md:text-base">{description}</p>
       </div>
       {action ? (
         <Link
@@ -40,7 +40,7 @@ export function Panel({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <section className={`glass-panel rounded-2xl p-5 ${className}`}>{children}</section>;
+  return <section className={`glass-panel rounded-2xl p-6 md:p-8 ${className}`}>{children}</section>;
 }
 
 export function MetricCard({
@@ -64,7 +64,7 @@ export function MetricCard({
   }[tone];
 
   return (
-    <div className="glass-panel rounded-2xl p-5">
+    <div className="glass-panel rounded-2xl p-6 md:p-7">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="text-sm text-slate-400">{label}</p>
@@ -74,7 +74,7 @@ export function MetricCard({
           <Icon className="h-5 w-5" aria-hidden="true" />
         </span>
       </div>
-      <p className="mt-4 text-sm leading-5 text-slate-400">{detail}</p>
+      <p className="mt-5 text-sm leading-6 text-slate-400">{detail}</p>
     </div>
   );
 }
@@ -100,7 +100,7 @@ export function ScoreBar({
           style={{ width: `${score}%` }}
         />
       </div>
-      <p className="mt-2 text-xs leading-5 text-slate-400">{detail}</p>
+      <p className="mt-3 text-xs leading-6 text-slate-400">{detail}</p>
     </div>
   );
 }

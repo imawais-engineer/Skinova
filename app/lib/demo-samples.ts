@@ -44,21 +44,21 @@ export const skinScanRequirements = {
 
 export const scanSamples: ScanSample[] = [
   {
-    id: "live-tight-1",
-    label: "Sample selfie A",
-    description: "YouCam-verified demo photo with proper face framing.",
+    id: "live-clear",
+    label: "Clear skin baseline",
+    description: "Smooth, even complexion — shows how Skinova scores healthy-looking skin.",
     mode: "live",
-    fileName: "live-selfie-tight.jpg",
-    previewPath: "/samples/live-selfie-tight.jpg",
+    fileName: "live-selfie-clear.jpg",
+    previewPath: "/samples/live-selfie-clear.jpg",
     badge: "Live sample"
   },
   {
-    id: "live-tight-2",
-    label: "Sample selfie B",
-    description: "Alternate YouCam-verified demo photo for testing.",
+    id: "live-acne",
+    label: "Visible acne case",
+    description: "Active breakouts and redness — proves AI detects real skin concerns.",
     mode: "live",
-    fileName: "live-selfie-2.jpg",
-    previewPath: "/samples/live-selfie-2.jpg",
+    fileName: "live-selfie-acne.jpg",
+    previewPath: "/samples/live-selfie-acne.jpg",
     badge: "Live sample"
   },
   {

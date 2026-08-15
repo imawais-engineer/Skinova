@@ -1,8 +1,10 @@
-# Skinova demo samples
+# Demo scan samples
 
-These images are pre-validated for YouCam Skin Analysis live scans.
+Bundled photos for the **Try one of these** section on the Skin Scan page.
 
-- `live-selfie-tight.jpg` — verified live scan sample A
-- `live-selfie-2.jpg` — verified live scan sample B
+- `live-selfie-clear.jpg` — clear, even complexion baseline (YouCam-verified)
+- `live-selfie-acne.jpg` — visible acne and redness case (YouCam-verified)
+- `live-selfie-tight.jpg` — legacy verified sample (kept for reference)
+- `live-selfie-2.jpg` — legacy verified sample (kept for reference)
 
-Used by the Skin Scan "Try one of these" demo buttons.
+Use **Clear skin baseline** and **Visible acne case** for judge demos — they show how Skinova scores both healthy-looking skin and real concern signals.
