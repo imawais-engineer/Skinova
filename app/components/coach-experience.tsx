@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { Bot, Loader2, Send } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { coachSamplePrompts } from "../lib/demo-samples";
+import { useScanSession } from "../hooks/use-scan-session";
 import { Panel } from "./ui";
+import { SkinovaLogo } from "./skinova-logo";
 
 type CoachMessage = {
   role: "user" | "coach";
@@ -14,11 +17,12 @@ const starterMessages: CoachMessage[] = [
   {
     role: "coach",
     content:
-      "Ask about acne, redness, routines, or ingredients. I will respond with skincare education based on the latest Skinova analysis."
+      "Hi! I'm your Skin Coach. Ask me about skincare, ingredients, or your routine — I'll use your latest scan when available."
   }
 ];
 
 export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
+  const { session } = useScanSession();
   const [messages, setMessages] = useState<CoachMessage[]>(starterMessages);
   const [input, setInput] = useState(initialPrompt || "Why is my skin red this week?");
   const [loading, setLoading] = useState(false);
@@ -37,12 +41,20 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
       const response = await fetch("/api/skinova/coach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed })
+        body: JSON.stringify({
+          message: trimmed,
+          analysis: session?.analysis || null
+        })
       });
-      const data = (await response.json()) as { answer: string; safety: string };
+      const data = (await response.json()) as { answer?: string; safety?: string; error?: string };
+
+      if (!response.ok || !data.answer) {
+        throw new Error(data.error || "Coach unavailable");
+      }
+
       setMessages((current) => [
         ...current,
-        { role: "coach", content: `${data.answer} ${data.safety}` }
+        { role: "coach", content: `${data.answer} ${data.safety || ""}`.trim() }
       ]);
     } catch {
       setMessages((current) => [
@@ -57,20 +69,27 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
   return (
     <Panel>
       <div className="flex items-start gap-4">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-300/12 text-violet-100 ring-1 ring-violet-300/20">
-          <Bot className="h-5 w-5" aria-hidden="true" />
-        </span>
+        <SkinovaLogo size="sm" showWordmark={false} />
         <div className="min-w-0">
-          <h2 className="text-xl font-semibold text-white">Functional Skin Coach</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-400">
+          <h2 className="text-xl font-semibold text-white">Skin Coach</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-400">
             Get skincare education and routine guidance without unsupported medical claims.
           </p>
+          {session ? (
+            <p className="mt-3 text-xs text-emerald-200/90">
+              Using your latest scan score of {session.analysis.overallScore}%.
+            </p>
+          ) : (
+            <p className="mt-3 text-xs text-amber-100/80">
+              Run a scan first for more personalized coaching.
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-8">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Try a sample question</p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {coachSamplePrompts.map((prompt) => (
             <button
               key={prompt}
@@ -85,12 +104,12 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         </div>
       </div>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-8 space-y-4">
         {messages.map((message, index) => (
           <div
             key={`${message.role}-${index}`}
             className={[
-              "max-w-3xl rounded-2xl px-4 py-3 text-sm leading-6",
+              "max-w-3xl rounded-2xl px-5 py-4 text-sm leading-7",
               message.role === "user"
                 ? "ml-auto bg-cyan-300 text-slate-950"
                 : "bg-white/[0.05] text-slate-200 ring-1 ring-white/10"
@@ -101,7 +120,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         ))}
       </div>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <input
           value={input}
           onChange={(event) => setInput(event.target.value)}
@@ -117,12 +136,21 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
           type="button"
           onClick={() => void sendMessage()}
           disabled={loading}
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center rounded-xl bg-cyan-300 px-5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="mr-2 h-4 w-4" aria-hidden="true" />}
           Send
         </button>
       </div>
+
+      {!session ? (
+        <p className="mt-5 text-center text-xs text-slate-500">
+          <Link href="/scan" className="text-cyan-200 underline underline-offset-2">
+            Run a skin scan
+          </Link>{" "}
+          to personalize coach answers.
+        </p>
+      ) : null}
     </Panel>
   );
 }

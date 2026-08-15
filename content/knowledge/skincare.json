@@ -1,0 +1,122 @@
+[
+  {
+    "id": "acne-basics",
+    "topic": "acne",
+    "title": "Understanding breakout-prone skin",
+    "content": "Acne-prone skin benefits from a steady routine: gentle low-foam cleanser, lightweight non-comedogenic moisturizer, and daily SPF. Salicylic acid can help with congestion when used two to three nights per week. Avoid stacking multiple strong actives on the same night. Introduce one new product at a time and patch test first."
+  },
+  {
+    "id": "acne-habits",
+    "topic": "acne",
+    "title": "Breakout habits to avoid",
+    "content": "Frequent face touching, harsh scrubs, over-washing, and changing products too often can worsen breakout patterns. Keep pillowcases clean, remove makeup before sleep, and resist picking. Hydration and barrier support matter even for oily skin."
+  },
+  {
+    "id": "redness-barrier",
+    "topic": "redness",
+    "title": "Calming redness and barrier support",
+    "content": "Redness often signals a stressed skin barrier. Prioritize fragrance-free moisturizer with ceramides, niacinamide for calming, and consistent broad-spectrum SPF. Pause strong exfoliants or retinoids if skin feels hot, stinging, or tight. Cool water rinses and gentle pat-drying help."
+  },
+  {
+    "id": "redness-triggers",
+    "topic": "redness",
+    "title": "Common redness triggers",
+    "content": "Sun exposure without SPF, harsh cleansers, over-exfoliation, spicy foods, alcohol, stress, and new actives without patch testing can increase visible redness. A minimal routine for one to two weeks can help identify triggers."
+  },
+  {
+    "id": "routine-morning",
+    "topic": "routine",
+    "title": "Morning skincare routine framework",
+    "content": "A balanced morning routine: gentle cleanser or water rinse if skin is dry, antioxidant or hydrating serum optional, moisturizer matched to skin type, and SPF 30+ as the final step. Reapply SPF every two hours with prolonged outdoor exposure."
+  },
+  {
+    "id": "routine-night",
+    "topic": "routine",
+    "title": "Night skincare routine framework",
+    "content": "Evening routine: remove sunscreen and makeup with gentle cleanser, hydrating toner or essence, one targeted treatment (salicylic acid, retinol, or niacinamide — not all together initially), then moisturizer. Alternate treatment nights to reduce irritation."
+  },
+  {
+    "id": "ingredient-niacinamide",
+    "topic": "ingredients",
+    "title": "Niacinamide guidance",
+    "content": "Niacinamide (vitamin B3) supports oil balance, redness calming, and barrier function. It is generally well tolerated and pairs with most routines. Typical use is once or twice daily in serum or moisturizer form. Patch test if skin is very reactive."
+  },
+  {
+    "id": "ingredient-retinol",
+    "topic": "ingredients",
+    "title": "Retinol introduction",
+    "content": "Retinol supports cell turnover but can cause dryness and irritation when overused. Start one to two nights per week on dry skin after moisturizer (sandwich method). Do not combine with strong exfoliating acids on the same night. Always use SPF the following morning."
+  },
+  {
+    "id": "ingredient-vitamin-c",
+    "topic": "ingredients",
+    "title": "Vitamin C and antioxidants",
+    "content": "Vitamin C serums can support brightness and antioxidant defense. Use in the morning under SPF. If irritation occurs, reduce frequency or choose a lower concentration. Store away from heat and light per product instructions."
+  },
+  {
+    "id": "ingredient-salicylic",
+    "topic": "ingredients",
+    "title": "Salicylic acid for pores and congestion",
+    "content": "Salicylic acid (BHA) is oil-soluble and helps with pore congestion and mild breakouts. Use as cleanser or leave-on treatment two to three nights weekly at first. Avoid using with retinol or strong AHAs on the same night."
+  },
+  {
+    "id": "ingredient-combining",
+    "topic": "ingredients",
+    "title": "Combining actives safely",
+    "content": "Do not stack retinol, salicylic acid, and glycolic acid on the same night. Niacinamide generally pairs well with most ingredients. When adding a new active, wait two to four weeks before introducing another. Patch test on the jawline first."
+  },
+  {
+    "id": "hydration",
+    "topic": "hydration",
+    "title": "Hydration and moisture balance",
+    "content": "Hydration comes from humectants (hyaluronic acid, glycerin) and is sealed with occlusive or emollient moisturizers. Even oily skin needs moisture. Dehydrated skin can produce more oil and feel tight simultaneously."
+  },
+  {
+    "id": "pores",
+    "topic": "pores",
+    "title": "Pore visibility and care",
+    "content": "Pore size is largely genetic; routines can reduce visibility through consistent cleansing, hydration, and occasional BHA use. Avoid pore strips and harsh squeezing. Niacinamide and retinol may improve appearance over time with patience."
+  },
+  {
+    "id": "texture",
+    "topic": "texture",
+    "title": "Improving skin texture",
+    "content": "Texture improves with consistent hydration, gentle exfoliation one to two times weekly, and steady SPF. Avoid changing products weekly. Retinol and AHAs can help but require slow introduction and barrier support."
+  },
+  {
+    "id": "sunscreen",
+    "topic": "sunscreen",
+    "title": "Sun protection essentials",
+    "content": "Daily broad-spectrum SPF 30+ is the most important anti-aging and redness-prevention step. Apply enough product (about a quarter teaspoon for face). Reapply with outdoor exposure. SPF is essential when using retinol or acids."
+  },
+  {
+    "id": "skin-types",
+    "topic": "basics",
+    "title": "Skin type and routine matching",
+    "content": "Oily skin: gel cleanser, lightweight moisturizer, non-comedogenic SPF. Dry skin: cream cleanser, richer moisturizer, hydrating serums. Combination skin: balance T-zone oil control with cheek hydration. Sensitive skin: minimal fragrance-free products and slow active introduction."
+  },
+  {
+    "id": "safety-education",
+    "topic": "safety",
+    "title": "Educational boundaries",
+    "content": "Skincare guidance is educational, not medical diagnosis. Persistent pain, bleeding lesions, rapidly changing moles, or severe cystic acne warrant professional evaluation. Skinova helps interpret trends and routine choices, not replace dermatology care."
+  },
+  {
+    "id": "scan-interpretation",
+    "topic": "analysis",
+    "title": "Reading skin analysis scores",
+    "content": "Analysis scores reflect visible patterns like texture, redness, pores, and breakout risk. Higher scores generally indicate healthier signals in that category. Focus on the top two to three concerns rather than chasing perfect numbers. Track trends across scans, not single snapshots."
+  },
+  {
+    "id": "progress-tracking",
+    "topic": "progress",
+    "title": "Tracking improvement over time",
+    "content": "Meaningful skin changes often take four to eight weeks of consistent routine. Photograph in similar lighting for comparison. Improve one variable at a time. Sleep, hydration, stress, and diet also influence visible skin."
+  },
+  {
+    "id": "photo-requirements",
+    "topic": "scanning",
+    "title": "Getting reliable scan photos",
+    "content": "For best analysis: front-facing selfie, face centered filling most of the frame, even lighting, minimal blur, no heavy filters, JPG or PNG under 10MB. Avoid group photos, side profiles, or cropped faces."
+  }
+]

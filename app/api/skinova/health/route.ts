@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
-import { getYouCamRuntime } from "../../../lib/youcam";
+import { isCoachLive } from "../../../lib/ai-runtime";
+import { getAppMode } from "../../../lib/app-mode";
 
 export async function GET() {
-  const runtime = getYouCamRuntime();
+  const mode = getAppMode();
+  const coachReady = isCoachLive();
 
   return NextResponse.json({
     status: "online",
-    mode: runtime.shouldMock ? "demo" : "live",
+    mode,
     scanReady: true,
-    hasApiKey: runtime.hasApiKey,
-    demoMode: runtime.demoMode,
-    message: runtime.shouldMock
-      ? "Demo mode is active. Scans return representative Skinova guidance without calling YouCam."
-      : "Live mode is active. Scans use the YouCam Skin Analysis workflow."
+    coachReady,
+    message:
+      mode === "live"
+        ? "Skinova is online with live scan and guidance flows."
+        : "Skinova is online in demo mode with representative scan guidance."
   });
 }

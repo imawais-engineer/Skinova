@@ -8,6 +8,8 @@
     "start": "next start",
     "setup": "bash scripts/setup-and-run.sh",
     "db:init": "node --env-file=.env scripts/init-db.mjs",
+    "knowledge:ingest": "node --env-file=.env scripts/ingest-knowledge.mjs",
+    "brand:build": "node scripts/build-brand-assets.mjs",
     "typecheck": "tsc --noEmit",
     "verify:ui": "node scripts/verify-ui.mjs",
     "youcam:smoke": "node --env-file=.env scripts/youcam-smoke-test.mjs",
@@ -20,7 +22,8 @@
     "lucide-react": "^0.468.0",
     "next": "^15.3.5",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "server-only": "^0.0.1"
   },
   "overrides": {
     "next": {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { SkinovaLogo } from "./skinova-logo";
 
 type AuthFormProps = {
   mode: "login" | "signup";
@@ -58,15 +59,12 @@ export function AuthForm({ mode, nextPath = "/dashboard" }: AuthFormProps) {
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="glass-panel rounded-3xl p-6 sm:p-8">
-        <div className="mb-8 text-center">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-400/15 text-cyan-200 ring-1 ring-cyan-300/25">
-              S
-            </span>
-            <span className="text-left">
-              <span className="block text-lg font-semibold text-white">Skinova</span>
-              <span className="block text-xs text-slate-400">{mode === "signup" ? "Create your account" : "Welcome back"}</span>
-            </span>
+        <div className="mb-8 flex justify-center">
+          <Link href="/">
+            <SkinovaLogo
+              size="md"
+              subtitle={mode === "signup" ? "Create your account" : "Welcome back"}
+            />
           </Link>
         </div>
 

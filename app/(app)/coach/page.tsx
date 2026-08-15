@@ -9,7 +9,7 @@ export default async function CoachPage({
   const params = await searchParams;
 
   return (
-    <div>
+    <div className="page-stack">
       <PageHeader
         eyebrow="Skin coach"
         title="Ask routine and ingredient questions."
