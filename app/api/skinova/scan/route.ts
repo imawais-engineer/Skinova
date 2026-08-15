@@ -1,15 +1,10 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
-import {
-  createTask,
-  createUploadMetadata,
-  getFirstFileRecord,
-  getTaskId,
-  getYouCamRuntime,
-  uploadToPresignedUrl
-} from "../../../lib/youcam";
+import { getScanSample } from "../../../lib/demo-samples";
+import { runSkinScan } from "../../../lib/run-skin-scan";
 
 export async function POST(request: NextRequest) {
-  const runtime = getYouCamRuntime();
   let formData: FormData;
 
   try {
@@ -18,65 +13,57 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "A photo is required." }, { status: 400 });
   }
 
+  const sampleId = formData.get("sampleId");
   const file = formData.get("file");
 
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "A photo is required." }, { status: 400 });
+  try {
+    if (typeof sampleId === "string" && sampleId.trim()) {
+      const sample = getScanSample(sampleId.trim());
+
+      if (!sample) {
+        return NextResponse.json({ error: "That sample is not available." }, { status: 400 });
+      }
+
+      if (sample.mode === "demo") {
+        const result = await runSkinScan({
+          fileName: "skinova-guided-demo.jpg",
+          contentType: "image/jpeg",
+          buffer: new ArrayBuffer(0),
+          forceDemo: true
+        });
+
+        return NextResponse.json(result, { status: 202 });
+      }
+
+      if (!sample.fileName) {
+        return NextResponse.json({ error: "That sample is not available." }, { status: 400 });
+      }
+
+      const samplePath = path.join(process.cwd(), "public", "samples", sample.fileName);
+      const buffer = await readFile(samplePath);
+      const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+      const result = await runSkinScan({
+        fileName: sample.fileName,
+        contentType: "image/jpeg",
+        buffer: arrayBuffer
+      });
+
+      return NextResponse.json(result, { status: 202 });
+    }
+
+    if (!(file instanceof File)) {
+      return NextResponse.json({ error: "Choose a photo or try one of the demo samples." }, { status: 400 });
+    }
+
+    const result = await runSkinScan({
+      fileName: file.name,
+      contentType: file.type || "image/png",
+      buffer: await file.arrayBuffer()
+    });
+
+    return NextResponse.json(result, { status: 202 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "The scan could not be completed.";
+    return NextResponse.json({ error: message }, { status: 502 });
   }
-
-  if (runtime.shouldMock) {
-    const taskId = `mock-skinova-${Date.now()}`;
-    return NextResponse.json(
-      {
-        status: "processing",
-        mode: "demo",
-        message: "Demo scan started. Results use representative Skinova guidance.",
-        pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`
-      },
-      { status: 202 }
-    );
-  }
-
-  const metadata = await createUploadMetadata({
-    workflow: "skin-analysis",
-    fileName: file.name,
-    contentType: file.type || "image/png",
-    fileSize: file.size
-  });
-
-  const fileRecord = getFirstFileRecord(metadata);
-  const uploadRequest = fileRecord?.requests?.[0];
-
-  if (!fileRecord?.file_id || !uploadRequest?.url) {
-    return NextResponse.json({ error: "Skin scan service could not prepare the upload." }, { status: 502 });
-  }
-
-  const upload = await uploadToPresignedUrl(file, {
-    url: uploadRequest.url,
-    headers: uploadRequest.headers
-  });
-
-  if (upload.status < 200 || upload.status >= 300) {
-    return NextResponse.json({ error: "Skin scan upload failed. Please try again." }, { status: 502 });
-  }
-
-  const task = await createTask({
-    workflow: "skin-analysis",
-    fileId: fileRecord.file_id
-  });
-  const taskId = getTaskId(task);
-
-  if (!taskId) {
-    return NextResponse.json({ error: "Skin scan could not be started. Please try again." }, { status: 502 });
-  }
-
-  return NextResponse.json(
-    {
-      status: "processing",
-      mode: "live",
-      message: "Live scan started. Waiting for YouCam Skin Analysis results.",
-      pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`
-    },
-    { status: 202 }
-  );
 }

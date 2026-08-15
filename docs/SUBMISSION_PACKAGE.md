@@ -107,7 +107,9 @@ Demo mode works without YouCam credentials (`SKINOVA_DEMO_MODE=true`).
 2. Click **Get Started**
 3. Create an account (name, email, password 8+ characters)
 4. Land on **/dashboard**
-5. Open **Skin Scan** and upload a clear front-facing selfie
+5. Open **Skin Scan** and either:
+   - upload a clear front-facing selfie, or
+   - click **Try one of these** and choose a verified demo sample
 6. Review **Results**, **Routine**, **Coach**, **Progress**, and **Health**
 7. Confirm **Health** shows demo or live scan mode
 

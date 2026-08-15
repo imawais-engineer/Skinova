@@ -5,13 +5,17 @@ import { useEffect, useState } from "react";
 import { ClipboardList, ShieldCheck } from "lucide-react";
 import { analysisResult, routinePlan } from "../lib/skinova-data";
 import { generateRoutineFromAnalysis, getScanSession, type ScanSession } from "../lib/scan-session";
+import { LoadDemoSampleButton } from "./load-demo-sample";
 import { PageHeader, Panel, StatusBadge } from "./ui";
 
 export function RoutineExperience() {
   const [session, setSession] = useState<ScanSession | null>(null);
 
   useEffect(() => {
-    setSession(getScanSession());
+    const refresh = () => setSession(getScanSession());
+    refresh();
+    window.addEventListener("skinova:session-updated", refresh);
+    return () => window.removeEventListener("skinova:session-updated", refresh);
   }, []);
 
   const plan = session ? generateRoutineFromAnalysis(session.analysis) : routinePlan;
@@ -27,13 +31,15 @@ export function RoutineExperience() {
 
       {!session ? (
         <Panel className="mb-5 border-amber-300/20 bg-amber-300/[0.05]">
-          <p className="text-sm leading-6 text-amber-50/90">
-            Showing a sample routine.{" "}
-            <Link href="/scan" className="font-semibold text-amber-100 underline underline-offset-2">
-              Run a scan
-            </Link>{" "}
-            to personalize morning and night steps.
-          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm leading-6 text-amber-50/90">Showing a sample routine. Run a scan or load demo sample data to personalize this page.</p>
+            <div className="flex flex-wrap gap-2">
+              <LoadDemoSampleButton />
+              <Link href="/scan" className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 px-4 text-sm font-semibold text-white">
+                Run scan
+              </Link>
+            </div>
+          </div>
         </Panel>
       ) : (
         <Panel className="mb-5 border-emerald-300/20 bg-emerald-300/[0.05]">

@@ -5,13 +5,17 @@ import { useEffect, useState } from "react";
 import { LineChart, Sparkles } from "lucide-react";
 import { progressEntries } from "../lib/skinova-data";
 import { buildProgressFromAnalysis, getScanSession, type ScanSession } from "../lib/scan-session";
+import { LoadDemoSampleButton } from "./load-demo-sample";
 import { PageHeader, Panel, StatusBadge } from "./ui";
 
 export function ProgressExperience() {
   const [session, setSession] = useState<ScanSession | null>(null);
 
   useEffect(() => {
-    setSession(getScanSession());
+    const refresh = () => setSession(getScanSession());
+    refresh();
+    window.addEventListener("skinova:session-updated", refresh);
+    return () => window.removeEventListener("skinova:session-updated", refresh);
   }, []);
 
   const entries = session ? buildProgressFromAnalysis(session.analysis) : progressEntries;
@@ -29,13 +33,15 @@ export function ProgressExperience() {
 
       {!session ? (
         <Panel className="mb-5 border-amber-300/20 bg-amber-300/[0.05]">
-          <p className="text-sm leading-6 text-amber-50/90">
-            Showing sample progress history.{" "}
-            <Link href="/scan" className="font-semibold text-amber-100 underline underline-offset-2">
-              Run a scan
-            </Link>{" "}
-            to anchor trends to your latest results.
-          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm leading-6 text-amber-50/90">Showing sample progress history. Run a scan or load demo sample data to anchor trends to your latest results.</p>
+            <div className="flex flex-wrap gap-2">
+              <LoadDemoSampleButton />
+              <Link href="/scan" className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 px-4 text-sm font-semibold text-white">
+                Run scan
+              </Link>
+            </div>
+          </div>
         </Panel>
       ) : (
         <Panel className="mb-5 border-emerald-300/20 bg-emerald-300/[0.05]">

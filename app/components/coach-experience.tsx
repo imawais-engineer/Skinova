@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Bot, Loader2, Send } from "lucide-react";
+import { coachSamplePrompts } from "../lib/demo-samples";
 import { Panel } from "./ui";
 
 type CoachMessage = {
@@ -17,13 +18,13 @@ const starterMessages: CoachMessage[] = [
   }
 ];
 
-export function CoachExperience() {
+export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
   const [messages, setMessages] = useState<CoachMessage[]>(starterMessages);
-  const [input, setInput] = useState("Why is my skin red this week?");
+  const [input, setInput] = useState(initialPrompt || "Why is my skin red this week?");
   const [loading, setLoading] = useState(false);
 
-  async function sendMessage() {
-    const trimmed = input.trim();
+  async function sendMessage(messageOverride?: string) {
+    const trimmed = (messageOverride ?? input).trim();
     if (!trimmed) {
       return;
     }
@@ -67,6 +68,23 @@ export function CoachExperience() {
         </div>
       </div>
 
+      <div className="mt-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Try a sample question</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {coachSamplePrompts.map((prompt) => (
+            <button
+              key={prompt}
+              type="button"
+              onClick={() => void sendMessage(prompt)}
+              disabled={loading}
+              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-slate-200 transition hover:bg-white/[0.08] disabled:opacity-60"
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-6 space-y-3">
         {messages.map((message, index) => (
           <div
@@ -97,7 +115,7 @@ export function CoachExperience() {
         />
         <button
           type="button"
-          onClick={sendMessage}
+          onClick={() => void sendMessage()}
           disabled={loading}
           className="inline-flex h-11 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
         >
