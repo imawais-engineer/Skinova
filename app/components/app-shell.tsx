@@ -54,7 +54,7 @@ export function AppShell({
   return (
     <div className="min-h-screen lg:flex">
       <aside className="glass-panel sticky top-0 z-20 border-x-0 border-t-0 lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:h-screen lg:w-64 lg:flex-col lg:overflow-hidden lg:border-y-0 lg:border-l-0">
-        <div className="shrink-0 px-4 py-3 lg:px-4 lg:py-3.5">
+        <div className="relative z-10 shrink-0 border-b border-white/10 px-4 pb-4 pt-3 lg:px-4 lg:pt-3.5">
           <div className="flex items-center justify-between gap-2">
             <Link href="/dashboard" className="min-w-0">
               <SkinovaLogo size="xs" />
@@ -72,7 +72,7 @@ export function AppShell({
           </div>
         </div>
 
-        <nav className="flex gap-2 overflow-x-auto px-3 pb-3 lg:flex-1 lg:flex-col lg:space-y-0.5 lg:overflow-hidden lg:px-3 lg:pb-2">
+        <nav className="relative z-0 mt-3 flex gap-2 overflow-x-auto px-3 pb-3 lg:mt-0 lg:flex-1 lg:flex-col lg:gap-0 lg:space-y-1 lg:overflow-hidden lg:px-3 lg:pb-2 lg:pt-4">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -82,7 +82,7 @@ export function AppShell({
                 href={item.href}
                 prefetch
                 className={[
-                  "flex shrink-0 items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition",
+                  "flex shrink-0 items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] leading-none transition",
                   isActive
                     ? "bg-cyan-400/14 text-cyan-100 ring-1 ring-cyan-300/20"
                     : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -95,7 +95,7 @@ export function AppShell({
           })}
         </nav>
 
-        <div className="hidden shrink-0 px-3 py-3 lg:block">
+        <div className="hidden shrink-0 border-t border-white/10 px-3 py-3 lg:block">
           <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
             <p className="truncate text-xs font-medium text-white">{user.name}</p>
             <p className="mt-0.5 truncate text-[11px] text-slate-400">{user.email}</p>
