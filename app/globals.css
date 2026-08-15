@@ -18,6 +18,8 @@ html {
 
 @media (min-width: 1024px) {
   html {
+    /* Desktop: ~10% smaller overall so primary content fits at 100% zoom (matches 90% browser zoom). */
+    font-size: 90%;
     scroll-padding-top: 0;
   }
 }
