@@ -15,17 +15,45 @@ function trim(value: string | undefined) {
   return value?.trim() || "";
 }
 
+function firstDefined(...values: Array<string | undefined>) {
+  for (const value of values) {
+    const trimmed = trim(value);
+    if (trimmed) {
+      return trimmed;
+    }
+  }
+
+  return "";
+}
+
 export function getAiRuntime(): AiRuntime {
-  const llmApiKey = trim(process.env.COACH_LLM_API_KEY) || trim(process.env.OPENAI_API_KEY);
-  const embeddingApiKey =
-    trim(process.env.EMBEDDING_API_KEY) || trim(process.env.COACH_LLM_API_KEY) || trim(process.env.OPENAI_API_KEY);
+  const llmApiKey = firstDefined(
+    process.env.COACH_LLM_API_KEY,
+    process.env.QWEN_API_KEY,
+    process.env.OPENAI_API_KEY
+  );
+  const embeddingApiKey = firstDefined(
+    process.env.EMBEDDING_API_KEY,
+    process.env.COACH_LLM_API_KEY,
+    process.env.QWEN_API_KEY,
+    process.env.OPENAI_API_KEY
+  );
 
-  const llmBaseUrl = trim(process.env.COACH_LLM_BASE_URL) || trim(process.env.OPENAI_BASE_URL) || "https://api.openai.com/v1";
-  const embeddingBaseUrl =
-    trim(process.env.EMBEDDING_API_BASE_URL) || trim(process.env.COACH_LLM_BASE_URL) || llmBaseUrl;
+  const llmBaseUrl = firstDefined(
+    process.env.COACH_LLM_BASE_URL,
+    process.env.QWEN_BASE_URL,
+    process.env.OPENAI_BASE_URL,
+    "https://api.openai.com/v1"
+  );
+  const embeddingBaseUrl = firstDefined(
+    process.env.EMBEDDING_API_BASE_URL,
+    process.env.COACH_LLM_BASE_URL,
+    process.env.QWEN_BASE_URL,
+    llmBaseUrl
+  );
 
-  const llmModel = trim(process.env.COACH_LLM_MODEL) || "gpt-4o-mini";
-  const embeddingModel = trim(process.env.EMBEDDING_MODEL) || "text-embedding-3-small";
+  const llmModel = firstDefined(process.env.COACH_LLM_MODEL, "qwen3-max");
+  const embeddingModel = firstDefined(process.env.EMBEDDING_MODEL, "text-embedding-v4");
   const embeddingDimensions = Number(process.env.EMBEDDING_DIMENSIONS || 1536);
 
   return {

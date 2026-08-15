@@ -3,18 +3,22 @@ import path from "node:path";
 import { neon } from "@neondatabase/serverless";
 
 const url = process.env.DATABASE_URL?.trim();
-const embeddingApiKey =
+const embeddingApiKey = (
   process.env.EMBEDDING_API_KEY?.trim() ||
   process.env.COACH_LLM_API_KEY?.trim() ||
-  process.env.OPENAI_API_KEY?.trim();
+  process.env.QWEN_API_KEY?.trim() ||
+  process.env.OPENAI_API_KEY?.trim()
+);
 const embeddingBaseUrl = (
   process.env.EMBEDDING_API_BASE_URL?.trim() ||
   process.env.COACH_LLM_BASE_URL?.trim() ||
+  process.env.QWEN_BASE_URL?.trim() ||
   process.env.OPENAI_BASE_URL?.trim() ||
   "https://api.openai.com/v1"
 ).replace(/\/$/, "");
-const embeddingModel = process.env.EMBEDDING_MODEL?.trim() || "text-embedding-3-small";
+const embeddingModel = process.env.EMBEDDING_MODEL?.trim() || "text-embedding-v4";
 const embeddingDimensions = Number(process.env.EMBEDDING_DIMENSIONS || 1536);
+const BATCH_SIZE = 10;
 
 if (!url) {
   console.error(JSON.stringify({ ok: false, error: "DATABASE_URL is not configured." }, null, 2));
@@ -26,7 +30,7 @@ if (!embeddingApiKey) {
     JSON.stringify(
       {
         ok: false,
-        error: "Set EMBEDDING_API_KEY, COACH_LLM_API_KEY, or OPENAI_API_KEY before ingesting knowledge."
+        error: "Set EMBEDDING_API_KEY, QWEN_API_KEY, COACH_LLM_API_KEY, or OPENAI_API_KEY before ingesting knowledge."
       },
       null,
       2
@@ -38,7 +42,7 @@ if (!embeddingApiKey) {
 const sql = neon(url);
 const force = process.argv.includes("--force");
 
-async function embedTexts(texts) {
+async function embedBatch(texts) {
   const response = await fetch(`${embeddingBaseUrl}/embeddings`, {
     method: "POST",
     headers: {
@@ -58,7 +62,21 @@ async function embedTexts(texts) {
     throw new Error(payload.error?.message || "Embedding request failed.");
   }
 
-  return payload.data.map((item) => item.embedding);
+  return payload.data
+    .slice()
+    .sort((left, right) => (left.index ?? 0) - (right.index ?? 0))
+    .map((item) => item.embedding);
+}
+
+async function embedTexts(texts) {
+  const embeddings = [];
+
+  for (let index = 0; index < texts.length; index += BATCH_SIZE) {
+    const batch = texts.slice(index, index + BATCH_SIZE);
+    embeddings.push(...(await embedBatch(batch)));
+  }
+
+  return embeddings;
 }
 
 async function main() {
