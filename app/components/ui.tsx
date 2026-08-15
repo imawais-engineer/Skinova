@@ -48,13 +48,15 @@ export function MetricCard({
   label,
   value,
   detail,
-  tone = "cyan"
+  tone = "cyan",
+  compact = false
 }: {
   icon: LucideIcon;
   label: string;
   value: string;
   detail: string;
   tone?: "cyan" | "mint" | "rose" | "violet";
+  compact?: boolean;
 }) {
   const toneClass = {
     cyan: "bg-cyan-400/12 text-cyan-200 ring-cyan-300/20",
@@ -63,20 +65,30 @@ export function MetricCard({
     violet: "bg-violet-400/12 text-violet-200 ring-violet-300/20"
   }[tone];
 
-  return (
-    <div className="glass-panel rounded-2xl p-5">
-      <div className="flex items-center justify-between gap-4">
+  const content = (
+    <>
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm text-slate-400">{label}</p>
-          <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+          <p className={`font-semibold text-white ${compact ? "mt-1 text-xl" : "mt-2 text-2xl"}`}>{value}</p>
         </div>
-        <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ${toneClass}`}>
-          <Icon className="h-5 w-5" aria-hidden="true" />
+        <span
+          className={`flex shrink-0 items-center justify-center rounded-xl ring-1 ${toneClass} ${
+            compact ? "h-9 w-9" : "h-11 w-11"
+          }`}
+        >
+          <Icon className={compact ? "h-4 w-4" : "h-5 w-5"} aria-hidden="true" />
         </span>
       </div>
-      <p className="mt-4 text-sm leading-5 text-slate-400">{detail}</p>
-    </div>
+      <p className={`text-sm leading-5 text-slate-400 ${compact ? "mt-2" : "mt-4"}`}>{detail}</p>
+    </>
   );
+
+  if (compact) {
+    return <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">{content}</div>;
+  }
+
+  return <div className="glass-panel rounded-2xl p-5">{content}</div>;
 }
 
 export function ScoreBar({
