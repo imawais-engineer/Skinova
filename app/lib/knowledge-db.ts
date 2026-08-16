@@ -133,6 +133,56 @@ export async function deleteCoachMessagesForUser(userId: string) {
   await sql`DELETE FROM coach_messages WHERE user_id = ${userId}`;
 }
 
+export async function getRecentCoachMessages(userId: string, limit = 6) {
+  await ensureKnowledgeSchema();
+  const sql = getSql();
+  const rows = await sql`
+    SELECT role, content
+    FROM coach_messages
+    WHERE user_id = ${userId}
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `;
+
+  return rows
+    .map((row) => ({
+      role: String(row.role) as "user" | "coach",
+      content: String(row.content)
+    }))
+    .reverse();
+}
+
+export async function getKnowledgeChunksByTopics(topics: string[], limitPerTopic = 2): Promise<KnowledgeChunkRecord[]> {
+  if (!topics.length) {
+    return [];
+  }
+
+  await ensureKnowledgeSchema();
+  const sql = getSql();
+  const results: KnowledgeChunkRecord[] = [];
+
+  for (const topic of topics.slice(0, 4)) {
+    const rows = await sql`
+      SELECT id, topic, title, content
+      FROM knowledge_chunks
+      WHERE topic = ${topic}
+      ORDER BY updated_at DESC
+      LIMIT ${limitPerTopic}
+    `;
+
+    for (const row of rows) {
+      results.push({
+        id: String(row.id),
+        topic: String(row.topic),
+        title: String(row.title),
+        content: String(row.content)
+      });
+    }
+  }
+
+  return results;
+}
+
 export function getEmbeddingDimensions() {
   return getAiRuntime().embeddingDimensions;
 }

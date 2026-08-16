@@ -9,7 +9,15 @@ type KnowledgeSeedItem = {
   topic: string;
   title: string;
   content: string;
+  keywords?: string[];
 };
+
+export const KNOWLEDGE_CATALOG_VERSION = "2026-08-16-v2";
+
+export function knowledgeEmbeddingText(item: KnowledgeSeedItem) {
+  const keywords = item.keywords?.length ? `Keywords: ${item.keywords.join(", ")}\n` : "";
+  return `${item.topic}\n${item.title}\n${keywords}${item.content}`;
+}
 
 export async function loadKnowledgeSeed(): Promise<KnowledgeSeedItem[]> {
   const filePath = path.join(process.cwd(), "content", "knowledge", "skincare.json");
@@ -23,7 +31,7 @@ export async function seedKnowledgeBase(force = false) {
   }
 
   const items = await loadKnowledgeSeed();
-  const embeddings = await embedTexts(items.map((item) => `${item.title}\n${item.content}`));
+  const embeddings = await embedTexts(items.map((item) => knowledgeEmbeddingText(item)));
 
   for (let index = 0; index < items.length; index += 1) {
     const item = items[index];

@@ -34,7 +34,7 @@ export function asksForDiagnosis(message: string) {
   return diagnosisKeywords.some((keyword) => normalized.includes(keyword));
 }
 
-export function buildFallbackCoachAnswer(message: string) {
+export function buildFallbackCoachAnswer(message: string, analysis?: AnalysisResult | null) {
   if (asksForDiagnosis(message)) {
     return {
       answer:
@@ -46,10 +46,18 @@ export function buildFallbackCoachAnswer(message: string) {
   const normalized = message.toLowerCase();
   const matched = responses.find((item) => item.match.some((keyword) => normalized.includes(keyword)));
 
+  const scanHint = analysis
+    ? ` Based on your latest scan (${analysis.overallScore}% overall), focus on your top concerns: ${analysis.concerns
+        .slice(0, 2)
+        .map((c) => c.type.toLowerCase())
+        .join(" and ")}.`
+    : "";
+
   return {
     answer:
-      matched?.answer ||
-      "Skinova can help interpret analysis trends and routine choices. Ask about acne, redness, routines, or ingredients. This is skincare education, not medical diagnosis.",
+      (matched?.answer || "Skinova can help with acne, redness, pores, texture, hydration, routines, and ingredients.") +
+      scanHint +
+      " This is skincare education, not medical diagnosis.",
     safety: coachContract.safety
   };
 }

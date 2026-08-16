@@ -117,6 +117,133 @@
     "id": "photo-requirements",
     "topic": "scanning",
     "title": "Getting reliable scan photos",
-    "content": "For best analysis: front-facing selfie, face centered filling most of the frame, even lighting, minimal blur, no heavy filters, JPG or PNG under 10MB. Avoid group photos, side profiles, or cropped faces."
+    "content": "For best analysis: front-facing selfie, face centered filling most of the frame, even lighting, minimal blur, no heavy filters, JPG or PNG under 10MB. Avoid group photos, side profiles, or cropped faces.",
+    "keywords": ["scan", "selfie", "photo", "upload", "lighting"]
+  },
+  {
+    "id": "skinova-identity",
+    "topic": "skinova",
+    "title": "What Skinova Skin Coach does",
+    "content": "Skinova Skin Coach answers skincare education questions using your latest scan context and Skinova's curated knowledge base. It explains acne risk, pores, redness, texture, hydration, and oiliness scores from YouCam Skin Analysis. It generates routine guidance and ingredient cautions. It does not diagnose disease, prescribe medication, or recommend specific branded products.",
+    "keywords": ["skinova", "coach", "what can you do", "help"]
+  },
+  {
+    "id": "skinova-concern-acne",
+    "topic": "analysis",
+    "title": "Interpreting acne risk scores in Skinova",
+    "content": "In Skinova, acne risk reflects visible breakout patterns and congestion — not a medical diagnosis. Lower scores suggest higher visible concern. When acne risk is elevated, Skinova recommends gentle cleansing, non-comedogenic moisturizer, SPF, and salicylic acid limited to two or three nights weekly. Avoid adding multiple actives at once. Track whether the score improves over four to eight weeks of a steady routine.",
+    "keywords": ["acne risk", "breakout score", "scan", "analysis"]
+  },
+  {
+    "id": "skinova-concern-redness",
+    "topic": "analysis",
+    "title": "Interpreting redness scores in Skinova",
+    "content": "Redness scores in Skinova reflect visible irritation and uneven tone signals. When redness is a top concern, prioritize barrier repair: fragrance-free moisturizer, niacinamide, and daily SPF. Pause strong exfoliants if skin feels hot or stinging. Redness can fluctuate with weather, stress, and new products — compare trends across scans rather than one snapshot.",
+    "keywords": ["redness score", "red", "irritation", "scan"]
+  },
+  {
+    "id": "skinova-concern-pores",
+    "topic": "analysis",
+    "title": "Interpreting pore scores in Skinova",
+    "content": "Pore visibility scores describe how prominent pores appear in the scan — largely influenced by oil, hydration, and lighting. Skinova suggests consistent cleansing, hydration, niacinamide, and occasional BHA rather than aggressive squeezing or pore strips. Improvement is gradual; focus on routine consistency.",
+    "keywords": ["pore score", "pores", "t-zone", "congestion"]
+  },
+  {
+    "id": "skinova-concern-texture",
+    "topic": "analysis",
+    "title": "Interpreting texture scores in Skinova",
+    "content": "Texture scores reflect surface smoothness and evenness. When texture is a focus area, maintain hydration, gentle exfoliation one to two times weekly maximum, and steady SPF. Retinol may help over time but requires slow introduction. Avoid changing products weekly — texture responds to consistency.",
+    "keywords": ["texture score", "rough", "bumpy", "smooth"]
+  },
+  {
+    "id": "skinova-concern-hydration",
+    "topic": "analysis",
+    "title": "Interpreting hydration scores in Skinova",
+    "content": "Hydration scores estimate moisture balance in the visible skin surface. Low hydration can coexist with oily skin (dehydration). Skinova recommends humectants like hyaluronic acid or glycerin sealed with moisturizer morning and night. Even breakout-prone skin needs moisture to support the barrier.",
+    "keywords": ["hydration score", "dry", "moisture", "dehydrated"]
+  },
+  {
+    "id": "skinova-concern-oiliness",
+    "topic": "analysis",
+    "title": "Interpreting oiliness in Skinova scans",
+    "content": "Oiliness signals help tune cleanser and moisturizer weight. Over-stripping oily skin can increase oil production. Use gel or low-foam cleansers, lightweight non-comedogenic moisturizer, and niacinamide. Avoid skipping moisturizer because skin feels oily.",
+    "keywords": ["oiliness", "oily", "shine", "sebum"]
+  },
+  {
+    "id": "skinova-routine-from-scan",
+    "topic": "routine",
+    "title": "How Skinova builds routines from scans",
+    "content": "Skinova's Routine page derives morning and night steps from your top scan concerns. Morning emphasizes cleanse, optional niacinamide, moisturizer, and SPF. Night emphasizes cleanse, hydration, one targeted treatment on alternate nights, and barrier moisturizer. Caution notes flag ingredient conflicts (e.g., do not stack retinol and salicylic acid the same night).",
+    "keywords": ["routine", "morning", "night", "personalized", "scan"]
+  },
+  {
+    "id": "niacinamide-salicylic-pairing",
+    "topic": "ingredients",
+    "title": "Using niacinamide with salicylic acid",
+    "content": "Niacinamide and salicylic acid can often be used in the same routine when skin tolerates it: niacinamide morning or both times for calming and oil balance; salicylic acid as a leave-on treatment two to three nights weekly. If irritation appears, separate them (BHA at night, niacinamide morning) or reduce BHA frequency. Patch test first.",
+    "keywords": ["niacinamide", "salicylic", "combine", "together", "pair"]
+  },
+  {
+    "id": "redness-this-week",
+    "topic": "redness",
+    "title": "Why skin may look redder this week",
+    "content": "Short-term redness increases can come from new actives, over-exfoliation, sun exposure without SPF, harsh cleansers, stress, or lack of sleep. Skinova suggests a minimal routine for one to two weeks: gentle cleanser, ceramide moisturizer, niacinamide, and SPF. Pause retinol and acids until skin feels calm. Compare your redness score across scans after stabilizing the routine.",
+    "keywords": ["red this week", "sudden redness", "why red", "flare"]
+  },
+  {
+    "id": "breakout-without-harsh",
+    "topic": "acne",
+    "title": "Reducing breakout risk without harsh products",
+    "content": "Gentle approaches for breakout-prone skin: low-foam cleanser twice daily, lightweight non-comedogenic moisturizer, daily SPF, and salicylic acid two to three nights weekly — not every night. Avoid physical scrubs and picking. Introduce one new product every two to four weeks. Barrier support reduces irritation that can worsen visible breakouts.",
+    "keywords": ["breakout risk", "gentle", "harsh", "mild acne"]
+  },
+  {
+    "id": "morning-routine-essentials",
+    "topic": "routine",
+    "title": "What a Skinova-aligned morning routine includes",
+    "content": "Skinova's default morning framework: gentle cleanse (or water rinse if very dry), niacinamide if redness or oiliness is a concern, moisturizer matched to skin type, and broad-spectrum SPF 30+ as the final step. Antioxidants like vitamin C are optional if tolerated. Keep the morning routine simple to maintain consistency.",
+    "keywords": ["morning routine", "what should", "am routine", "steps"]
+  },
+  {
+    "id": "out-of-scope-policy",
+    "topic": "safety",
+    "title": "Topics Skin Coach cannot answer",
+    "content": "Skin Coach cannot provide medical diagnosis, prescription advice, emergency triage, legal or financial guidance, or unrelated general knowledge. It does not recommend specific prescription drugs or guarantee treatment outcomes. For persistent pain, bleeding lesions, or rapidly changing moles, seek professional care. Redirect questions to acne, redness, pores, texture, hydration, routines, ingredients, or scan interpretation.",
+    "keywords": ["cannot", "won't", "outside", "scope", "forbidden"]
+  },
+  {
+    "id": "youcam-workflow-education",
+    "topic": "skinova",
+    "title": "How Skinova uses YouCam Skin Analysis",
+    "content": "Skinova sends your selfie through YouCam Skin Analysis server-side (credentials never reach the browser). The API returns concern scores such as acne, pores, texture, redness, and moisture. Skinova maps those into plain-language insights, routine steps, and coach context. Scores are educational signals for consumer guidance — not clinical test results.",
+    "keywords": ["youcam", "api", "how scan works", "analysis"]
+  },
+  {
+    "id": "wrinkle-aging-education",
+    "topic": "analysis",
+    "title": "Fine lines and aging signals in scans",
+    "content": "When wrinkle or aging signals appear in analysis, Skinova focuses on prevention: daily SPF, consistent moisturizer, and slow retinol introduction if appropriate for your barrier. Hydration and sun protection are foundational. Avoid aggressive treatments without professional guidance for deep medical concerns.",
+    "keywords": ["wrinkle", "aging", "fine lines", "anti-aging"]
+  },
+  {
+    "id": "coach-without-scan",
+    "topic": "skinova",
+    "title": "Coaching when no scan is available",
+    "content": "Without a recent scan, Skin Coach provides general Skinova education on routines, ingredients, and concern categories. Answers are grounded in the knowledge base only — not personalized to your scores. Run a Skin Scan for concern-specific guidance tied to your acne risk, redness, pores, texture, and hydration signals.",
+    "keywords": ["no scan", "without scan", "personalize"]
+  },
+  {
+    "id": "progress-simulation",
+    "topic": "progress",
+    "title": "Skinova progress and improvement story",
+    "content": "The Progress page projects trend movement from your latest scan concerns. It is an educational story to encourage routine consistency — not a medical forecast or guaranteed visual outcome. Compare scans every four to eight weeks in similar lighting. Change one routine variable at a time to understand what helps.",
+    "keywords": ["progress", "simulation", "improvement", "trend"]
+  },
+  {
+    "id": "sensitive-skin-intro",
+    "topic": "basics",
+    "title": "Introducing actives on sensitive skin",
+    "content": "For reactive skin: use fragrance-free basics for two weeks before any active. Patch test on the jawline for three nights. Introduce niacinamide before acids or retinol. Wait two to four weeks between new products. If stinging persists, simplify to cleanser, moisturizer, and SPF only until the barrier calms.",
+    "keywords": ["sensitive", "reactive", "patch test", "gentle"]
   }
 ]

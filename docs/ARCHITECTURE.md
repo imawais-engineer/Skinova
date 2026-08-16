@@ -103,7 +103,7 @@ scripts/                   Setup, smoke tests, DB init, knowledge ingest
 | --- | --- |
 | Results | Latest `sessionStorage` analysis |
 | Routine | Derived from analysis concerns |
-| Coach | User message + optional scan context; Neon knowledge RAG + optional Qwen LLM |
+| Coach | User message + optional scan context; Neon knowledge RAG + Qwen LLM (`coach-contract`, `coach-scope`, `rag.ts`) |
 | Progress | Trend cards projected from latest scan concerns |
 | Settings | Clear scan session / coach history |
 

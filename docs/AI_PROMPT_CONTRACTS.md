@@ -1,47 +1,70 @@
-# AI Prompt Contracts
+# AI prompt contracts
 
-## Skin Coach Prototype Contract
+## Skin Coach (Qwen + RAG)
 
-Version: `skinova-coach-local-v1`
+Version: `skinova-coach-qwen-v2`
 
-Objective:
+### Objective
 
-- Provide skincare education based on Skinova demo analysis categories.
-- Keep the prototype deterministic and safe for judging.
+Provide skincare education grounded in Skinova's curated knowledge base and the user's latest YouCam scan context. Prevent hallucination, out-of-scope answers, and generic wellness advice.
 
-Inputs:
+### Stack
 
-- `message`: user skincare question, required string, max 500 characters.
-- Current prototype context: demo skin analysis, routine guidance, and safety notes.
+| Layer | Implementation |
+| --- | --- |
+| LLM | Qwen via DashScope (`QWEN_API_KEY`, `COACH_LLM_MODEL`) |
+| Embeddings | `text-embedding-v4` (same API key) |
+| Knowledge | `content/knowledge/skincare.json` → Neon `knowledge_chunks` (pgvector) |
+| Retrieval | Hybrid vector search + topic boost (`app/lib/rag.ts`) |
 
-Outputs:
+### Inputs
 
-- `answer`: concise skincare education.
-- `safety`: explicit note that Skinova is educational and not medical diagnosis.
+- `message` — user question, max 500 characters
+- `analysis` — optional latest `AnalysisResult` from scan session
+- Conversation history — last 6 messages from `coach_messages`
 
-Allowed topics:
+### Pipeline
 
-- Acne and breakouts.
-- Redness and irritation.
-- Morning and night routines.
-- Ingredient compatibility and cautious introduction.
+1. **Scope guard** (`coach-scope.ts`) — block medical/off-topic before LLM
+2. **RAG** (`rag.ts`) — embed query, vector search, merge topic chunks
+3. **Qwen completion** (`coach-llm.ts`) — strict grounded system prompt
+4. **Validator** (`coach-validator.ts`) — reject forbidden claims and empty generics
+5. **Fallback** (`coach-fallback.ts`) — only when Qwen unavailable or API error
 
-Forbidden behavior:
+### Allowed topics
 
-- Medical diagnosis.
-- Treatment guarantees.
-- Prescription guidance.
-- Emergency or clinical triage.
-- Claims that YouCam output proves a disease or medical condition.
+- Acne, redness, pores, texture, hydration, oiliness
+- Morning/night routines and ingredient pairing
+- Reading Skinova / YouCam scan scores
+- Progress tracking and scan photo quality
 
-Failure behavior:
+### Forbidden behavior
 
-- If the question is outside prototype scope, redirect to supported skincare education topics.
-- If the request asks for diagnosis or medical certainty, advise consulting a qualified professional.
+- Medical diagnosis or prescription guidance
+- Treatment guarantees
+- Off-topic general knowledge
+- Inventing facts not in knowledge or scan context
+- Mentioning LLM providers or internal systems
 
-Stable release requirements:
+### Knowledge maintenance
 
-- Add structured output schema validation.
-- Add prompt injection test cases.
-- Log prompt version and output validation result if an external model is introduced.
-- Add user feedback capture before persistent coach history is stored.
+```bash
+npm run knowledge:ingest -- --force
+```
+
+Catalog version: `2026-08-16-v2` (38 chunks). Re-run ingest after editing `content/knowledge/skincare.json`.
+
+### Production requirements
+
+Set on Vercel (server-side only):
+
+```env
+QWEN_API_KEY=...
+QWEN_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+COACH_LLM_MODEL=qwen3-max
+EMBEDDING_MODEL=text-embedding-v4
+EMBEDDING_DIMENSIONS=1536
+DATABASE_URL=...
+```
+
+Verify: `GET /api/skinova/health` → `"coachReady": true`

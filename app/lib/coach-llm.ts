@@ -1,4 +1,5 @@
 import "server-only";
+import { buildCoachSystemPrompt } from "./coach-contract";
 import { getAiRuntime } from "./ai-runtime";
 import type { AnalysisResult } from "./skinova-data";
 
@@ -16,6 +17,7 @@ export async function generateCoachAnswer(input: {
   message: string;
   knowledgeContext: string;
   analysis?: AnalysisResult | null;
+  history?: Array<{ role: "user" | "coach"; content: string }>;
 }) {
   const runtime = getAiRuntime();
 
@@ -23,42 +25,44 @@ export async function generateCoachAnswer(input: {
     throw new Error("Coach service is not configured.");
   }
 
-  const systemPrompt = [
-    "You are Skinova Skin Coach.",
-    "Provide skincare education, routine guidance, and ingredient cautions only.",
-    "Never diagnose medical conditions, prescribe medication, or claim guaranteed results.",
-    "Use the user's latest scan context when available.",
-    "Use retrieved knowledge when relevant.",
-    "Keep answers concise (3-6 sentences), practical, and consumer-friendly.",
-    "Do not mention models, providers, APIs, embeddings, databases, or internal systems.",
-    "End with a brief educational tone; do not repeat a long disclaimer."
-  ].join(" ");
+  const systemPrompt = buildCoachSystemPrompt();
+
+  const scanBlock = input.analysis
+    ? [
+        `Overall score: ${input.analysis.overallScore}%`,
+        `Skin type: ${input.analysis.skinType}`,
+        `Tone: ${input.analysis.tone}`,
+        `Summary: ${input.analysis.summary}`,
+        "Concern scores (higher is generally better in Skinova):",
+        ...input.analysis.concerns.map(
+          (concern) => `- ${concern.type}: ${concern.score}% (${concern.direction}) — ${concern.explanation}`
+        )
+      ].join("\n")
+    : "No scan context — answer from Skinova Knowledge only and suggest running a scan for personalization.";
 
   const userPrompt = [
-    "User question:",
+    "=== Skinova Knowledge (authoritative — do not contradict) ===",
+    input.knowledgeContext || "No matching knowledge passages. Decline to guess and redirect to supported topics.",
+    "",
+    "=== Latest scan context ===",
+    scanBlock,
+    "",
+    "=== User question ===",
     input.message,
     "",
-    "Latest scan context:",
-    input.analysis
-      ? [
-          `Overall score: ${input.analysis.overallScore}%`,
-          `Skin type: ${input.analysis.skinType}`,
-          `Summary: ${input.analysis.summary}`,
-          "Concerns:",
-          ...input.analysis.concerns.map((concern) => `- ${concern.type}: ${concern.score}% — ${concern.explanation}`)
-        ].join("\n")
-      : "No scan context provided.",
-    "",
-    "Retrieved knowledge:",
-    input.knowledgeContext || "No additional knowledge retrieved.",
-    "",
-    "Respond as Skinova Skin Coach."
+    "Respond as Skinova Skin Coach. Ground every claim in the knowledge or scan context above."
   ].join("\n");
 
-  const messages: ChatMessage[] = [
-    { role: "system", content: systemPrompt },
-    { role: "user", content: userPrompt }
-  ];
+  const messages: ChatMessage[] = [{ role: "system", content: systemPrompt }];
+
+  for (const turn of input.history || []) {
+    messages.push({
+      role: turn.role === "coach" ? "assistant" : "user",
+      content: turn.content
+    });
+  }
+
+  messages.push({ role: "user", content: userPrompt });
 
   const response = await fetch(`${runtime.llmBaseUrl}/chat/completions`, {
     method: "POST",
@@ -68,8 +72,8 @@ export async function generateCoachAnswer(input: {
     },
     body: JSON.stringify({
       model: runtime.llmModel,
-      temperature: 0.4,
-      max_tokens: 500,
+      temperature: 0.2,
+      max_tokens: 450,
       messages
     })
   });

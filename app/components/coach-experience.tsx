@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, Sparkles } from "lucide-react";
 import { coachSamplePrompts } from "../lib/demo-samples";
 import { useScanSession } from "../hooks/use-scan-session";
 import { Panel } from "./ui";
@@ -13,25 +13,44 @@ type CoachMessage = {
   content: string;
 };
 
-const starterMessages: CoachMessage[] = [
+type CoachMode = "live" | "guided" | "checking";
+
+const starterMessages = (mode: CoachMode): CoachMessage[] => [
   {
     role: "coach",
     content:
-      "Hi! I'm your Skin Coach. Ask me about skincare, ingredients, or your routine — I'll use your latest scan when available."
+      mode === "live"
+        ? "Hi! I'm your live Skin Coach powered by Skinova's knowledge base and your latest scan. Ask about acne, redness, routines, or ingredients."
+        : "Hi! I'm your Skin Coach. Ask me about skincare, ingredients, or your routine — I'll use your latest scan when available."
   }
 ];
 
 export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
   const { session } = useScanSession();
-  const [messages, setMessages] = useState<CoachMessage[]>(starterMessages);
+  const [coachMode, setCoachMode] = useState<CoachMode>("checking");
+  const [messages, setMessages] = useState<CoachMessage[]>(starterMessages("checking"));
   const [input, setInput] = useState(initialPrompt || "Why is my skin red this week?");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const resetCoach = () => setMessages(starterMessages);
+    fetch("/api/skinova/health")
+      .then((response) => response.json())
+      .then((data: { coachReady?: boolean }) => {
+        const mode: CoachMode = data.coachReady ? "live" : "guided";
+        setCoachMode(mode);
+        setMessages(starterMessages(mode));
+      })
+      .catch(() => {
+        setCoachMode("guided");
+        setMessages(starterMessages("guided"));
+      });
+  }, []);
+
+  useEffect(() => {
+    const resetCoach = () => setMessages(starterMessages(coachMode === "checking" ? "guided" : coachMode));
     window.addEventListener("skinova:coach-reset", resetCoach);
     return () => window.removeEventListener("skinova:coach-reset", resetCoach);
-  }, []);
+  }, [coachMode]);
 
   async function sendMessage(messageOverride?: string) {
     const trimmed = (messageOverride ?? input).trim();
@@ -52,10 +71,19 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
           analysis: session?.analysis || null
         })
       });
-      const data = (await response.json()) as { answer?: string; safety?: string; error?: string };
+      const data = (await response.json()) as {
+        answer?: string;
+        safety?: string;
+        mode?: "live" | "guided";
+        error?: string;
+      };
 
       if (!response.ok || !data.answer) {
         throw new Error(data.error || "Coach unavailable");
+      }
+
+      if (data.mode) {
+        setCoachMode(data.mode);
       }
 
       setMessages((current) => [
@@ -76,10 +104,24 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
     <Panel>
       <div className="flex items-start gap-3">
         <SkinovaLogo size="sm" showWordmark={false} />
-        <div className="min-w-0">
-          <h2 className="text-xl font-semibold text-white">Skin Coach</h2>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-xl font-semibold text-white">Skin Coach</h2>
+            {coachMode === "live" ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/15 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-200 ring-1 ring-emerald-300/25">
+                <Sparkles className="h-3 w-3" aria-hidden="true" />
+                Live AI
+              </span>
+            ) : coachMode === "guided" ? (
+              <span className="rounded-full bg-white/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400 ring-1 ring-white/10">
+                Guided
+              </span>
+            ) : null}
+          </div>
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            Get skincare education and routine guidance without unsupported medical claims.
+            {coachMode === "live"
+              ? "Answers are grounded in Skinova's knowledge base and your scan — not generic AI advice."
+              : "Get skincare education and routine guidance without unsupported medical claims."}
           </p>
           {session ? (
             <p className="mt-2 text-xs text-emerald-200/90">

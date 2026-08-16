@@ -113,7 +113,12 @@ async function main() {
 
   const filePath = path.join(process.cwd(), "content", "knowledge", "skincare.json");
   const items = JSON.parse(await fs.readFile(filePath, "utf8"));
-  const embeddings = await embedTexts(items.map((item) => `${item.title}\n${item.content}`));
+  const embeddings = await embedTexts(
+    items.map((item) => {
+      const keywords = item.keywords?.length ? `Keywords: ${item.keywords.join(", ")}\n` : "";
+      return `${item.topic}\n${item.title}\n${keywords}${item.content}`;
+    })
+  );
 
   for (let index = 0; index < items.length; index += 1) {
     const item = items[index];

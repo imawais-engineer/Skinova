@@ -1,15 +1,14 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { isCoachLive } from "./ai-runtime";
-import { buildFallbackCoachAnswer } from "./coach-fallback";
+import { coachSafetyNotice } from "./coach-contract";
 import { generateCoachAnswer } from "./coach-llm";
-import { saveCoachMessage } from "./knowledge-db";
+import { buildFallbackCoachAnswer } from "./coach-fallback";
+import { isSkincareQuestionInScope } from "./coach-scope";
+import { buildValidatedFallback, validateCoachAnswer } from "./coach-validator";
+import { isCoachLive } from "./ai-runtime";
+import { getRecentCoachMessages, saveCoachMessage } from "./knowledge-db";
 import { retrieveKnowledgeContext } from "./rag";
 import type { AnalysisResult } from "./skinova-data";
-
-const coachContract = {
-  safety: "Educational guidance only. Consult a qualified professional for medical concerns."
-};
 
 export async function runCoachConversation(input: {
   userId: string;
@@ -17,6 +16,7 @@ export async function runCoachConversation(input: {
   analysis?: AnalysisResult | null;
 }) {
   const trimmed = input.message.trim();
+  const scope = isSkincareQuestionInScope(trimmed);
 
   await saveCoachMessage({
     id: randomUUID(),
@@ -27,19 +27,43 @@ export async function runCoachConversation(input: {
 
   let answer: string;
 
-  if (isCoachLive()) {
-    try {
-      const knowledgeContext = await retrieveKnowledgeContext(trimmed);
-      answer = await generateCoachAnswer({
-        message: trimmed,
-        knowledgeContext,
-        analysis: input.analysis
-      });
-    } catch {
-      answer = buildFallbackCoachAnswer(trimmed).answer;
-    }
+  if (!scope.allowed) {
+    answer = scope.redirect;
+  } else if (!isCoachLive()) {
+    answer = buildFallbackCoachAnswer(trimmed, input.analysis).answer;
   } else {
-    answer = buildFallbackCoachAnswer(trimmed).answer;
+    const knowledge = await retrieveKnowledgeContext(trimmed, { topics: scope.topics });
+    const history = await getRecentCoachMessages(input.userId, 6);
+
+    if (!knowledge.sufficient && !input.analysis) {
+      answer = buildValidatedFallback(false);
+    } else {
+      try {
+        answer = await generateCoachAnswer({
+          message: trimmed,
+          knowledgeContext: knowledge.context,
+          analysis: input.analysis,
+          history: history.slice(0, -1)
+        });
+
+        const validation = validateCoachAnswer(answer, knowledge.chunkCount > 0);
+
+        if (!validation.valid) {
+          if (knowledge.context) {
+            answer = await generateCoachAnswer({
+              message: `${trimmed}\n\nReminder: use only the Skinova Knowledge passages. Do not add general advice.`,
+              knowledgeContext: knowledge.context,
+              analysis: input.analysis,
+              history: history.slice(0, -1)
+            });
+          } else {
+            answer = buildValidatedFallback(knowledge.chunkCount > 0);
+          }
+        }
+      } catch {
+        answer = buildFallbackCoachAnswer(trimmed, input.analysis).answer;
+      }
+    }
   }
 
   await saveCoachMessage({
@@ -51,6 +75,7 @@ export async function runCoachConversation(input: {
 
   return {
     answer,
-    safety: coachContract.safety
+    safety: coachSafetyNotice,
+    mode: isCoachLive() ? ("live" as const) : ("guided" as const)
   };
 }
