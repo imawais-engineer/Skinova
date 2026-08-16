@@ -182,6 +182,7 @@ Integration details: [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md)
 - Demo video script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
 - Devpost copy and checklist: [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md)
 - Compliance matrix: [docs/COMPLIANCE_REVIEW.md](docs/COMPLIANCE_REVIEW.md)
+- **Progress metrics & scorecard:** [docs/PROGRESS_METRICS.md](docs/PROGRESS_METRICS.md)
 
 ## Known limitations
 
