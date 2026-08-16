@@ -9,7 +9,10 @@ type HealthResponse = {
   mode: "demo" | "live";
   scanReady: boolean;
   simulationReady?: boolean;
+  personalizationReady?: boolean;
   coachReady: boolean;
+  databaseReady?: boolean;
+  youCamApiCount?: number;
   message: string;
 };
 
@@ -52,8 +55,16 @@ export function LandingLiveStatus() {
                   <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
                     {health.scanReady ? (isLive ? "Live skin scan" : "Demo skin scan") : "Scan unavailable"}
                   </span>
+                  <span className="rounded-full border border-violet-300/20 bg-violet-300/10 px-3 py-1 text-xs font-medium text-violet-100">
+                    {health.personalizationReady
+                      ? `${health.youCamApiCount || 5} YouCam APIs`
+                      : "Personalization checking"}
+                  </span>
                   <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/10 px-3 py-1 text-xs font-medium text-fuchsia-100">
                     {health.simulationReady ? (isLive ? "Live simulation" : "Demo simulation") : "Simulation checking"}
+                  </span>
+                  <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-medium text-emerald-100">
+                    {health.databaseReady ? "Neon persistence" : "Database checking"}
                   </span>
                   <span className="rounded-full border border-violet-300/20 bg-violet-300/10 px-3 py-1 text-xs font-medium text-violet-100">
                     {health.coachReady ? "Live Skin Coach" : "Guided Skin Coach"}

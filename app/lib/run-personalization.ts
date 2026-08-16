@@ -9,6 +9,7 @@ import {
   getTaskStatusFromPayload,
   getYouCamRuntime,
   mergePersonalization,
+  normalizeFaceAnalyzerResult,
   normalizeFitzpatrickResult,
   normalizeSkinToneResult,
   type YouCamWorkflow
@@ -72,14 +73,16 @@ export async function enrichAnalysisPersonalization(input: {
     });
   }
 
-  const [fitzpatrickPayload, skinTonePayload] = await Promise.all([
+  const [fitzpatrickPayload, skinTonePayload, faceAnalyzerPayload] = await Promise.all([
     runWorkflowTask("fitzpatrick-scale-analyzer", input.fileId),
-    runWorkflowTask("skin-tone-analysis", input.fileId)
+    runWorkflowTask("skin-tone-analysis", input.fileId),
+    runWorkflowTask("face-analyzer", input.fileId)
   ]);
 
   const personalization = mergePersonalization(
     fitzpatrickPayload ? normalizeFitzpatrickResult(fitzpatrickPayload) : null,
-    skinTonePayload ? normalizeSkinToneResult(skinTonePayload) : null
+    skinTonePayload ? normalizeSkinToneResult(skinTonePayload) : null,
+    faceAnalyzerPayload ? normalizeFaceAnalyzerResult(faceAnalyzerPayload) : null
   );
 
   if (!personalization) {

@@ -105,7 +105,7 @@ export function ResultsExperience() {
                 </StatusBadge>
               </div>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                Fitzpatrick Scale Analyzer and Skin Tone Analysis add inclusive personalization context beyond concern scores.
+                Fitzpatrick, skin tone, and face attribute APIs add inclusive personalization context beyond concern scores.
               </p>
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {personalization.fitzpatrickLabel ? (
@@ -123,6 +123,18 @@ export function ResultsExperience() {
                 ) : null}
                 {personalization.hairColorName ? (
                   <PersonalizationTile label="Hair color" value={personalization.hairColorName} />
+                ) : null}
+                {personalization.faceShape ? (
+                  <PersonalizationTile label="Face shape" value={personalization.faceShape} />
+                ) : null}
+                {personalization.estimatedAge !== undefined ? (
+                  <PersonalizationTile label="Estimated age" value={`${personalization.estimatedAge} years`} />
+                ) : null}
+                {personalization.eyeShape ? (
+                  <PersonalizationTile label="Eye shape" value={personalization.eyeShape} />
+                ) : null}
+                {personalization.lipShape ? (
+                  <PersonalizationTile label="Lip shape" value={personalization.lipShape} />
                 ) : null}
               </div>
             </Panel>

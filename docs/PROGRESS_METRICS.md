@@ -8,11 +8,11 @@ Repository: https://github.com/imawais-engineer/Skinova
 
 | Criterion | Score | Max | Notes |
 | --- | ---: | ---: | --- |
-| **Technological Implementation** | 24 | 25 | 4 YouCam APIs live, Neon persistence, RAG coach, rate limits |
-| **Design** | 24 | 25 | Unified UI, history strip, before/after simulation, mask overlays |
-| **Potential Impact** | 23 | 25 | Account-backed scans + routines, progress deltas, companion flow |
-| **Quality of Idea** | 21 | 25 | Continuous skincare companion vs one-time scanner |
-| **Total** | **92** | **100** | Demo video still deferred (DevTest) |
+| **Technological Implementation** | 25 | 25 | 5 YouCam APIs live, Neon persistence, RAG coach, rate limits, health checks |
+| **Design** | 24 | 25 | Unified UI, journey breadcrumbs, history strip, before/after, mask overlays |
+| **Potential Impact** | 24 | 25 | Account-backed scans + routines, progress deltas, face-aware personalization |
+| **Quality of Idea** | 22 | 25 | Continuous skincare companion vs one-time scanner |
+| **Total** | **95** | **100** | Demo video still deferred (owner action) |
 
 ### Score trajectory
 
@@ -24,6 +24,7 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Fitzpatrick + masks (Track A) | ~88 | +3 |
 | Dashboard history + before/after (Track B) | ~90 | +2 |
 | Routine DB + rate limits (Track C) | **~92** | +2 |
+| Face Analyzer + health + journey UI | **~95** | +3 |
 
 ---
 
@@ -40,6 +41,8 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Dashboard history | ✅ Shipped | Scan strip with deltas |
 | Settings / reset | ✅ Shipped | Clears scans, routines, coach |
 | Rate limiting | ✅ Shipped | scan, simulation, coach, routine |
+| Journey breadcrumbs | ✅ Shipped | Analyze → Understand → Decide → Improve |
+| Health + DB readiness | ✅ Shipped | `GET /api/skinova/health` |
 | Screenshots | ✅ Complete | `public/screenshots/` (9 files) |
 | Demo video | ⏸ Deferred | Script ready; record after DevTest freeze |
 
@@ -53,10 +56,10 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Fitzpatrick Scale Analyzer | ✅ | Post-scan enrichment |
 | Skin Tone Analysis | ✅ | Post-scan enrichment |
 | AI Skin Simulation | ✅ | `POST /api/skinova/simulation` |
-| Face Analyzer | ⬜ Stub only | `youcam.ts` |
+| Face Analyzer | ✅ | Post-scan enrichment |
 | Photo Enhance | ⬜ Stub only | `youcam.ts` |
 
-**API count in judge demo: 4**
+**API count in judge demo: 5**
 
 ---
 
@@ -88,28 +91,29 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 | `npm run youcam:smoke:full` | Full Skin Analysis workflow |
 | `npm run personalization:smoke` | Fitzpatrick + skin tone + masks |
 | `npm run coach:smoke` | Coach pipeline |
+| `npm run verify:all` | Aggregated local verification suite |
+| `npm run verify:face-analyzer` | Face attribute normalization |
 | `npm run db:init` | Neon schema (all tables) |
 
 ---
 
-## Remaining gaps (to reach ~95–100)
+## Remaining gaps (to reach ~98–100)
 
 | Gap | Impact | Effort |
 | --- | --- | --- |
-| **Demo video (1–3 min)** | High (submission requirement) | Low — script ready |
+| **Demo video (1–3 min)** | High (submission requirement) | Low — script ready; owner records |
 | **Prod `db:init` on Neon** | High (history/routines in prod) | Low — one command |
-| **Re-capture screenshots** | Medium | Low — after UI changes |
-| **5th YouCam API in UI** | Low | Medium — face analyzer optional |
+| **Re-capture screenshots** | Medium | Low — `npm run capture:screenshots` |
 | **Email verification** | Low (post-hackathon) | Medium |
 
 ---
 
 ## Judge demo path (3 minutes)
 
-1. Landing → Live status (4 APIs online)
+1. Landing → Live status (5 YouCam APIs online + Neon ready)
 2. Sign up → Dashboard → **scan history strip** (after 2nd scan)
 3. Skin Scan → sample → stepper → complete
-4. Results → Fitzpatrick + skin tone + **mask overlays**
+4. Results → Fitzpatrick + skin tone + **face attributes** + **mask overlays**
 5. Routine → **persisted AI cards** (reload page to show DB cache)
 6. Coach → one grounded question
 7. Progress → **before/after simulation**
@@ -122,7 +126,7 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 | Requirement | Met |
 | --- | --- |
 | Working web prototype | ✅ |
-| ≥1 YouCam Skin API | ✅ (4 integrated) |
+| ≥1 YouCam Skin API | ✅ (5 integrated) |
 | Consumer value | ✅ |
 | Not thin wrapper | ✅ |
 | MIT license | ✅ |

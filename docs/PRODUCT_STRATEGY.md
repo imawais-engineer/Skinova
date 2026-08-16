@@ -44,11 +44,11 @@ Most skin scanner experiences stop at a score. Users still need to know what the
 - Dashboard-first app shell with auth and scan history strip
 - Upload/scan flow with six-step progress UI
 - YouCam Skin Analysis (live + mock) with mask overlays
-- Fitzpatrick + Skin Tone personalization on Results
+- Fitzpatrick + Skin Tone + Face Analyzer personalization on Results
 - Results interpretation and routine generator
 - Skin Coach (RAG + optional Qwen LLM)
 - Progress timeline, account-backed history, and before/after simulation
-- Landing live status, privacy, terms
+- Landing live status (5 YouCam APIs + DB readiness), privacy, terms
 - Submission documentation and MIT license
 
 ## Deferred

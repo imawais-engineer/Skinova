@@ -19,7 +19,7 @@ Source of truth:
 | Requirement | Status | Evidence |
 | --- | --- | --- |
 | Working web prototype | Met | https://skinova-ai.vercel.app and local `npm run dev` |
-| At least one YouCam Skin/Fashion API | Met | 4 APIs: Skin Analysis, Fitzpatrick, Skin Tone, Skin Simulation |
+| At least one YouCam Skin/Fashion API | Met | 5 APIs: Skin Analysis, Fitzpatrick, Skin Tone, Face Analyzer, Skin Simulation |
 | Consumer or retail value | Met | Dashboard, scan, results, routine, coach, progress |
 | Not a thin wrapper | Met | End-to-end product flow with education, coaching, and account-backed history |
 | Repository functional for judges | Met | README, `npm run setup`, docs in `docs/` |

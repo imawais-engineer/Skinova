@@ -15,6 +15,11 @@ export type PersonalizationContext = {
   eyeColorName?: string;
   lipColorHex?: string;
   hairColorName?: string;
+  faceShape?: string;
+  estimatedAge?: number;
+  eyeShape?: string;
+  noseWidth?: string;
+  lipShape?: string;
   source?: "live" | "demo";
 };
 
@@ -70,7 +75,7 @@ export const analysisResult: AnalysisResult = {
   readingSteps: [
     "Image quality is checked before analysis.",
     "Skin signals are converted into clear concern scores.",
-    "Fitzpatrick and skin tone APIs add personalization context.",
+    "Fitzpatrick, skin tone, and face attributes add personalization context.",
     "Concern masks show where YouCam detected each signal."
   ],
   personalization: {
@@ -80,6 +85,11 @@ export const analysisResult: AnalysisResult = {
     eyeColorName: "Brown",
     lipColorHex: "#d23245",
     hairColorName: "Brown",
+    faceShape: "Oval",
+    estimatedAge: 28,
+    eyeShape: "Almond",
+    noseWidth: "Medium",
+    lipShape: "Full",
     source: "demo"
   }
 };

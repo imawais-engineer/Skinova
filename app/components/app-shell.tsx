@@ -28,6 +28,13 @@ const navItems = [
   { href: "/settings", label: "Settings", icon: Settings }
 ];
 
+const journeySteps = [
+  { label: "Analyze", hrefs: ["/dashboard", "/scan"] },
+  { label: "Understand", hrefs: ["/results"] },
+  { label: "Decide", hrefs: ["/routine", "/coach"] },
+  { label: "Improve", hrefs: ["/progress"] }
+];
+
 export function AppShell({
   children,
   user,
@@ -53,6 +60,7 @@ export function AppShell({
   }
 
   const isCoachPage = pathname === "/coach";
+  const activeJourneyIndex = journeySteps.findIndex((step) => step.hrefs.includes(pathname));
 
   return (
     <div className="min-h-screen lg:flex">
@@ -125,6 +133,35 @@ export function AppShell({
         ].join(" ")}
       >
         <div className={["mx-auto w-full max-w-7xl", isCoachPage ? "flex min-h-0 flex-1 flex-col" : ""].join(" ")}>
+          {activeJourneyIndex >= 0 ? (
+            <nav
+              aria-label="Care journey"
+              className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
+            >
+              {journeySteps.map((step, index) => {
+                const isActive = index === activeJourneyIndex;
+                const isComplete = index < activeJourneyIndex;
+
+                return (
+                  <div key={step.label} className="flex items-center gap-2">
+                    {index > 0 ? <span className="text-xs text-slate-600" aria-hidden="true">→</span> : null}
+                    <span
+                      className={[
+                        "rounded-full border px-3 py-1 text-xs font-medium",
+                        isActive
+                          ? "border-cyan-300/35 bg-cyan-300/15 text-cyan-50"
+                          : isComplete
+                            ? "border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
+                            : "border-white/10 bg-white/[0.02] text-slate-400"
+                      ].join(" ")}
+                    >
+                      {step.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </nav>
+          ) : null}
           {children}
         </div>
       </main>

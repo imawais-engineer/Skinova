@@ -121,7 +121,8 @@ Scan history is stored in Neon **`user_scans`** per authenticated user and hydra
 | AI Skin Simulation | **Integrated** — Progress before/after comparison |
 | Fitzpatrick Scale Analyzer | **Integrated** — enriches Results personalization |
 | Skin Tone Analysis | **Integrated** — enriches Results tone context |
-| Face Analyzer / Photo Enhance | Library stubs, not exposed in UI |
+| Face Analyzer | **Integrated** — enriches Results personalization (face shape, age, features) |
+| Photo Enhance | Library stub, not exposed in UI |
 
 ## Environment modes
 

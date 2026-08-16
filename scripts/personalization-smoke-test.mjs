@@ -56,9 +56,14 @@ const toneTask = await postJson(`/s2s/v2.0/task/skin-tone-analysis`, {
   src_file_id: file.file_id,
   face_angle_strictness_level: "high"
 });
+const faceTask = await postJson(`/s2s/v2.0/task/face-attr-analysis`, {
+  src_file_id: file.file_id,
+  features: ["faceShape", "age", "eyeShape", "noseWidth", "lipShape"]
+});
 
 const fitzpatrick = await pollTask("fitzpatrick-scale-analyzer", fitzTask?.data?.task_id);
 const skinTone = await pollTask("skin-tone-analysis", toneTask?.data?.task_id);
+const faceAnalyzer = await pollTask("face-attr-analysis", faceTask?.data?.task_id);
 
 const analysisTask = await postJson(`/s2s/v2.0/task/skin-analysis`, {
   src_file_id: file.file_id,
@@ -73,14 +78,20 @@ const maskCount = Array.isArray(output) ? output.filter((item) => Array.isArray(
 console.log(
   JSON.stringify(
     {
-      ok: Boolean(fitzpatrick?.data?.results?.fitzpatrick_scale && skinTone?.data?.results?.color?.skin_color),
+      ok: Boolean(
+        fitzpatrick?.data?.results?.fitzpatrick_scale &&
+          skinTone?.data?.results?.color?.skin_color &&
+          (faceAnalyzer?.data?.results?.faceshape || faceAnalyzer?.data?.results?.faceShape)
+      ),
       fitzpatrickScale: fitzpatrick?.data?.results?.fitzpatrick_scale || null,
       skinColor: skinTone?.data?.results?.color?.skin_color || null,
       eyeColorName: skinTone?.data?.results?.color?.eye_color_name || null,
+      faceShape: faceAnalyzer?.data?.results?.faceshape || faceAnalyzer?.data?.results?.faceShape || null,
       maskConcernCount: maskCount,
       taskStatuses: {
         fitzpatrick: fitzpatrick?.data?.task_status || null,
         skinTone: skinTone?.data?.task_status || null,
+        faceAnalyzer: faceAnalyzer?.data?.task_status || null,
         analysis: analysis?.data?.task_status || null
       }
     },
@@ -89,7 +100,13 @@ console.log(
   )
 );
 
-process.exit(fitzpatrick?.data?.results?.fitzpatrick_scale && skinTone?.data?.results?.color?.skin_color ? 0 : 1);
+process.exit(
+  fitzpatrick?.data?.results?.fitzpatrick_scale &&
+    skinTone?.data?.results?.color?.skin_color &&
+    (faceAnalyzer?.data?.results?.faceshape || faceAnalyzer?.data?.results?.faceShape)
+    ? 0
+    : 1
+);
 
 async function postJson(path, body) {
   const response = await fetch(`${baseUrl}${path}`, {

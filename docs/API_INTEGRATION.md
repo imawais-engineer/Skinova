@@ -80,7 +80,8 @@ Low-level YouCam proxy routes under `/api/youcam/*` exist for smoke tests and in
 | AI Skin Simulation | **Integrated** — Progress page live preview |
 | Fitzpatrick Scale Analyzer | **Integrated** — enriches Results personalization after scan |
 | Skin Tone Analysis | **Integrated** — enriches Results skin/eye/hair tone context |
-| Face analyzer / photo enhance | Stubs only, not exposed in UI |
+| Face Analyzer | **Integrated** — enriches Results personalization after scan |
+| Photo enhance | Stub only, not exposed in UI |
 
 ## Security boundary
 
