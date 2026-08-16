@@ -5,10 +5,8 @@ import { useState } from "react";
 import {
   Activity,
   ArrowRight,
-  BarChart3,
   Bot,
   Camera,
-  ClipboardList,
   LineChart,
   Menu,
   ShieldCheck,
@@ -28,31 +26,25 @@ const capabilities = [
   {
     title: "Skin Scan",
     status: "Available",
-    description: "AI-powered skin analysis using YouCam Skin AI.",
+    description: "YouCam Skin AI analysis from a clear front-facing selfie.",
     icon: Camera
   },
   {
-    title: "Skin Insights",
+    title: "Insights & Routine",
     status: "Available",
-    description: "Understand analysis results in simple, educational language.",
-    icon: BarChart3
-  },
-  {
-    title: "Personalized Guidance",
-    status: "Available",
-    description: "Turn insights into practical morning and night skincare steps.",
-    icon: ClipboardList
+    description: "Plain-language scan results and AI-built morning and night skincare steps.",
+    icon: Activity
   },
   {
     title: "Skin Coach",
     status: "Available",
-    description: "Ask skincare-related educational questions with safety boundaries.",
+    description: "Ask about your scan scores, ingredients, and routines — grounded in your results.",
     icon: Bot
   },
   {
     title: "Progress",
     status: "Available",
-    description: "Track changes and understand trends over time.",
+    description: "Track concern trends and see your improvement story over time.",
     icon: LineChart
   }
 ];
@@ -260,7 +252,7 @@ export function LandingPage() {
                 A complete skincare intelligence experience — not a single API wrapper.
               </p>
             </div>
-            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {capabilities.map((item) => {
                 const Icon = item.icon;
                 return (
