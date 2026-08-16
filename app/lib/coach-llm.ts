@@ -50,7 +50,7 @@ export async function generateCoachAnswer(input: {
     "=== User question ===",
     input.message,
     "",
-    "Respond as Skinova Skin Coach. Ground every claim in the knowledge or scan context above."
+    "Respond as Skinova Skin Coach. Ground every claim in the knowledge or scan context above. Max 3 plain sentences."
   ].join("\n");
 
   const messages: ChatMessage[] = [{ role: "system", content: systemPrompt }];
@@ -73,7 +73,7 @@ export async function generateCoachAnswer(input: {
     body: JSON.stringify({
       model: runtime.llmModel,
       temperature: 0.2,
-      max_tokens: 450,
+      max_tokens: 180,
       messages
     })
   });

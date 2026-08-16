@@ -1,4 +1,5 @@
 import type { AnalysisResult } from "./skinova-data";
+import type { StructuredRoutinePlan } from "./routine-types";
 
 export type ScanSession = {
   analysis: AnalysisResult;
@@ -7,6 +8,11 @@ export type ScanSession = {
 };
 
 const STORAGE_KEY = "skinova:last-scan";
+const ROUTINE_KEY = "skinova:routine-plan";
+
+function routineCacheKey(session: ScanSession) {
+  return `${session.scannedAt}:${session.analysis.overallScore}`;
+}
 
 export function saveScanSession(session: ScanSession) {
   if (typeof window === "undefined") {
@@ -39,6 +45,36 @@ export function clearScanSession() {
   }
 
   window.sessionStorage.removeItem(STORAGE_KEY);
+  window.sessionStorage.removeItem(ROUTINE_KEY);
+}
+
+export function saveRoutinePlan(session: ScanSession, plan: StructuredRoutinePlan) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.setItem(
+    ROUTINE_KEY,
+    JSON.stringify({ key: routineCacheKey(session), plan })
+  );
+}
+
+export function getRoutinePlan(session: ScanSession): StructuredRoutinePlan | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const raw = window.sessionStorage.getItem(ROUTINE_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as { key: string; plan: StructuredRoutinePlan };
+    return parsed.key === routineCacheKey(session) ? parsed.plan : null;
+  } catch {
+    return null;
+  }
 }
 
 export function generateRoutineFromAnalysis(analysis: AnalysisResult) {

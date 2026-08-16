@@ -36,9 +36,11 @@ await sql`
     user_id TEXT NOT NULL,
     role TEXT NOT NULL,
     content TEXT NOT NULL,
+    metadata JSONB,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )
 `;
+await sql`ALTER TABLE coach_messages ADD COLUMN IF NOT EXISTS metadata JSONB`;
 await sql`CREATE INDEX IF NOT EXISTS knowledge_chunks_topic_idx ON knowledge_chunks (topic)`;
 
 console.log(JSON.stringify({ ok: true, message: "Neon database schema is ready." }, null, 2));

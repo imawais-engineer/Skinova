@@ -1,6 +1,7 @@
 import "server-only";
 import { neon } from "@neondatabase/serverless";
 import { getAiRuntime } from "./ai-runtime";
+import type { AnalysisResult } from "./skinova-data";
 
 export type KnowledgeChunkRecord = {
   id: string;
@@ -8,6 +9,22 @@ export type KnowledgeChunkRecord = {
   title: string;
   content: string;
   score?: number;
+};
+
+export type CoachMessageMetadata = {
+  type?: "scan_anchor" | "chat";
+  analysis?: AnalysisResult;
+  mode?: "demo" | "live";
+  scannedAt?: string;
+  fingerprint?: string;
+};
+
+export type CoachThreadRow = {
+  id: string;
+  role: string;
+  content: string;
+  created_at: string;
+  metadata: CoachMessageMetadata | null;
 };
 
 function getSql() {
@@ -44,9 +61,11 @@ export async function ensureKnowledgeSchema() {
           user_id TEXT NOT NULL,
           role TEXT NOT NULL,
           content TEXT NOT NULL,
+          metadata JSONB,
           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
       `;
+      await sql`ALTER TABLE coach_messages ADD COLUMN IF NOT EXISTS metadata JSONB`;
       await sql`CREATE INDEX IF NOT EXISTS knowledge_chunks_topic_idx ON knowledge_chunks (topic)`;
     })();
   }
@@ -118,12 +137,26 @@ export async function searchKnowledgeChunks(embedding: number[], limit = 5): Pro
   }));
 }
 
-export async function saveCoachMessage(input: { id: string; userId: string; role: "user" | "coach"; content: string }) {
+export async function saveCoachMessage(input: {
+  id: string;
+  userId: string;
+  role: "user" | "coach" | "scan";
+  content: string;
+  metadata?: CoachMessageMetadata | null;
+}) {
   await ensureKnowledgeSchema();
   const sql = getSql();
+  const metadataJson = input.metadata ? JSON.stringify(input.metadata) : null;
+
   await sql`
-    INSERT INTO coach_messages (id, user_id, role, content)
-    VALUES (${input.id}, ${input.userId}, ${input.role}, ${input.content})
+    INSERT INTO coach_messages (id, user_id, role, content, metadata)
+    VALUES (
+      ${input.id},
+      ${input.userId},
+      ${input.role},
+      ${input.content},
+      ${metadataJson}::jsonb
+    )
   `;
 }
 
@@ -133,23 +166,34 @@ export async function deleteCoachMessagesForUser(userId: string) {
   await sql`DELETE FROM coach_messages WHERE user_id = ${userId}`;
 }
 
-export async function getRecentCoachMessages(userId: string, limit = 6) {
+export async function getCoachThreadRows(userId: string, limit = 40): Promise<CoachThreadRow[]> {
   await ensureKnowledgeSchema();
   const sql = getSql();
   const rows = await sql`
-    SELECT role, content
+    SELECT id, role, content, created_at, metadata
     FROM coach_messages
     WHERE user_id = ${userId}
-    ORDER BY created_at DESC
+    ORDER BY created_at ASC
     LIMIT ${limit}
   `;
 
+  return rows.map((row) => ({
+    id: String(row.id),
+    role: String(row.role),
+    content: String(row.content),
+    created_at: String(row.created_at),
+    metadata: (row.metadata as CoachMessageMetadata | null) ?? null
+  }));
+}
+
+export async function getRecentCoachMessages(userId: string, limit = 8) {
+  const rows = await getCoachThreadRows(userId, limit);
   return rows
+    .filter((row) => row.role === "user" || row.role === "coach")
     .map((row) => ({
-      role: String(row.role) as "user" | "coach",
-      content: String(row.content)
-    }))
-    .reverse();
+      role: row.role as "user" | "coach",
+      content: row.content
+    }));
 }
 
 export async function getKnowledgeChunksByTopics(topics: string[], limitPerTopic = 2): Promise<KnowledgeChunkRecord[]> {

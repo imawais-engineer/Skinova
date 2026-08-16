@@ -1,12 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "../../../lib/auth";
-import { runCoachConversation } from "../../../lib/coach-service";
+import { loadCoachThread, runCoachConversation } from "../../../lib/coach-service";
 import type { AnalysisResult } from "../../../lib/skinova-data";
 
 type CoachRequestBody = {
   message?: string;
   analysis?: AnalysisResult | null;
+  scanMode?: "demo" | "live";
+  scannedAt?: string;
 };
+
+export async function GET() {
+  const session = await getSession();
+
+  if (!session) {
+    return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  }
+
+  const thread = await loadCoachThread(session.id);
+
+  return NextResponse.json({
+    messages: thread.messages.map((message) => ({
+      id: message.id,
+      role: message.role,
+      content: message.content
+    })),
+    latestScan: thread.latestScan,
+    mode: thread.mode
+  });
+}
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
@@ -29,7 +51,9 @@ export async function POST(request: NextRequest) {
   const result = await runCoachConversation({
     userId: session.id,
     message,
-    analysis: body.analysis || null
+    analysis: body.analysis || null,
+    scanMode: body.scanMode,
+    scannedAt: body.scannedAt
   });
 
   return NextResponse.json(result);

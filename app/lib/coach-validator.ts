@@ -1,9 +1,9 @@
 import "server-only";
+import { limitSentences, stripMarkdown } from "./text-format";
 import { buildScopeRedirect } from "./coach-contract";
 
 const forbiddenPhrases = [
   "i diagnose",
-  "you have",
   "definitely have",
   "prescribe",
   "guaranteed cure",
@@ -17,32 +17,27 @@ const genericPhrases = [
   "maintain a healthy lifestyle",
   "drink plenty of water",
   "everyone's skin is different",
-  "consult a professional for personalized advice",
   "it depends on your individual needs"
 ];
 
 export function validateCoachAnswer(answer: string, hasKnowledgeContext: boolean) {
-  const normalized = answer.toLowerCase();
+  const normalized = stripMarkdown(answer).toLowerCase();
 
   if (forbiddenPhrases.some((phrase) => normalized.includes(phrase))) {
-    return {
-      valid: false,
-      reason: "forbidden-claim" as const
-    };
+    return { valid: false, reason: "forbidden-claim" as const };
   }
 
   if (!hasKnowledgeContext && genericPhrases.filter((phrase) => normalized.includes(phrase)).length >= 2) {
-    return {
-      valid: false,
-      reason: "too-generic" as const
-    };
+    return { valid: false, reason: "too-generic" as const };
   }
 
-  if (answer.trim().length < 40) {
-    return {
-      valid: false,
-      reason: "too-short" as const
-    };
+  const sentences = normalized.split(/(?<=[.!?])\s+/).filter(Boolean);
+  if (sentences.length > 3) {
+    return { valid: false, reason: "too-long" as const };
+  }
+
+  if (answer.trim().length < 24) {
+    return { valid: false, reason: "too-short" as const };
   }
 
   return { valid: true as const };
@@ -50,8 +45,8 @@ export function validateCoachAnswer(answer: string, hasKnowledgeContext: boolean
 
 export function buildValidatedFallback(hasKnowledgeContext: boolean) {
   if (!hasKnowledgeContext) {
-    return buildScopeRedirect(["acne", "redness", "routines", "ingredients"]);
+    return limitSentences(buildScopeRedirect(["acne", "redness", "routines", "ingredients"]), 3);
   }
 
-  return "I want to stay accurate to Skinova's guidance. Could you rephrase your question about acne, redness, pores, texture, hydration, routines, or ingredients?";
+  return "Please ask about your scan scores, acne, redness, pores, texture, hydration, routines, or ingredients.";
 }

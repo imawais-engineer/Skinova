@@ -1,60 +1,79 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Loader2, Send, Sparkles } from "lucide-react";
-import { coachSamplePrompts } from "../lib/demo-samples";
 import { useScanSession } from "../hooks/use-scan-session";
 import { Panel } from "./ui";
 import { SkinovaLogo } from "./skinova-logo";
 
 type CoachMessage = {
-  role: "user" | "coach";
+  id?: string;
+  role: "user" | "coach" | "scan";
   content: string;
 };
 
 type CoachMode = "live" | "guided" | "checking";
 
-const starterMessages = (mode: CoachMode): CoachMessage[] => [
-  {
-    role: "coach",
-    content:
-      mode === "live"
-        ? "Hi! I'm your live Skin Coach powered by Skinova's knowledge base and your latest scan. Ask about acne, redness, routines, or ingredients."
-        : "Hi! I'm your Skin Coach. Ask me about skincare, ingredients, or your routine — I'll use your latest scan when available."
-  }
-];
+const INTRO =
+  "I interpret your YouCam face scan using Skinova's knowledge base. Ask about your concern scores, routine, or ingredients.";
 
 export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
   const { session } = useScanSession();
   const [coachMode, setCoachMode] = useState<CoachMode>("checking");
-  const [messages, setMessages] = useState<CoachMessage[]>(starterMessages("checking"));
-  const [input, setInput] = useState(initialPrompt || "Why is my skin red this week?");
+  const [messages, setMessages] = useState<CoachMessage[]>([]);
+  const [input, setInput] = useState(initialPrompt || "");
   const [loading, setLoading] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    fetch("/api/skinova/health")
-      .then((response) => response.json())
-      .then((data: { coachReady?: boolean }) => {
-        const mode: CoachMode = data.coachReady ? "live" : "guided";
-        setCoachMode(mode);
-        setMessages(starterMessages(mode));
-      })
-      .catch(() => {
-        setCoachMode("guided");
-        setMessages(starterMessages("guided"));
-      });
+  const chatStarted = messages.some((message) => message.role === "user");
+
+  const loadThread = useCallback(async () => {
+    try {
+      const response = await fetch("/api/skinova/coach");
+      const data = (await response.json()) as {
+        messages?: CoachMessage[];
+        mode?: CoachMode;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to load coach history");
+      }
+
+      if (data.mode === "live" || data.mode === "guided") {
+        setCoachMode(data.mode);
+      }
+
+      if (data.messages?.length) {
+        setMessages(data.messages);
+      } else {
+        setMessages([{ role: "coach", content: INTRO }]);
+      }
+    } catch {
+      setCoachMode("guided");
+      setMessages([{ role: "coach", content: INTRO }]);
+    } finally {
+      setHydrated(true);
+    }
   }, []);
 
   useEffect(() => {
-    const resetCoach = () => setMessages(starterMessages(coachMode === "checking" ? "guided" : coachMode));
+    void loadThread();
+  }, [loadThread]);
+
+  useEffect(() => {
+    const resetCoach = () => {
+      setMessages([{ role: "coach", content: INTRO }]);
+      setInput("");
+    };
     window.addEventListener("skinova:coach-reset", resetCoach);
     return () => window.removeEventListener("skinova:coach-reset", resetCoach);
-  }, [coachMode]);
+  }, []);
 
   async function sendMessage(messageOverride?: string) {
     const trimmed = (messageOverride ?? input).trim();
-    if (!trimmed) {
+    if (!trimmed || loading) {
       return;
     }
 
@@ -68,7 +87,9 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: trimmed,
-          analysis: session?.analysis || null
+          analysis: session?.analysis || null,
+          scanMode: session?.mode,
+          scannedAt: session?.scannedAt
         })
       });
       const data = (await response.json()) as {
@@ -86,18 +107,23 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         setCoachMode(data.mode);
       }
 
-      setMessages((current) => [
-        ...current,
-        { role: "coach", content: `${data.answer} ${data.safety || ""}`.trim() }
-      ]);
+      setMessages((current) => [...current, { role: "coach", content: data.answer! }]);
     } catch {
       setMessages((current) => [
         ...current,
-        { role: "coach", content: "Skin Coach is unavailable right now. Please try again in a moment." }
+        { role: "coach", content: "Skin Coach is unavailable. Please try again." }
       ]);
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!hydrated) {
+    return (
+      <Panel className="flex min-h-[20rem] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-cyan-200" aria-hidden="true" />
+      </Panel>
+    );
   }
 
   return (
@@ -112,55 +138,42 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
                 <Sparkles className="h-3 w-3" aria-hidden="true" />
                 Live AI
               </span>
-            ) : coachMode === "guided" ? (
+            ) : (
               <span className="rounded-full bg-white/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400 ring-1 ring-white/10">
                 Guided
               </span>
-            ) : null}
+            )}
           </div>
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            {coachMode === "live"
-              ? "Answers are grounded in Skinova's knowledge base and your scan — not generic AI advice."
-              : "Get skincare education and routine guidance without unsupported medical claims."}
+            Face-scan interpretation only — grounded in YouCam results and Skinova knowledge.
           </p>
           {session ? (
-            <p className="mt-2 text-xs text-emerald-200/90">
-              Using your latest scan score of {session.analysis.overallScore}%.
-            </p>
+            <p className="mt-2 text-xs text-emerald-200/90">Scan context: {session.analysis.overallScore}% overall.</p>
           ) : (
-            <p className="mt-2 text-xs text-amber-100/80">Run a scan first for more personalized coaching.</p>
+            <p className="mt-2 text-xs text-amber-100/80">
+              <Link href="/scan" className="underline underline-offset-2">
+                Run a scan
+              </Link>{" "}
+              for personalized answers.
+            </p>
           )}
-        </div>
-      </div>
-
-      <div className="mt-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Try a sample question</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {coachSamplePrompts.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              onClick={() => void sendMessage(prompt)}
-              disabled={loading}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-slate-200 transition hover:bg-white/[0.08] disabled:opacity-60"
-            >
-              {prompt}
-            </button>
-          ))}
         </div>
       </div>
 
       <div className="mt-5 max-h-[28rem] space-y-3 overflow-y-auto pr-1">
         {messages.map((message, index) => (
           <div
-            key={`${message.role}-${index}`}
+            key={message.id || `${message.role}-${index}`}
             className={[
               "max-w-3xl rounded-2xl px-4 py-3 text-sm leading-6",
               message.role === "user"
                 ? "ml-auto bg-cyan-300 text-slate-950"
-                : "bg-white/[0.05] text-slate-200 ring-1 ring-white/10"
+                : message.role === "scan"
+                  ? "border border-cyan-300/20 bg-cyan-300/[0.06] text-cyan-50/90"
+                  : "bg-white/[0.05] text-slate-200 ring-1 ring-white/10"
             ].join(" ")}
           >
+            {message.role === "scan" ? <span className="text-[10px] font-semibold uppercase tracking-wide text-cyan-200/80">Scan · </span> : null}
             {message.content}
           </div>
         ))}
@@ -176,7 +189,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
             }
           }}
           className="min-h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/40"
-          placeholder="Ask a skincare routine question"
+          placeholder="Ask about your scan results"
         />
         <button
           type="button"
@@ -189,14 +202,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
         </button>
       </div>
 
-      {!session ? (
-        <p className="mt-4 text-center text-xs text-slate-500">
-          <Link href="/scan" className="text-cyan-200 underline underline-offset-2">
-            Run a skin scan
-          </Link>{" "}
-          to personalize coach answers.
-        </p>
-      ) : null}
+      <p className="mt-3 text-center text-[11px] text-slate-500">Educational only · max 3 sentences per reply</p>
     </Panel>
   );
 }
