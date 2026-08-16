@@ -4,12 +4,15 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { careTimeline, experienceHighlights } from "../lib/skinova-data";
 import { generateRoutineFromAnalysis } from "../lib/scan-session";
+import { useScanHistory } from "../hooks/use-scan-history";
 import { useScanSession } from "../hooks/use-scan-session";
 import { EmptyScanState } from "./empty-scan-state";
+import { ScanHistoryStrip } from "./scan-history-strip";
 import { MetricCard, PageHeader, Panel, ScoreBar, StatusBadge } from "./ui";
 
 export function DashboardExperience({ userName }: { userName: string }) {
   const { session, ready } = useScanSession();
+  const { history } = useScanHistory(ready && Boolean(session));
   const analysis = session?.analysis;
   const routine = analysis ? generateRoutineFromAnalysis(analysis) : null;
   const topConcerns = analysis?.concerns.slice(0, 3) ?? [];
@@ -55,6 +58,8 @@ export function DashboardExperience({ userName }: { userName: string }) {
           ))}
         </div>
       </Panel>
+
+      {history.length > 0 ? <ScanHistoryStrip history={history} /> : null}
 
       <Panel className="!p-4 sm:!p-5">
         {analysis ? (
@@ -134,9 +139,9 @@ export function DashboardExperience({ userName }: { userName: string }) {
             <MetricCard
               compact
               icon={experienceHighlights[3].icon}
-              label="Scan status"
-              value={session?.mode === "live" ? "Live" : "Demo"}
-              detail="Synced across results and progress."
+              label="Saved scans"
+              value={`${history.length || 1}`}
+              detail={history.length > 1 ? "Account-backed scan history." : "Latest scan synced across views."}
               tone="mint"
             />
           </div>

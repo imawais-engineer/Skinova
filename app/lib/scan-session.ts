@@ -178,3 +178,68 @@ export function formatScanDate(value: string) {
     minute: "2-digit"
   });
 }
+
+export function formatScanDateShort(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric"
+  });
+}
+
+export type ScanHistoryTrend = {
+  scanCount: number;
+  latest: ScanHistoryEntry;
+  previous: ScanHistoryEntry | null;
+  delta: number;
+  direction: "up" | "down" | "flat";
+};
+
+export function buildHistoryTrend(history: ScanHistoryEntry[]): ScanHistoryTrend | null {
+  if (!history.length) {
+    return null;
+  }
+
+  const latest = history[0];
+  const previous = history[1] || null;
+  const delta = previous ? latest.overall - previous.overall : 0;
+
+  return {
+    scanCount: history.length,
+    latest,
+    previous,
+    delta,
+    direction: delta > 0 ? "up" : delta < 0 ? "down" : "flat"
+  };
+}
+
+export function describeHistoryDelta(trend: ScanHistoryTrend) {
+  if (!trend.previous) {
+    return `${trend.scanCount} scan${trend.scanCount === 1 ? "" : "s"} saved to your account.`;
+  }
+
+  const verb = trend.direction === "up" ? "up" : trend.direction === "down" ? "down" : "flat";
+  const points = Math.abs(trend.delta);
+
+  if (trend.direction === "flat") {
+    return `${trend.scanCount} scans · overall score steady since your last scan.`;
+  }
+
+  return `${trend.scanCount} scans · overall ${verb} ${points} point${points === 1 ? "" : "s"} since your last scan.`;
+}
+
+const DEMO_SCAN_PREVIEW = "/samples/youcam-clear-baseline.jpg";
+
+export function getScanPreviewUrl(analysis: AnalysisResult) {
+  for (const concern of analysis.concerns) {
+    if (concern.maskUrls?.[0]) {
+      return concern.maskUrls[0];
+    }
+  }
+
+  return DEMO_SCAN_PREVIEW;
+}

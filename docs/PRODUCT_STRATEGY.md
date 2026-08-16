@@ -41,19 +41,18 @@ Most skin scanner experiences stop at a score. Users still need to know what the
 
 ## Shipped for hackathon
 
-- Dashboard-first app shell with auth
+- Dashboard-first app shell with auth and scan history strip
 - Upload/scan flow with six-step progress UI
-- YouCam Skin Analysis (live + mock)
+- YouCam Skin Analysis (live + mock) with mask overlays
+- Fitzpatrick + Skin Tone personalization on Results
 - Results interpretation and routine generator
 - Skin Coach (RAG + optional Qwen LLM)
-- Progress timeline and simulation story
+- Progress timeline, account-backed history, and before/after simulation
 - Landing live status, privacy, terms
 - Submission documentation and MIT license
 
 ## Deferred
 
-- Per-user scan history in Neon
-- Live YouCam Skin Simulation imagery on Progress
 - Payment/product affiliate logic
 - Real product catalog
 - Medical condition diagnosis

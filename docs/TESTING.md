@@ -7,6 +7,7 @@ npm run typecheck
 npm run build
 npm run verify:ui
 npm run youcam:smoke
+npm run personalization:smoke
 npm run coach:smoke "Why is my skin red this week?"
 ```
 
@@ -62,13 +63,14 @@ Do not commit private selfies.
 1. Start the app: `npm run dev` (or test production at https://skinova-ai.vercel.app)
 2. Sign up and land on `/dashboard`
 3. Confirm all sidebar navigation works
-4. **Skin Scan** — upload or pick a sample; confirm stepper advances through all six steps
-5. **Results** — scores and plain-language copy render without overlap
-6. **Routine** — morning, night, and caution sections present
-7. **Coach** — ask about redness, acne, routines, ingredients; confirm bounded responses
-8. **Progress** — trend cards and simulation story visible
-9. **Settings** — clear session works; no secrets exposed
-10. Log out; landing **Live status** reflects demo or live mode
+4. **Dashboard** — after two scans, confirm scan history strip shows count and score delta
+5. **Skin Scan** — upload or pick a sample; confirm stepper advances through all six steps
+6. **Results** — scores, Fitzpatrick/skin tone personalization, and concern mask overlays render
+7. **Routine** — morning, night, and caution sections present
+8. **Coach** — ask about redness, acne, routines, ingredients; confirm bounded responses
+9. **Progress** — trend cards, scan history, and before/after simulation comparison
+10. **Settings** — clear session works; no secrets exposed
+11. Log out; landing **Live status** reflects demo or live mode
 
 Automated overflow check:
 

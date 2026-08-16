@@ -85,8 +85,9 @@ scripts/                   Setup, smoke tests, DB init, knowledge ingest
    - `PUT` image bytes to presigned URL
    - `POST /s2s/v2.0/task/skin-analysis` → `task_id`
 4. Client polls `GET /api/skinova/scan-status/[taskId]` until analysis is ready.
-5. `youcam.ts` maps YouCam `ui_score` output → `AnalysisResult` (scores, concerns, reading steps).
-6. Result saved to `sessionStorage` via `saveScanSession()` and shown on Results, Routine, Coach, Progress.
+5. `youcam.ts` maps YouCam `ui_score` output → `AnalysisResult` (scores, concerns, mask URLs, reading steps).
+6. `run-personalization.ts` enriches with Fitzpatrick Scale + Skin Tone APIs when a `file_id` is available.
+7. Result saved to Neon `user_scans` (authenticated), `sessionStorage`, and shown across Results, Routine, Coach, Progress, Dashboard.
 
 **Demo mode** (`SKINOVA_DEMO_MODE=true` or missing `API_KEY`): mock task IDs and representative analysis data — no YouCam units consumed.
 
@@ -103,21 +104,24 @@ scripts/                   Setup, smoke tests, DB init, knowledge ingest
 
 | Page | Data source |
 | --- | --- |
-| Results | Latest `sessionStorage` analysis |
+| Dashboard | Latest session + account scan history strip (`GET /api/skinova/scans`) |
+| Results | Latest analysis with personalization + concern mask overlays |
 | Routine | Derived from analysis concerns |
 | Coach | User message + optional scan context; Neon knowledge RAG + Qwen LLM (`coach-contract`, `coach-scope`, `rag.ts`) |
-| Progress | Trend cards projected from latest scan concerns |
-| Settings | Clear scan session / coach history |
+| Progress | Trend cards, scan history, before/after Skin Simulation compare |
+| Settings | Clear scan session / coach history / persisted scans |
 
-Scan history is **per browser session**, not per user in the database (documented limitation).
+Scan history is stored in Neon **`user_scans`** per authenticated user and hydrated into the browser session on return visits.
 
 ## YouCam API surface in production
 
 | API | Status in Skinova |
 | --- | --- |
-| **AI Skin Analysis** | **Integrated** — primary user flow |
-| AI Skin Simulation | Live task on Progress page with polling and preview image |
-| Fitzpatrick / Skin Tone / Face Analyzer | Library stubs, not exposed in UI |
+| **AI Skin Analysis** | **Integrated** — primary user flow with mask overlays |
+| AI Skin Simulation | **Integrated** — Progress before/after comparison |
+| Fitzpatrick Scale Analyzer | **Integrated** — enriches Results personalization |
+| Skin Tone Analysis | **Integrated** — enriches Results tone context |
+| Face Analyzer / Photo Enhance | Library stubs, not exposed in UI |
 
 ## Environment modes
 

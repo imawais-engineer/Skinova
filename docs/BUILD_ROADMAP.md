@@ -26,8 +26,8 @@ This document tracks what shipped for the hackathon and what comes next.
 
 - Neon Postgres auth (signup, login, session cookies)
 - Skin Coach with knowledge RAG and optional Qwen LLM
-- Account-backed scan history in Neon (`user_scans`)
-- YouCam Skin Simulation on Progress page
+- Account-backed scan history in Neon (`user_scans`) with dashboard history strip
+- YouCam Skin Simulation on Progress with before/after comparison
 - Responsive layout and UI verification script
 - Production deploy at https://skinova-ai.vercel.app
 

@@ -119,7 +119,7 @@ Use live YouCam mode only in environments intended to create real scan tasks.
 3. Results — plain-language education from YouCam `ui_score` output
 4. Routine — morning and night guidance
 5. Skin Coach — bounded skincare Q&A (optional Qwen LLM + knowledge RAG)
-6. Progress — trend history and improvement simulation story
+6. Progress — scan history, trend deltas, and before/after Skin Simulation
 7. Settings — clear scan session and coach history
 
 ## Stack
@@ -186,7 +186,7 @@ Integration details: [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md)
 ## Known limitations
 
 - Scan history is stored per user in Neon (`user_scans`) and hydrated into the session when you return
-- Progress includes live YouCam Skin Simulation previews when a scan file ID is available
+- Progress includes live YouCam Skin Simulation before/after comparison when a scan file ID is available
 - No email verification or password reset yet
 - Full live scan testing requires valid YouCam units and a front-facing selfie (face should fill most of the frame)
 - Demo video for Devpost: record before submission deadline (script ready; URL to be added when published)

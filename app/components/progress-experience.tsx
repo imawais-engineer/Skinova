@@ -1,28 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { History, LineChart, Loader2, Sparkles } from "lucide-react";
 import {
   buildProgressFromAnalysis,
-  buildScanHistoryEntries,
+  describeHistoryDelta,
   formatScanDate,
-  type ScanHistoryEntry
+  getScanPreviewUrl
 } from "../lib/scan-session";
+import { useScanHistory } from "../hooks/use-scan-history";
 import { useScanSession } from "../hooks/use-scan-session";
 import { EmptyScanState } from "./empty-scan-state";
+import { SimulationCompare } from "./simulation-compare";
 import { PageHeader, Panel, StatusBadge } from "./ui";
-
-import type { AnalysisResult } from "../lib/skinova-data";
-
-type ScanListItem = {
-  id: string;
-  analysis: AnalysisResult;
-  mode: "demo" | "live";
-  overallScore: number;
-  scannedAt: string;
-  fileId?: string | null;
-};
 
 type SimulationResponse = {
   status?: string;
@@ -35,72 +25,33 @@ type SimulationResponse = {
 
 export function ProgressExperience() {
   const { session, ready } = useScanSession();
+  const { history, trend } = useScanHistory(ready && Boolean(session));
   const entries = session ? buildProgressFromAnalysis(session.analysis) : null;
   const current = entries?.[0];
   const projected = entries?.[entries.length - 1];
-  const [history, setHistory] = useState<ScanHistoryEntry[]>([]);
   const [simulationUrl, setSimulationUrl] = useState<string | null>(null);
   const [simulationMode, setSimulationMode] = useState<"demo" | "live" | null>(null);
   const [simulationStatus, setSimulationStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [simulationMessage, setSimulationMessage] = useState("");
 
-  useEffect(() => {
-    if (!ready || !session) {
-      setHistory([]);
-      return;
-    }
+  const currentPreviewUrl = useMemo(
+    () => (session ? getScanPreviewUrl(session.analysis) : null),
+    [session]
+  );
 
-    let cancelled = false;
-
-    async function loadHistory() {
-      try {
-        const response = await fetch("/api/skinova/scans");
-        if (!response.ok || cancelled) {
-          return;
-        }
-
-        const data = (await response.json()) as { scans?: ScanListItem[] };
-        if (!data.scans?.length || cancelled) {
-          return;
-        }
-
-        setHistory(
-          buildScanHistoryEntries(
-            data.scans.map((scan) => ({
-              id: scan.id,
-              scannedAt: scan.scannedAt,
-              mode: scan.mode,
-              analysis: scan.analysis
-            }))
-          )
-        );
-      } catch {
-        // History is optional; current session still works.
-      }
-    }
-
-    void loadHistory();
-    return () => {
-      cancelled = true;
-    };
-  }, [ready, session?.scannedAt, session?.analysis.overallScore]);
-
-  const historyTrend = useMemo(() => {
-    if (history.length < 2) {
+  const historySummary = useMemo(() => {
+    if (!trend) {
       return null;
     }
 
-    const latest = history[0];
-    const previous = history[1];
-    const delta = latest.overall - previous.overall;
-
-    return {
-      latest,
-      previous,
-      delta,
-      direction: delta > 0 ? "up" : delta < 0 ? "down" : "flat"
-    };
-  }, [history]);
+    return describeHistoryDelta({
+      scanCount: trend.scanCount,
+      latest: trend.latest,
+      previous: trend.previous,
+      delta: trend.delta,
+      direction: trend.direction
+    });
+  }, [trend]);
 
   async function pollSimulation(pollingUrl: string) {
     for (let attempt = 1; attempt <= 12; attempt += 1) {
@@ -151,7 +102,7 @@ export function ProgressExperience() {
           setSimulationUrl(result.resultUrl);
           setSimulationMode(result.mode || "live");
           setSimulationStatus("ready");
-          setSimulationMessage("YouCam Skin Simulation preview is ready.");
+          setSimulationMessage("Before/after comparison is ready below.");
           return;
         }
 
@@ -173,7 +124,7 @@ export function ProgressExperience() {
       <PageHeader
         eyebrow="Progress tracking"
         title="Skinova continues after the first scan."
-        description="Trend history, account-backed scan memory, and live YouCam Skin Simulation previews show long-term consumer value."
+        description="Dashboard history, trend deltas, and a before/after Skin Simulation story show long-term consumer value."
         action={{ href: "/scan", label: "Run scan" }}
       />
 
@@ -187,9 +138,7 @@ export function ProgressExperience() {
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge tone="mint">{session.mode === "demo" ? "Demo progress" : "Live progress"}</StatusBadge>
               <p className="text-sm text-emerald-50/90">
-                {history.length > 1
-                  ? `${history.length} scans saved to your account. Trends compare your latest results.`
-                  : "Trend cards are based on your latest scan concerns."}
+                {historySummary || "Trend cards are based on your latest scan concerns."}
               </p>
             </div>
           </Panel>
@@ -222,7 +171,7 @@ export function ProgressExperience() {
               <Sparkles className="h-6 w-6 text-violet-200" aria-hidden="true" />
               <h2 className="mt-4 text-xl font-semibold text-white">YouCam Skin Simulation</h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                Run the second YouCam API in Skinova to preview realistic improvement direction from your latest scan file — education and motivation, not a guaranteed result.
+                Compare your current scan signals with a YouCam simulation preview — education and motivation, not a guaranteed result.
               </p>
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -255,24 +204,14 @@ export function ProgressExperience() {
                 </p>
               ) : null}
 
-              {simulationUrl && simulationStatus === "ready" ? (
-                <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
-                  <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2">
-                    <p className="text-xs font-medium text-slate-300">Simulation preview</p>
-                    <StatusBadge tone={simulationMode === "live" ? "mint" : "cyan"}>
-                      {simulationMode === "live" ? "Live YouCam" : "Demo preview"}
-                    </StatusBadge>
-                  </div>
-                  <div className="relative aspect-[4/5] w-full">
-                    <Image
-                      src={simulationUrl}
-                      alt="YouCam skin simulation preview"
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                </div>
+              {currentPreviewUrl ? (
+                <SimulationCompare
+                  currentLabel={session.mode === "live" ? "Live scan" : "Demo scan"}
+                  currentImageUrl={currentPreviewUrl}
+                  currentScore={current.overall}
+                  simulatedImageUrl={simulationUrl}
+                  simulatedMode={simulationMode}
+                />
               ) : null}
             </Panel>
           </div>
@@ -283,11 +222,8 @@ export function ProgressExperience() {
                 <History className="h-5 w-5 text-cyan-200" aria-hidden="true" />
                 <h2 className="text-xl font-semibold text-white">Scan history</h2>
               </div>
-              {historyTrend ? (
-                <p className="mt-2 text-sm text-slate-300">
-                  Overall score moved {historyTrend.delta > 0 ? "up" : historyTrend.delta < 0 ? "down" : "flat"} by{" "}
-                  {Math.abs(historyTrend.delta)} points since your previous scan.
-                </p>
+              {historySummary ? (
+                <p className="mt-2 text-sm text-slate-300">{historySummary}</p>
               ) : (
                 <p className="mt-2 text-sm text-slate-300">Each scan is saved to your account for trend comparison.</p>
               )}
