@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Skinova System Architecture — YouCam Skin AI Hackathon</title>
+<style>
+  :root {
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #64748b;
+    --fe: #dbeafe; --fe-b: #1d4ed8; --fe-t: #1e3a8a;
+    --be: #ffedd5; --be-b: #c2410c; --be-t: #7c2d12;
+    --yc: #cffafe; --yc-b: #0891b2; --yc-t: #155e75;
+    --ai: #f3e8ff; --ai-b: #7e22ce; --ai-t: #581c87;
+    --db: #dcfce7; --db-b: #15803d; --db-t: #14532d;
+    --bg: #f8fafc;
+    --accent: #22d3ee;
+    --accent2: #34d399;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 36px 40px 48px;
+  }
+  header { text-align: center; margin-bottom: 28px; }
+  header h1 { font-size: 34px; letter-spacing: -0.02em; margin-bottom: 6px; }
+  header p { color: var(--muted); font-size: 16px; max-width: 920px; margin: 0 auto; }
+  .badge-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 16px 0 24px;
+  }
+  .badge {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; background: #e2e8f0; color: var(--ink);
+  }
+  .badge.accent {
+    background: linear-gradient(135deg, #cffafe, #dbeafe);
+    border: 1px solid #67e8f9;
+  }
+  .legend {
+    display: flex; justify-content: center; gap: 18px; margin: 18px 0 28px;
+    font-size: 13px; font-weight: 600; flex-wrap: wrap;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .swatch { width: 18px; height: 18px; border-radius: 4px; border: 2px solid; }
+  .swatch.fe { background: var(--fe); border-color: var(--fe-b); }
+  .swatch.be { background: var(--be); border-color: var(--be-b); }
+  .swatch.yc { background: var(--yc); border-color: var(--yc-b); }
+  .swatch.ai { background: var(--ai); border-color: var(--ai-b); }
+  .swatch.db { background: var(--db); border-color: var(--db-b); }
+
+  .layer {
+    border: 2px solid; border-radius: 16px; padding: 18px 20px 20px;
+    margin: 0 auto 0; position: relative; background: #fff;
+  }
+  .layer h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+  .cards { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .card {
+    border: 2px solid; border-radius: 12px; padding: 14px 16px;
+    min-width: 180px; max-width: 320px; flex: 1;
+  }
+  .card strong { display: block; font-size: 14px; margin-bottom: 6px; }
+  .card p { font-size: 12px; line-height: 1.4; color: var(--muted); }
+  .card ul { margin: 6px 0 0 16px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+  .fe { border-color: var(--fe-b); }
+  .fe h2, .card.fe strong { color: var(--fe-t); }
+  .card.fe { background: var(--fe); border-color: var(--fe-b); }
+  .be { border-color: var(--be-b); }
+  .be h2, .card.be strong { color: var(--be-t); }
+  .card.be { background: var(--be); border-color: var(--be-b); }
+  .yc { border-color: var(--yc-b); }
+  .yc h2, .card.yc strong { color: var(--yc-t); }
+  .card.yc { background: var(--yc); border-color: var(--yc-b); }
+  .ai { border-color: var(--ai-b); }
+  .ai h2, .card.ai strong { color: var(--ai-t); }
+  .card.ai { background: var(--ai); border-color: var(--ai-b); }
+  .db { border-color: var(--db-b); }
+  .db h2, .card.db strong { color: var(--db-t); }
+  .card.db { background: var(--db); border-color: var(--db-b); }
+
+  .arrow {
+    text-align: center; padding: 10px 0; color: var(--line);
+    font-size: 13px; font-weight: 600;
+  }
+  .arrow .shaft { font-size: 28px; line-height: 1; color: var(--ink); }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .split-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .chip {
+    display: inline-block; background: #e2e8f0; border-radius: 999px;
+    padding: 2px 10px; font-size: 11px; font-weight: 600; color: var(--ink); margin: 2px 4px;
+  }
+  .flow-note {
+    margin-top: 28px; border: 1px solid #cbd5e1; border-radius: 12px;
+    background: #fff; padding: 16px 20px;
+  }
+  .flow-note h3 { font-size: 15px; margin-bottom: 10px; }
+  .flow-note ol { margin-left: 20px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+  .flow-note li strong { color: var(--ink); }
+  .tiers {
+    margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  .tier {
+    background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 16px;
+  }
+  .tier h4 { font-size: 13px; margin-bottom: 6px; color: var(--ink); }
+  .tier p { font-size: 12px; color: var(--muted); line-height: 1.45; }
+  code { font-size: 11px; background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+  @media (max-width: 1100px) {
+    .split, .split-3, .tiers { grid-template-columns: 1fr; }
+    body { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Skinova — System Architecture</h1>
+    <p>YouCam API Skin AI &amp; Apparel VTO Hackathon · Track 1 — Skin AI · Consumer skincare intelligence from selfie scan to routine, coach, and progress</p>
+    <div class="badge-row">
+      <span class="badge accent">Next.js 15 + React 19</span>
+      <span class="badge">Vercel Serverless</span>
+      <span class="badge">Neon Postgres + pgvector</span>
+      <span class="badge">YouCam Skin Analysis API</span>
+      <span class="badge">Qwen Cloud DashScope</span>
+      <span class="badge">skinova-ai.vercel.app</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><i class="swatch fe"></i> Frontend (Browser)</span>
+    <span><i class="swatch be"></i> Backend (Next.js API)</span>
+    <span><i class="swatch yc"></i> YouCam API</span>
+    <span><i class="swatch ai"></i> Qwen Cloud</span>
+    <span><i class="swatch db"></i> Database</span>
+  </div>
+
+  <!-- LAYER 1: FRONTEND -->
+  <section class="layer fe">
+    <h2>1 · Frontend — Next.js 15 + React 19 (Vercel CDN)</h2>
+    <div class="cards">
+      <div class="card fe">
+        <strong>Public site</strong>
+        <p>Landing at <code>/</code> with <strong>Live status</strong> (demo vs live scan) · Privacy <code>/privacy</code> · Terms <code>/terms</code></p>
+      </div>
+      <div class="card fe">
+        <strong>Authentication</strong>
+        <p>Sign up <code>/signup</code> · Log in <code>/login</code> · JWT session cookie (HTTP-only, 7-day TTL)</p>
+      </div>
+      <div class="card fe">
+        <strong>App shell (auth-gated)</strong>
+        <ul>
+          <li><strong>Dashboard</strong> — metrics &amp; navigation hub</li>
+          <li><strong>Skin Scan</strong> — upload / samples + 6-step live stepper</li>
+          <li><strong>Results</strong> · <strong>Routine</strong> · <strong>Progress</strong></li>
+          <li><strong>Skin Coach</strong> — grounded Q&amp;A (Live AI / Guided)</li>
+          <li><strong>Settings</strong> — clear scan &amp; coach history</li>
+        </ul>
+      </div>
+      <div class="card fe">
+        <strong>Client state</strong>
+        <p><code>sessionStorage</code> holds latest scan analysis for Results, Routine, Coach, and Progress. Middleware blocks unauthenticated routes.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="arrow">
+    <div class="shaft">↓</div>
+    <span class="chip">POST /api/auth/*</span>
+    <span class="chip">POST /api/skinova/scan</span>
+    <span class="chip">GET /api/skinova/scan-status/[id]</span>
+    <span class="chip">POST /api/skinova/coach</span>
+    <span class="chip">GET /api/skinova/health</span>
+    JSON ↑
+  </div>
+
+  <!-- LAYER 2: BACKEND -->
+  <section class="layer be">
+    <h2>2 · Backend — Next.js API Routes + Server Libraries (Vercel Functions)</h2>
+    <div class="cards">
+      <div class="card be">
+        <strong>Auth API</strong>
+        <p><code>/api/auth/signup</code> · <code>login</code> · <code>logout</code> · <code>session</code> — bcrypt passwords, JWT cookies via <code>jose</code></p>
+      </div>
+      <div class="card be">
+        <strong>Skin Scan pipeline</strong>
+        <p><code>run-skin-scan.ts</code> → <code>youcam.ts</code> · validate image · file metadata · presigned upload · task create · poll · normalize <code>ui_score</code> → <code>AnalysisResult</code></p>
+      </div>
+      <div class="card be">
+        <strong>Skin Coach pipeline</strong>
+        <p><code>coach-scope</code> guard → <code>rag.ts</code> hybrid retrieval → <code>coach-llm.ts</code> Qwen call → <code>coach-validator</code> · conversation history from Neon</p>
+      </div>
+      <div class="card be">
+        <strong>Product routes</strong>
+        <p><code>/api/skinova/scan</code> · <code>scan-status</code> · <code>coach</code> · <code>health</code> · <code>reset</code> · internal <code>/api/youcam/*</code> proxy for smoke tests</p>
+      </div>
+      <div class="card be">
+        <strong>Knowledge ingest</strong>
+        <p><code>scripts/ingest-knowledge.mjs</code> embeds <code>content/knowledge/skincare.json</code> (38 chunks) into pgvector via DashScope <code>text-embedding-v4</code></p>
+      </div>
+      <div class="card be">
+        <strong>Security boundary</strong>
+        <p><code>API_KEY</code>, <code>QWEN_API_KEY</code>, <code>DATABASE_URL</code> server-only · never exposed to browser bundles · <code>middleware.ts</code> protects app routes</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="arrow">
+    <div class="shaft">↓ &nbsp;&nbsp;&nbsp; ↓ &nbsp;&nbsp;&nbsp; ↓</div>
+    Backend talks to <strong>YouCam</strong>, <strong>Qwen Cloud</strong>, and <strong>Neon</strong> in parallel
+  </div>
+
+  <!-- LAYER 3: EXTERNAL SERVICES (split) -->
+  <div class="split-3">
+    <section class="layer yc">
+      <h2>3 · YouCam API (Perfect Corp.)</h2>
+      <div class="cards">
+        <div class="card yc">
+          <strong>AI Skin Analysis</strong>
+          <p><code>POST /s2s/v2.0/file/skin-analysis</code> → presigned upload → <code>POST /task/skin-analysis</code> → poll <code>GET /task/.../{id}</code></p>
+        </div>
+        <div class="card yc">
+          <strong>Output normalization</strong>
+          <p><code>ui_score</code> for acne, pores, texture, redness, moisture, oiliness, wrinkles → Skinova concern cards &amp; routine generator</p>
+        </div>
+        <div class="card yc">
+          <strong>Modes</strong>
+          <p><strong>Live</strong> when <code>API_KEY</code> set &amp; <code>SKINOVA_DEMO_MODE=false</code> · <strong>Demo</strong> mock analysis when credentials absent</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layer ai">
+      <h2>4 · Qwen Cloud (DashScope)</h2>
+      <div class="cards">
+        <div class="card ai">
+          <strong>qwen3-max</strong>
+          <p>Skin Coach replies — grounded system prompt (<code>skinova-coach-qwen-v2</code>) · temperature 0.2 · scan + RAG context in prompt</p>
+        </div>
+        <div class="card ai">
+          <strong>text-embedding-v4</strong>
+          <p>1536-dim embeddings for knowledge chunk retrieval and ingest (<code>npm run knowledge:ingest</code>)</p>
+        </div>
+        <div class="card ai">
+          <strong>Coach modes</strong>
+          <p><strong>Live AI</strong> when <code>QWEN_API_KEY</code> configured · <strong>Guided</strong> rule-based fallback if API unavailable</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layer db">
+      <h2>5 · Neon Postgres + pgvector</h2>
+      <div class="cards">
+        <div class="card db">
+          <strong>users</strong>
+          <p>Account records — name, email, bcrypt password hash · created via signup</p>
+        </div>
+        <div class="card db">
+          <strong>knowledge_chunks</strong>
+          <p>Skinova curated skincare knowledge (38 chunks) · vector(1536) · hybrid RAG source for coach</p>
+        </div>
+        <div class="card db">
+          <strong>coach_messages</strong>
+          <p>Per-user coach conversation history (last turns used for multi-turn context)</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- MODE TIERS -->
+  <div class="tiers">
+    <div class="tier">
+      <h4>Live scan mode</h4>
+      <p>Real YouCam tasks — file metadata, presigned upload, async poll, live <code>ui_score</code> normalization.</p>
+    </div>
+    <div class="tier">
+      <h4>Demo scan mode</h4>
+      <p>Representative mock analysis when <code>SKINOVA_DEMO_MODE=true</code> or no <code>API_KEY</code> — no units consumed.</p>
+    </div>
+    <div class="tier">
+      <h4>Live Skin Coach</h4>
+      <p>Scope guard → hybrid RAG (vector + topic boost) → Qwen → validator. Answers cite knowledge + scan context only.</p>
+    </div>
+    <div class="tier">
+      <h4>Guided coach fallback</h4>
+      <p>Deterministic education templates when Qwen is not configured or API errors occur.</p>
+    </div>
+    <div class="tier">
+      <h4>Scan session (browser)</h4>
+      <p>Latest analysis in <code>sessionStorage</code> — powers Results, Routine, Coach personalization, Progress trends.</p>
+    </div>
+    <div class="tier">
+      <h4>Static assets</h4>
+      <p><code>public/samples/</code> YouCam playground selfies · <code>public/screenshots/</code> submission captures · brand assets.</p>
+    </div>
+  </div>
+
+  <!-- PRIMARY FLOWS -->
+  <div class="flow-note">
+    <h3>Primary data flows</h3>
+    <ol>
+      <li><strong>Auth:</strong> Browser <code>POST /api/auth/signup|login</code> → Neon <code>users</code> → HTTP-only JWT session cookie → middleware allows <code>/dashboard</code>, <code>/scan</code>, etc.</li>
+      <li><strong>Skin scan (live):</strong> Browser uploads selfie → <code>POST /api/skinova/scan</code> → YouCam file API + presigned PUT + task create → client polls <code>GET /api/skinova/scan-status/[taskId]</code> → <code>AnalysisResult</code> saved to <code>sessionStorage</code> → Results / Routine / Progress pages.</li>
+      <li><strong>Skin Coach (live):</strong> Browser <code>POST /api/skinova/coach</code> with message + scan context → scope guard → embed query (Qwen) → retrieve <code>knowledge_chunks</code> (pgvector + topic boost) → Qwen chat completion with grounded prompt → validate → store in <code>coach_messages</code> → JSON answer to UI.</li>
+      <li><strong>Health / status:</strong> Landing <code>GET /api/skinova/health</code> reports <code>mode</code> (live/demo), <code>scanReady</code>, and <code>coachReady</code> without exposing secrets.</li>
+      <li><strong>Knowledge maintenance:</strong> Edit <code>content/knowledge/skincare.json</code> → <code>npm run knowledge:ingest -- --force</code> → re-embed all chunks into Neon.</li>
+      <li><strong>Deploy:</strong> GitHub → Vercel build → serverless functions for all API routes · env vars for <code>DATABASE_URL</code>, <code>AUTH_SECRET</code>, <code>API_KEY</code>, <code>QWEN_API_KEY</code>.</li>
+    </ol>
+  </div>
+
+  <div class="flow-note" style="margin-top: 16px;">
+    <h3>Module map (repository)</h3>
+    <ol>
+      <li><strong>UI:</strong> <code>app/components/*</code> — <code>scan-experience</code>, <code>coach-experience</code>, <code>landing-live-status</code>, <code>app-shell</code></li>
+      <li><strong>Scan core:</strong> <code>app/lib/youcam.ts</code> · <code>run-skin-scan.ts</code> · <code>scan-session.ts</code> · <code>scan-steps.ts</code></li>
+      <li><strong>Coach core:</strong> <code>coach-service.ts</code> · <code>coach-llm.ts</code> · <code>coach-contract.ts</code> · <code>coach-scope.ts</code> · <code>rag.ts</code> · <code>embeddings.ts</code></li>
+      <li><strong>Data:</strong> <code>db.ts</code> · <code>auth.ts</code> · <code>knowledge-db.ts</code> · <code>knowledge-seed.ts</code></li>
+      <li><strong>Ops:</strong> <code>scripts/setup-and-run.sh</code> · <code>youcam-smoke-test.mjs</code> · <code>coach-smoke-test.mjs</code> · <code>ingest-knowledge.mjs</code></li>
+    </ol>
+  </div>
+</body>
+</html>

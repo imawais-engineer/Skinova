@@ -14,6 +14,8 @@ Skinova converts a selfie scan into skin insights, routine guidance, progress tr
 
 Full project documentation lives in [docs/README.md](docs/README.md), including architecture, roadmap, API integration, submission package, and testing.
 
+**System architecture diagram:** [docs/architecture.html](docs/architecture.html) — interactive layer view (frontend, API, YouCam, Qwen, Neon) matching the Memoria submission style. Open locally in a browser or view on GitHub.
+
 ## Quick Start (one command)
 
 From a fresh machine with Node.js 20+ and git installed:

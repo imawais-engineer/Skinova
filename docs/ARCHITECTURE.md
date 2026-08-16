@@ -2,6 +2,8 @@
 
 Skinova is a Next.js 15 full-stack web app. The browser never calls YouCam directly; all Skin AI requests run through server-side API routes. User accounts persist in Neon Postgres; the latest scan session persists in the browser until the user clears it or runs a new scan.
 
+**Visual diagram:** [architecture.html](architecture.html) — full layer view (frontend → API → YouCam / Qwen / Neon) with module connectivity and primary data flows.
+
 ## High-level diagram
 
 ```mermaid

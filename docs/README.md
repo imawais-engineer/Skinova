@@ -11,7 +11,8 @@ Hackathon track: **Skin AI** ([YouCam API Skin AI & Apparel VTO Hackathon](https
 | Document | Purpose |
 | --- | --- |
 | [../README.md](../README.md) | Quick start, environment, judge flow |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | System design, routes, data flow |
+| [architecture.html](architecture.html) | **Visual system architecture** — layers, modules, data flows |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | System design (markdown + mermaid) |
 | [API_INTEGRATION.md](API_INTEGRATION.md) | YouCam Skin Analysis integration |
 | [BUILD_ROADMAP.md](BUILD_ROADMAP.md) | Build phases and future work |
 | [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md) | Product positioning and rubric map |
