@@ -5,11 +5,11 @@ function mapYouCamError(error: unknown) {
   const code = typeof error === "string" ? error : "";
 
   if (code === "error_src_face_too_small") {
-    return "The face in your photo is too small. Use a closer front-facing selfie with your face centered and filling most of the frame.";
+    return "The face in your photo is too small. Move closer so your face fills most of the frame, then try again.";
   }
 
   if (code === "error_src_face_out_of_bound") {
-    return "The face in your photo is cut off or out of frame. Center your full face with even lighting and try again.";
+    return "Your face is cut off or out of frame. Center your full face with even lighting and try again.";
   }
 
   if (code === "error_lighting_dark") {
@@ -17,14 +17,18 @@ function mapYouCamError(error: unknown) {
   }
 
   if (code === "error_below_min_image_size") {
-    return "The image resolution is too small. Use a higher-quality photo and try again.";
+    return "The image resolution is too small. Use a higher-quality photo (at least 480px on the short side).";
   }
 
   if (code === "error_exceed_max_image_size") {
-    return "The image file is too large. Use a smaller photo and try again.";
+    return "The image file is too large. Use a photo under 10MB.";
   }
 
-  return "Skin scan processing failed. Use a clear, front-facing image and try again.";
+  if (code === "error_no_face") {
+    return "No face was detected. Use a clear front-facing selfie with your face centered.";
+  }
+
+  return "Skin scan could not finish. Use a clear front-facing selfie that fills the frame, then try again.";
 }
 
 export async function GET(_request: Request, context: { params: Promise<{ taskId: string }> }) {
@@ -49,6 +53,13 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
 
   if (body.analysis) {
     return NextResponse.json({ status: "success", analysis: body.analysis }, { status: 200 });
+  }
+
+  if (taskStatus === "success") {
+    return NextResponse.json(
+      { status: "error", error: "Scan finished but no analysis was returned. Please try again." },
+      { status: 502 }
+    );
   }
 
   return NextResponse.json({ status: taskStatus }, { status: result.status === 200 ? 202 : result.status });

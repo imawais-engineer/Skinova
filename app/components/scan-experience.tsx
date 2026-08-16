@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { CheckCircle2, ImageIcon, Loader2, UploadCloud } from "lucide-react";
-import { coachSamplePrompts, scanSamples, skinScanRequirements } from "../lib/demo-samples";
-import { Panel, ScoreBar, StatusBadge } from "./ui";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Loader2, RefreshCw, UploadCloud } from "lucide-react";
+import { scanSamples, skinScanRequirements } from "../lib/demo-samples";
+import { validateImageFile } from "../lib/image-validation";
 import type { AnalysisResult } from "../lib/skinova-data";
 import { saveScanSession } from "../lib/scan-session";
+import { Panel, ScoreBar, StatusBadge } from "./ui";
 
 type AnalyzeResponse = {
   status?: string;
@@ -17,13 +19,37 @@ type AnalyzeResponse = {
   message?: string;
 };
 
+type ScanPhase = "pick" | "scanning" | "result" | "error";
+
 export function ScanExperience() {
   const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedSampleId, setSelectedSampleId] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "running" | "done" | "error">("idle");
-  const [message, setMessage] = useState("Choose a clear selfie or try one of the demo samples below.");
+  const [phase, setPhase] = useState<ScanPhase>("pick");
+  const [message, setMessage] = useState("");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [scanMode, setScanMode] = useState<"demo" | "live" | null>(null);
+  const [pollStep, setPollStep] = useState(0);
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const showSamples = phase === "pick" && !file && !selectedSampleId;
+
+  const statusLabel = useMemo(() => {
+    if (phase === "scanning") return "Analyzing";
+    if (phase === "result") return scanMode === "demo" ? "Demo complete" : "Complete";
+    if (phase === "error") return "Needs attention";
+    return file || selectedSampleId ? "Ready to scan" : "Upload a selfie";
+  }, [file, phase, scanMode, selectedSampleId]);
 
   function persistScanResult(result: AnalysisResult, mode: "demo" | "live") {
     saveScanSession({
@@ -34,9 +60,66 @@ export function ScanExperience() {
     setScanMode(mode);
   }
 
+  function resetScan() {
+    setFile(null);
+    setSelectedSampleId(null);
+    setAnalysis(null);
+    setScanMode(null);
+    setMessage("");
+    setPollStep(0);
+    setPhase("pick");
+  }
+
+  async function pollLiveTask(pollingUrl: string) {
+    const maxAttempts = 20;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      setPollStep(attempt);
+      const delay = attempt === 1 ? 1200 : attempt <= 4 ? 1800 : 2500;
+      await new Promise((resolve) => setTimeout(resolve, delay));
+
+      const response = await fetch(pollingUrl);
+      const data = (await response.json()) as AnalyzeResponse;
+
+      if (data.analysis) {
+        return {
+          ok: true,
+          analysis: data.analysis,
+          message: "Live skin analysis complete. Results are saved to your session."
+        };
+      }
+
+      if (data.status === "success" && data.analysis) {
+        return {
+          ok: true,
+          analysis: data.analysis,
+          message: "Skin scan completed."
+        };
+      }
+
+      if (!response.ok || data.status === "error" || data.error) {
+        return {
+          ok: false,
+          analysis: null,
+          message: data.error || "The scan could not be completed."
+        };
+      }
+
+      setMessage(`YouCam is analyzing your photo… (${attempt}/${maxAttempts})`);
+    }
+
+    return {
+      ok: false,
+      analysis: null,
+      message: "The scan is taking longer than expected. Please try again in a moment."
+    };
+  }
+
   async function runScanRequest(formData: FormData, modeHint?: "demo" | "live") {
-    setStatus("running");
-    setMessage("Preparing secure skin scan...");
+    setPhase("scanning");
+    setPollStep(0);
+    setMessage("Uploading photo securely…");
+    setAnalysis(null);
 
     try {
       const response = await fetch("/api/skinova/scan", {
@@ -46,254 +129,242 @@ export function ScanExperience() {
       const data = (await response.json()) as AnalyzeResponse;
 
       if (!response.ok || data.error) {
-        setStatus("error");
-        setMessage(data.error || "The scan could not be completed. Review the photo requirements and try again.");
+        setPhase("error");
+        setMessage(data.error || "The scan could not be completed.");
         return;
       }
 
       if (data.pollingUrl) {
-        setMessage(data.message || "Skin scan started. Waiting for results...");
+        setMessage(data.message || "Running live skin analysis…");
         const finalResult = await pollLiveTask(data.pollingUrl);
         const nextAnalysis = finalResult.analysis || data.analysis || null;
-        if (nextAnalysis) {
+
+        if (nextAnalysis && finalResult.ok) {
           persistScanResult(nextAnalysis, modeHint || data.mode || "live");
+          setAnalysis(nextAnalysis);
+          setMessage(finalResult.message);
+          setPhase("result");
+          return;
         }
-        setAnalysis(nextAnalysis);
+
+        setAnalysis(null);
         setMessage(finalResult.message);
-        setStatus(finalResult.ok ? "done" : "error");
+        setPhase("error");
         return;
       }
 
       if (data.analysis) {
         persistScanResult(data.analysis, data.mode || "demo");
+        setAnalysis(data.analysis);
+        setMessage(data.message || "Skin scan completed.");
+        setPhase("result");
+        return;
       }
 
-      setAnalysis(data.analysis || null);
-      setMessage(data.message || "Skin scan completed.");
-      setStatus("done");
+      setPhase("error");
+      setMessage("No analysis was returned. Please try again.");
     } catch {
-      setStatus("error");
-      setMessage("The scan could not be completed. Review the photo requirements and try again.");
+      setPhase("error");
+      setMessage("Network error while running the scan. Check your connection and try again.");
     }
   }
 
   async function analyzeSelectedFile() {
     if (!file) {
-      setStatus("error");
-      setMessage("Choose a photo first, or try one of the demo samples below.");
+      setPhase("error");
+      setMessage("Choose a selfie first, or pick one of the verified sample faces below.");
+      return;
+    }
+
+    const validation = await validateImageFile(file);
+    if (!validation.ok) {
+      setPhase("error");
+      setMessage(validation.message);
       return;
     }
 
     setSelectedSampleId(null);
     const formData = new FormData();
     formData.append("file", file);
-    await runScanRequest(formData);
+    await runScanRequest(formData, "live");
   }
 
-  async function analyzeSample(sampleId: string, mode: "demo" | "live") {
+  async function analyzeSample(sampleId: string) {
     setFile(null);
     setSelectedSampleId(sampleId);
     const formData = new FormData();
     formData.append("sampleId", sampleId);
-    await runScanRequest(formData, mode);
+    await runScanRequest(formData, "live");
   }
 
-  async function pollLiveTask(pollingUrl: string) {
-    for (let attempt = 1; attempt <= 8; attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, attempt === 1 ? 1500 : 3000));
-      const response = await fetch(pollingUrl);
-      const data = (await response.json()) as AnalyzeResponse;
+  async function onFileChange(nextFile: File | null) {
+    setSelectedSampleId(null);
+    setAnalysis(null);
+    setPhase("pick");
+    setMessage("");
 
-      if (data.analysis) {
-        return {
-          ok: true,
-          analysis: data.analysis,
-          message: "Skin scan completed and was converted into Skinova guidance."
-        };
-      }
-
-      if (data.status === "success") {
-        return {
-          ok: true,
-          analysis: data.analysis || null,
-          message: "Skin scan completed."
-        };
-      }
-
-      if (!response.ok || data.status === "error" || data.error) {
-        return {
-          ok: false,
-          analysis: null,
-          message: data.error || "The scan could not be completed. Review the photo requirements and try again."
-        };
-      }
-
-      setMessage(`Skin scan is ${data.status || "running"}... checking results ${attempt}/8.`);
+    if (!nextFile) {
+      setFile(null);
+      return;
     }
 
-    return {
-      ok: false,
-      analysis: null,
-      message: "The scan is still processing. Try again in a moment."
-    };
+    const validation = await validateImageFile(nextFile);
+    if (!validation.ok) {
+      setFile(null);
+      setPhase("error");
+      setMessage(validation.message);
+      return;
+    }
+
+    setFile(nextFile);
   }
 
   return (
-    <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-      <Panel>
-        <div className="flex items-start justify-between gap-4">
+    <div className="flex flex-col gap-4">
+      <Panel className="!p-4 sm:!p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-xl font-semibold text-white">Selfie scan</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
-              Upload your own photo or use a verified demo sample to run the full Skinova flow.
+            <h2 className="text-lg font-semibold text-white sm:text-xl">Upload your selfie</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-400">
+              Live YouCam Skin AI analysis runs on the photo you choose. Results sync to Results, Routine, and Progress.
             </p>
           </div>
-          <StatusBadge tone={status === "done" ? "mint" : status === "error" ? "rose" : "cyan"}>
-            {status === "running" ? "Running" : status === "done" ? (scanMode === "demo" ? "Demo complete" : "Complete") : status === "error" ? "Needs attention" : "Ready"}
+          <StatusBadge tone={phase === "result" ? "mint" : phase === "error" ? "rose" : phase === "scanning" ? "cyan" : "slate"}>
+            {statusLabel}
           </StatusBadge>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.05] p-4">
-          <h3 className="text-sm font-semibold text-cyan-100">{skinScanRequirements.title}</h3>
-          <p className="mt-2 text-xs leading-6 text-slate-300">{skinScanRequirements.summary}</p>
-          <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-300">
-            {skinScanRequirements.items.map((item) => (
-              <li key={item} className="flex gap-2">
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(220px,280px)]">
+          <label className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-4 py-6 text-center transition hover:bg-cyan-300/[0.08]">
+            {previewUrl ? (
+              <div className="relative h-40 w-full max-w-xs overflow-hidden rounded-xl border border-white/10">
+                <Image src={previewUrl} alt="Selected selfie preview" fill className="object-cover" unoptimized />
+              </div>
+            ) : (
+              <>
+                <UploadCloud className="h-8 w-8 text-cyan-200" aria-hidden="true" />
+                <span className="mt-3 text-sm font-medium text-white">Choose a front-facing selfie</span>
+                <span className="mt-1 text-xs leading-5 text-slate-400">JPG or PNG · face centered · well lit</span>
+              </>
+            )}
+            <input
+              className="sr-only"
+              type="file"
+              accept="image/png,image/jpeg"
+              disabled={phase === "scanning"}
+              onChange={(event) => {
+                void onFileChange(event.target.files?.[0] || null);
+              }}
+            />
+          </label>
 
-        <label className="mt-6 flex min-h-52 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-5 py-8 text-center transition hover:bg-cyan-300/[0.08]">
-          <UploadCloud className="h-9 w-9 text-cyan-200" aria-hidden="true" />
-          <span className="mt-4 text-sm font-medium text-white">{file ? file.name : "Choose your own selfie"}</span>
-          <span className="mt-2 text-xs leading-5 text-slate-400">JPG or PNG. Face centered, well lit, high resolution.</span>
-          <input
-            className="sr-only"
-            type="file"
-            accept="image/png,image/jpeg"
-            onChange={(event) => {
-              setFile(event.target.files?.[0] || null);
-              setSelectedSampleId(null);
-            }}
-          />
-        </label>
-
-        <div className="mt-5">
-          <button
-            type="button"
-            onClick={analyzeSelectedFile}
-            disabled={status === "running"}
-            className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-          >
-            {status === "running" && !selectedSampleId ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
-            Analyze selected photo
-          </button>
-        </div>
-
-        <div className="mt-6">
-          <div className="flex items-center gap-2">
-            <ImageIcon className="h-4 w-4 text-violet-200" aria-hidden="true" />
-            <h3 className="text-sm font-semibold text-white">Try one of these</h3>
-          </div>
-          <p className="mt-2 text-xs leading-5 text-slate-400">
-            Demo-safe samples help judges and testers complete a successful scan without getting stuck on photo quality issues.
-          </p>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {scanSamples.map((sample) => (
+          <div className="flex flex-col gap-2">
+            {file ? (
               <button
-                key={sample.id}
                 type="button"
-                disabled={status === "running"}
-                onClick={() => analyzeSample(sample.id, sample.mode)}
-                className={[
-                  "rounded-2xl border p-3 text-left transition",
-                  selectedSampleId === sample.id
-                    ? "border-cyan-300/40 bg-cyan-300/10"
-                    : "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
-                ].join(" ")}
+                onClick={() => void analyzeSelectedFile()}
+                disabled={phase === "scanning"}
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {sample.previewPath ? (
-                  <div className="relative mb-3 aspect-square overflow-hidden rounded-xl border border-white/10">
-                    <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="160px" />
-                  </div>
-                ) : (
-                  <div className="mb-3 flex aspect-square items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-xs text-slate-400">
-                    Guided demo
-                  </div>
-                )}
-                <StatusBadge tone={sample.mode === "live" ? "mint" : "cyan"}>{sample.badge}</StatusBadge>
-                <p className="mt-3 text-sm font-semibold text-white">{sample.label}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-400">{sample.description}</p>
+                {phase === "scanning" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+                Run live scan
               </button>
-            ))}
+            ) : null}
+
+            {(phase === "result" || phase === "error" || file || selectedSampleId) && phase !== "scanning" ? (
+              <button
+                type="button"
+                onClick={resetScan}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                Try another scan
+              </button>
+            ) : null}
+
+            {phase === "scanning" ? (
+              <p className="text-xs leading-5 text-cyan-100/90">
+                {message}
+                {pollStep > 0 ? ` Step ${pollStep}.` : null}
+              </p>
+            ) : message ? (
+              <p className={`text-xs leading-5 ${phase === "error" ? "text-rose-100/90" : "text-slate-400"}`}>{message}</p>
+            ) : null}
           </div>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-sm leading-6 text-slate-300">{message}</p>
-        </div>
-
-        <div className="mt-5 grid gap-3 text-sm text-slate-300">
-          {["Front-facing selfie", "Even lighting", "Educational guidance only", "Demo samples available"].map((item) => (
-            <div key={item} className="flex items-center gap-3">
-              <CheckCircle2 className="h-4 w-4 text-emerald-300" aria-hidden="true" />
-              <span>{item}</span>
+        {analysis && phase === "result" ? (
+          <div className="mt-5 space-y-4 border-t border-white/10 pt-5">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-sm text-slate-400">Overall skin score</p>
+                <p className="mt-1 text-3xl font-semibold text-white sm:text-4xl">{analysis.overallScore}%</p>
+              </div>
+              <StatusBadge tone="mint">{scanMode === "demo" ? "Demo" : "Live"} analysis</StatusBadge>
             </div>
-          ))}
-        </div>
-      </Panel>
-
-      <Panel>
-        <h2 className="text-xl font-semibold text-white">Live result preview</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-400">
-          This preview is what judges should see immediately after the scan completes.
-        </p>
-
-        {analysis ? (
-          <div className="mt-6 space-y-5">
-            <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-5">
-              <p className="text-sm text-emerald-100">Skin health score</p>
-              <p className="mt-2 text-5xl font-semibold text-white">{analysis.overallScore}%</p>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/80">{analysis.summary}</p>
-            </div>
-            <div className="space-y-4">
+            <p className="text-sm leading-6 text-slate-300">{analysis.summary}</p>
+            <div className="space-y-3">
               {analysis.concerns.slice(0, 4).map((concern) => (
                 <ScoreBar key={concern.type} label={concern.type} score={concern.score} detail={concern.explanation} />
               ))}
             </div>
-            <a
-              href="/results"
-              className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              Open full results
-            </a>
-          </div>
-        ) : (
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-8 text-center">
-            <p className="text-sm leading-6 text-slate-400">
-              Upload a selfie or choose a demo sample to show skin scores, plain-language insights, and routine guidance.
-            </p>
-          </div>
-        )}
-
-        <div className="mt-6 rounded-2xl border border-violet-300/20 bg-violet-300/[0.05] p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-100">Coach sample prompts</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {coachSamplePrompts.map((prompt) => (
-              <a
-                key={prompt}
-                href={`/coach?prompt=${encodeURIComponent(prompt)}`}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-slate-200 transition hover:bg-white/[0.08]"
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/results"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
               >
-                {prompt}
-              </a>
+                View full results
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/routine"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Open routine
+              </Link>
+            </div>
+          </div>
+        ) : null}
+      </Panel>
+
+      {showSamples ? (
+        <Panel className="!p-4 sm:!p-5">
+          <h3 className="text-sm font-semibold text-white">Or try a verified sample face</h3>
+          <p className="mt-1 text-xs leading-5 text-slate-400">
+            Each sample is a real selfie verified with YouCam Skin AI — different skin traits for testing.
+          </p>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {scanSamples.map((sample) => (
+              <button
+                key={sample.id}
+                type="button"
+                onClick={() => void analyzeSample(sample.id)}
+                className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left transition hover:bg-white/[0.05] disabled:opacity-60"
+              >
+                <div className="relative mb-3 aspect-[4/5] overflow-hidden rounded-lg border border-white/10">
+                  <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="200px" />
+                </div>
+                <StatusBadge tone="mint">{sample.trait}</StatusBadge>
+                <p className="mt-2 text-sm font-semibold text-white">{sample.label}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-400">{sample.description}</p>
+              </button>
             ))}
           </div>
-        </div>
-      </Panel>
+        </Panel>
+      ) : null}
+
+      <details className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3">
+        <summary className="cursor-pointer text-sm font-medium text-slate-200">{skinScanRequirements.title}</summary>
+        <p className="mt-3 text-xs leading-6 text-slate-400">{skinScanRequirements.summary}</p>
+        <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+          {skinScanRequirements.items.map((item) => (
+            <li key={item} className="flex gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
     </div>
   );
 }

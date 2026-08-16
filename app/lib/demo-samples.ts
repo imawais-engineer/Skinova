@@ -4,71 +4,62 @@ export type ScanSample = {
   id: string;
   label: string;
   description: string;
-  mode: "live" | "demo";
-  fileName?: string;
-  previewPath?: string;
-  badge: string;
+  fileName: string;
+  previewPath: string;
+  trait: string;
 };
 
 export const skinScanRequirements = {
-  title: "Photo requirements for Skin Scan",
-  summary:
-    "YouCam Skin AI works best with a clear front-facing selfie. If a photo fails, it is usually due to framing or resolution — not a broken app.",
+  title: "Photo requirements",
+  summary: "YouCam Skin AI needs a clear front-facing selfie. Most failures are framing or lighting — not a broken app.",
   items: [
-    "Front-facing selfie with your face centered and looking at the camera",
-    "Face should fill most of the frame (roughly 60% or more of image width)",
+    "Front-facing selfie, face centered, eyes toward the camera",
+    "Face fills most of the frame (about 60% or more of the width)",
     "Short side at least 480px; higher resolution is better",
-    "Even lighting, minimal blur, and no heavy filters",
-    "JPG or PNG format, under 10MB",
-    "Avoid group photos, side profiles, cropped faces, or very dark images"
-  ],
-  commonErrors: [
-    {
-      code: "error_below_min_image_size",
-      message: "Image resolution is too small. Use a higher-quality photo."
-    },
-    {
-      code: "error_src_face_too_small",
-      message: "Face is too small in the frame. Move closer or crop tighter around your face."
-    },
-    {
-      code: "error_src_face_out_of_bound",
-      message: "Face is cut off or out of frame. Center your full face in the photo."
-    },
-    {
-      code: "error_lighting_dark",
-      message: "Photo is too dark. Retake it in brighter, even lighting."
-    }
+    "Even lighting, minimal blur, no heavy filters",
+    "JPG or PNG under 10MB"
   ]
 };
 
+/** YouCam-verified face selfies bundled in /public/samples */
 export const scanSamples: ScanSample[] = [
   {
-    id: "live-clear",
-    label: "Clear skin baseline",
-    description: "Smooth, even complexion — shows how Skinova scores healthy-looking skin.",
-    mode: "live",
+    id: "clear-baseline",
+    label: "Clear skin",
+    trait: "Even tone",
+    description: "Healthy-looking complexion with balanced scores.",
     fileName: "live-selfie-clear.jpg",
-    previewPath: "/samples/live-selfie-clear.jpg",
-    badge: "Live sample"
+    previewPath: "/samples/live-selfie-clear.jpg"
   },
   {
-    id: "live-acne",
-    label: "Visible acne case",
-    description: "Active breakouts and redness — proves AI detects real skin concerns.",
-    mode: "live",
+    id: "acne-case",
+    label: "Active acne",
+    trait: "Breakouts",
+    description: "Visible acne and redness for concern detection.",
     fileName: "live-selfie-acne.jpg",
-    previewPath: "/samples/live-selfie-acne.jpg",
-    badge: "Live sample"
+    previewPath: "/samples/live-selfie-acne.jpg"
   },
   {
-    id: "demo-guided",
-    label: "Guided demo scan",
-    description: "Representative Skinova results when you want a guaranteed walkthrough.",
-    mode: "demo",
-    badge: "Demo sample"
+    id: "close-face",
+    label: "Close-up face",
+    trait: "Tight framing",
+    description: "Face fills the frame — ideal upload framing.",
+    fileName: "live-selfie-tight.jpg",
+    previewPath: "/samples/live-selfie-tight.jpg"
+  },
+  {
+    id: "texture-case",
+    label: "Texture & pores",
+    trait: "Detail visible",
+    description: "Shows pore and texture scoring on a live scan.",
+    fileName: "live-selfie-2.jpg",
+    previewPath: "/samples/live-selfie-2.jpg"
   }
 ];
+
+export function getScanSample(sampleId: string) {
+  return scanSamples.find((sample) => sample.id === sampleId);
+}
 
 export const coachSamplePrompts = [
   "Why is my skin red this week?",
@@ -76,10 +67,6 @@ export const coachSamplePrompts = [
   "Can I use niacinamide with salicylic acid?",
   "How do I reduce breakout risk without harsh products?"
 ];
-
-export function getScanSample(sampleId: string) {
-  return scanSamples.find((sample) => sample.id === sampleId);
-}
 
 export const demoSessionAnalysis: AnalysisResult = {
   overallScore: 82,

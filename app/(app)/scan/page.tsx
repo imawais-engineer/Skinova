@@ -7,11 +7,12 @@ const ScanExperience = dynamic(() => import("../../components/scan-experience").
 
 export default function ScanPage() {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <PageHeader
+        density="compact"
         eyebrow="Skin scan"
-        title="Run a skin scan."
-        description="Upload your own selfie or use a verified demo sample. Photo requirements are listed on this page to help avoid common YouCam scan errors."
+        title="Run a live skin scan."
+        description="Upload your selfie for real YouCam Skin AI analysis. Verified sample faces appear below until you choose a photo."
       />
       <ScanExperience />
     </div>

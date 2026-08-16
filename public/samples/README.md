@@ -1,10 +1,16 @@
 # Demo scan samples
 
-Bundled photos for the **Try one of these** section on the Skin Scan page.
+YouCam-verified front-facing selfies for the **Skin Scan** page. Each file has passed a live `youcam:smoke:full` run.
 
-- `live-selfie-clear.jpg` — clear, even complexion baseline (YouCam-verified)
-- `live-selfie-acne.jpg` — visible acne and redness case (YouCam-verified)
-- `live-selfie-tight.jpg` — legacy verified sample (kept for reference)
-- `live-selfie-2.jpg` — legacy verified sample (kept for reference)
+| File | Use case |
+| --- | --- |
+| `live-selfie-clear.jpg` | Clear, even complexion baseline |
+| `live-selfie-acne.jpg` | Active acne and redness |
+| `live-selfie-tight.jpg` | Close-up framing (face fills frame) |
+| `live-selfie-2.jpg` | Texture and pore detail |
 
-Use **Clear skin baseline** and **Visible acne case** for judge demos — they show how Skinova scores both healthy-looking skin and real concern signals.
+Re-verify after replacing any file:
+
+```bash
+YOUCAM_TEST_IMAGE_PATH=public/samples/live-selfie-clear.jpg npm run youcam:smoke:full
+```
