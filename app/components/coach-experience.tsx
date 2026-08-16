@@ -155,13 +155,15 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
   }
 
   return (
-    <Panel className="flex min-h-[min(70vh,40rem)] flex-1 flex-col !p-0">
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+    <Panel className="flex min-h-0 flex-1 flex-col !p-0">
+      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2.5">
         <div className="flex min-w-0 items-center gap-2">
-          <h2 className="text-sm font-semibold text-white">Skin Coach</h2>
+          <h1 className="text-sm font-semibold text-white">Skin Coach</h1>
+          <span className="hidden text-slate-500 sm:inline">·</span>
+          <span className="hidden truncate text-xs text-slate-400 sm:inline">Your scan results</span>
           <span
             className={[
-              "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+              "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
               coachMode === "live"
                 ? "bg-emerald-400/15 text-emerald-200 ring-1 ring-emerald-300/25"
                 : "bg-white/5 text-slate-400 ring-1 ring-white/10"
@@ -170,7 +172,7 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
             {coachMode === "live" ? "Live" : "Guided"}
           </span>
         </div>
-        <p className="truncate text-xs text-slate-400">
+        <p className="shrink-0 text-xs text-slate-400">
           {session ? (
             <>Scan {session.analysis.overallScore}%</>
           ) : (
