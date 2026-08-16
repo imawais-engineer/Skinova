@@ -220,34 +220,33 @@ export function ScanExperience() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <Panel className="!p-4 sm:!p-5">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-col gap-3">
+      <Panel className="!p-3 sm:!p-4">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <p className="text-xs text-slate-400">Upload a selfie or pick a verified sample below.</p>
           <StatusBadge tone={phase === "result" ? "mint" : phase === "error" ? "rose" : phase === "scanning" ? "cyan" : "slate"}>
             {statusLabel}
           </StatusBadge>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-stretch">
-          <div className="flex flex-col rounded-xl border border-white/10 bg-white/[0.02] p-4">
-            <h2 className="text-base font-semibold text-white">Upload your selfie</h2>
-            <p className="mt-1 text-xs leading-5 text-slate-400">
-              Live YouCam analysis — results sync to Results, Routine, and Progress.
-            </p>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:items-start">
+          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+            <h2 className="text-sm font-semibold text-white">Upload your selfie</h2>
+            <p className="mt-0.5 text-[11px] leading-5 text-slate-400">Live analysis syncs to Results, Routine, and Progress.</p>
 
-            <label className="mt-4 flex min-h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-3 py-4 text-center transition hover:bg-cyan-300/[0.08]">
+            <label className="mt-3 flex min-h-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-3 py-3 text-center transition hover:bg-cyan-300/[0.08]">
               {previewUrl ? (
-                <div className="relative h-24 w-24 overflow-hidden rounded-lg border border-white/10">
+                <div className="relative h-16 w-16 overflow-hidden rounded-md border border-white/10">
                   <Image src={previewUrl} alt="Selected selfie preview" fill className="object-cover" unoptimized />
                 </div>
               ) : (
                 <>
-                  <UploadCloud className="h-7 w-7 text-cyan-200" aria-hidden="true" />
-                  <span className="mt-2 text-sm font-medium text-white">Choose a selfie</span>
-                  <span className="mt-1 text-xs text-slate-400">JPG or PNG</span>
+                  <UploadCloud className="h-6 w-6 text-cyan-200" aria-hidden="true" />
+                  <span className="mt-1.5 text-xs font-medium text-white">Choose a selfie</span>
+                  <span className="text-[11px] text-slate-400">JPG or PNG</span>
                 </>
               )}
-              {file ? <span className="mt-2 max-w-full truncate text-xs text-slate-300">{file.name}</span> : null}
+              {file ? <span className="mt-1.5 max-w-full truncate text-[11px] text-slate-300">{file.name}</span> : null}
               <input
                 className="sr-only"
                 type="file"
@@ -259,15 +258,15 @@ export function ScanExperience() {
               />
             </label>
 
-            <div className="mt-3 flex flex-col gap-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {file ? (
                 <button
                   type="button"
                   onClick={() => void analyzeSelectedFile()}
                   disabled={phase === "scanning"}
-                  className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-9 items-center justify-center rounded-lg bg-cyan-300 px-3 text-xs font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {phase === "scanning" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+                  {phase === "scanning" ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
                   Run live scan
                 </button>
               ) : null}
@@ -276,37 +275,60 @@ export function ScanExperience() {
                 <button
                   type="button"
                   onClick={resetScan}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+                  className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 text-xs font-semibold text-white transition hover:bg-white/10"
                 >
-                  <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                  <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
                   Try another scan
                 </button>
               ) : null}
-
-              {phase === "scanning" ? (
-                <p className="text-xs leading-5 text-cyan-100/90">
-                  {message}
-                  {pollStep > 0 ? ` (${pollStep})` : null}
-                </p>
-              ) : message ? (
-                <p className={`text-xs leading-5 ${phase === "error" ? "text-rose-100/90" : "text-slate-400"}`}>{message}</p>
-              ) : null}
             </div>
+
+            {phase === "scanning" ? (
+              <p className="mt-2 text-[11px] leading-5 text-cyan-100/90">
+                {message}
+                {pollStep > 0 ? ` (${pollStep})` : null}
+              </p>
+            ) : message ? (
+              <p className={`mt-2 text-[11px] leading-5 ${phase === "error" ? "text-rose-100/90" : "text-slate-400"}`}>{message}</p>
+            ) : null}
           </div>
 
-          <div className="rounded-xl border border-cyan-300/15 bg-cyan-300/[0.04] p-4">
-            <h2 className="text-base font-semibold text-cyan-100">{skinScanRequirements.title}</h2>
-            <p className="mt-1 text-xs leading-5 text-slate-300">{skinScanRequirements.summary}</p>
-            <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+          <div className="rounded-xl border border-cyan-300/15 bg-cyan-300/[0.04] p-3">
+            <h2 className="text-sm font-semibold text-cyan-100">{skinScanRequirements.title}</h2>
+            <p className="mt-0.5 text-[11px] leading-5 text-slate-300">{skinScanRequirements.summary}</p>
+            <ul className="mt-2 grid grid-cols-1 gap-1.5 text-[11px] leading-5 text-slate-400 sm:grid-cols-2">
               {skinScanRequirements.items.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
+                <li key={item} className="flex gap-1.5">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-cyan-200" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
         </div>
+
+        {showSamples ? (
+          <div className="mt-3 border-t border-white/10 pt-3">
+            <p className="text-xs font-semibold text-white">Verified sample faces</p>
+            <p className="text-[11px] text-slate-400">Tap to run a live scan.</p>
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {scanSamples.map((sample) => (
+                <button
+                  key={sample.id}
+                  type="button"
+                  onClick={() => void analyzeSample(sample.id)}
+                  className="flex flex-col items-center rounded-lg border border-white/10 bg-white/[0.03] p-2 text-center transition hover:bg-white/[0.05]"
+                >
+                  <div className="relative h-12 w-12 overflow-hidden rounded-md border border-white/10">
+                    <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="48px" />
+                  </div>
+                  <p className="mt-1.5 w-full truncate text-[11px] font-semibold text-white">{sample.label}</p>
+                  <p className="w-full truncate text-[10px] text-slate-400">{sample.trait}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         {analysis && phase === "result" ? (
           <div className="mt-5 space-y-4 border-t border-white/10 pt-5">
@@ -341,38 +363,6 @@ export function ScanExperience() {
           </div>
         ) : null}
       </Panel>
-
-      {showSamples ? (
-        <Panel className="!p-4 sm:!p-5">
-          <h3 className="text-sm font-semibold text-white">Or try a verified sample face</h3>
-          <p className="mt-1 text-xs leading-5 text-slate-400">
-            Real selfies verified with YouCam — tap to run a live scan.
-          </p>
-          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {scanSamples.map((sample) => (
-              <button
-                key={sample.id}
-                type="button"
-                onClick={() => void analyzeSample(sample.id)}
-                className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-2.5 text-left transition hover:bg-white/[0.05]"
-              >
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-white/10">
-                  <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="56px" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-semibold text-white">{sample.label}</p>
-                    <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-medium text-emerald-100">
-                      {sample.trait}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-400">{sample.description}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </Panel>
-      ) : null}
     </div>
   );
 }
