@@ -222,74 +222,89 @@ export function ScanExperience() {
   return (
     <div className="flex flex-col gap-4">
       <Panel className="!p-4 sm:!p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold text-white sm:text-xl">Upload your selfie</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-400">
-              Live YouCam Skin AI analysis runs on the photo you choose. Results sync to Results, Routine, and Progress.
-            </p>
-          </div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <StatusBadge tone={phase === "result" ? "mint" : phase === "error" ? "rose" : phase === "scanning" ? "cyan" : "slate"}>
             {statusLabel}
           </StatusBadge>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(220px,280px)]">
-          <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-4 py-5 text-center transition hover:bg-cyan-300/[0.08]">
-            {previewUrl ? (
-              <div className="relative h-28 w-28 overflow-hidden rounded-xl border border-white/10">
-                <Image src={previewUrl} alt="Selected selfie preview" fill className="object-cover" unoptimized />
-              </div>
-            ) : (
-              <>
-                <UploadCloud className="h-8 w-8 text-cyan-200" aria-hidden="true" />
-                <span className="mt-3 text-sm font-medium text-white">Choose a front-facing selfie</span>
-                <span className="mt-1 text-xs leading-5 text-slate-400">JPG or PNG · face centered · well lit</span>
-              </>
-            )}
-            <input
-              className="sr-only"
-              type="file"
-              accept="image/png,image/jpeg"
-              disabled={phase === "scanning"}
-              onChange={(event) => {
-                void onFileChange(event.target.files?.[0] || null);
-              }}
-            />
-          </label>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-stretch">
+          <div className="flex flex-col rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <h2 className="text-base font-semibold text-white">Upload your selfie</h2>
+            <p className="mt-1 text-xs leading-5 text-slate-400">
+              Live YouCam analysis — results sync to Results, Routine, and Progress.
+            </p>
 
-          <div className="flex flex-col gap-2">
-            {file ? (
-              <button
-                type="button"
-                onClick={() => void analyzeSelectedFile()}
+            <label className="mt-4 flex min-h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-3 py-4 text-center transition hover:bg-cyan-300/[0.08]">
+              {previewUrl ? (
+                <div className="relative h-24 w-24 overflow-hidden rounded-lg border border-white/10">
+                  <Image src={previewUrl} alt="Selected selfie preview" fill className="object-cover" unoptimized />
+                </div>
+              ) : (
+                <>
+                  <UploadCloud className="h-7 w-7 text-cyan-200" aria-hidden="true" />
+                  <span className="mt-2 text-sm font-medium text-white">Choose a selfie</span>
+                  <span className="mt-1 text-xs text-slate-400">JPG or PNG</span>
+                </>
+              )}
+              {file ? <span className="mt-2 max-w-full truncate text-xs text-slate-300">{file.name}</span> : null}
+              <input
+                className="sr-only"
+                type="file"
+                accept="image/png,image/jpeg"
                 disabled={phase === "scanning"}
-                className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {phase === "scanning" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
-                Run live scan
-              </button>
-            ) : null}
+                onChange={(event) => {
+                  void onFileChange(event.target.files?.[0] || null);
+                }}
+              />
+            </label>
 
-            {(phase === "result" || phase === "error" || file || selectedSampleId) && phase !== "scanning" ? (
-              <button
-                type="button"
-                onClick={resetScan}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                Try another scan
-              </button>
-            ) : null}
+            <div className="mt-3 flex flex-col gap-2">
+              {file ? (
+                <button
+                  type="button"
+                  onClick={() => void analyzeSelectedFile()}
+                  disabled={phase === "scanning"}
+                  className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {phase === "scanning" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
+                  Run live scan
+                </button>
+              ) : null}
 
-            {phase === "scanning" ? (
-              <p className="text-xs leading-5 text-cyan-100/90">
-                {message}
-                {pollStep > 0 ? ` Step ${pollStep}.` : null}
-              </p>
-            ) : message ? (
-              <p className={`text-xs leading-5 ${phase === "error" ? "text-rose-100/90" : "text-slate-400"}`}>{message}</p>
-            ) : null}
+              {(phase === "result" || phase === "error" || file || selectedSampleId) && phase !== "scanning" ? (
+                <button
+                  type="button"
+                  onClick={resetScan}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                  Try another scan
+                </button>
+              ) : null}
+
+              {phase === "scanning" ? (
+                <p className="text-xs leading-5 text-cyan-100/90">
+                  {message}
+                  {pollStep > 0 ? ` (${pollStep})` : null}
+                </p>
+              ) : message ? (
+                <p className={`text-xs leading-5 ${phase === "error" ? "text-rose-100/90" : "text-slate-400"}`}>{message}</p>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-cyan-300/15 bg-cyan-300/[0.04] p-4">
+            <h2 className="text-base font-semibold text-cyan-100">{skinScanRequirements.title}</h2>
+            <p className="mt-1 text-xs leading-5 text-slate-300">{skinScanRequirements.summary}</p>
+            <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+              {skinScanRequirements.items.map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -358,19 +373,6 @@ export function ScanExperience() {
           </div>
         </Panel>
       ) : null}
-
-      <details className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3">
-        <summary className="cursor-pointer text-sm font-medium text-slate-200">{skinScanRequirements.title}</summary>
-        <p className="mt-3 text-xs leading-6 text-slate-400">{skinScanRequirements.summary}</p>
-        <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
-          {skinScanRequirements.items.map((item) => (
-            <li key={item} className="flex gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </details>
     </div>
   );
 }

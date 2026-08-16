@@ -11,11 +11,11 @@ export type ScanSample = {
 
 export const skinScanRequirements = {
   title: "Photo requirements",
-  summary: "YouCam Skin AI needs a clear front-facing selfie. Most failures are framing or lighting — not a broken app.",
+  summary: "Clear front-facing selfie. Most failures are framing or lighting — not a broken app.",
   items: [
-    "Front-facing selfie, face centered, eyes toward the camera",
-    "Face fills most of the frame (about 60% or more of the width)",
-    "Short side at least 480px; higher resolution is better",
+    "Face centered, eyes toward the camera",
+    "Face fills ~60% or more of the frame",
+    "Short side at least 480px",
     "Even lighting, minimal blur, no heavy filters",
     "JPG or PNG under 10MB"
   ]

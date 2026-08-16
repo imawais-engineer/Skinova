@@ -12,7 +12,7 @@ export default function ScanPage() {
         density="compact"
         eyebrow="Skin scan"
         title="Run a live skin scan."
-        description="Upload your selfie for real YouCam Skin AI analysis. Verified sample faces appear below until you choose a photo."
+        description="Upload a selfie or use a verified sample below."
       />
       <ScanExperience />
     </div>
