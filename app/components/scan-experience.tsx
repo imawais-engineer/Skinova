@@ -52,7 +52,7 @@ export function ScanExperience() {
   }, [file]);
 
   const hasSelection = Boolean(file || selectedSampleId);
-  const showSamples = phase === "pick" && !hasSelection;
+  const showSamples = phase === "pick";
 
   const activeStepIndex = scanStepIndexForProgress({ phase, pollStep });
 

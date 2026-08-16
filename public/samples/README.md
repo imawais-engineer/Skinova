@@ -1,13 +1,13 @@
 # YouCam API Playground sample faces
 
-Front-facing selfies copied from the **YouCam Skin Analysis API Playground** samples tab. Each file is used on the Skin Scan page and has passed image validation (short side ≥ 480px).
+Front-facing selfies from the **YouCam Skin Analysis API Playground** (`skin_analysis_XX_*.png` on `plugins-media.makeupar.com`). Each passes `youcam:smoke:full`.
 
-| File | Use case |
-| --- | --- |
-| `youcam-clear-baseline.jpg` | Clear / even-tone baseline |
-| `youcam-acne-male.jpg` | Young man with active acne |
-| `youcam-acne-female-light.jpg` | Fair skin with cheek breakouts |
-| `youcam-acne-female-severe.jpg` | Widespread acne and spot marks |
+| File | Playground # | Use case |
+| --- | --- | --- |
+| `youcam-clear-baseline.jpg` | 05 | Even-tone baseline (minimal breakouts) |
+| `youcam-acne-male.jpg` | 08 | Young man with cheek/jaw acne |
+| `youcam-acne-female-light.jpg` | 07 | Fair skin with inflamed cheek breakouts |
+| `youcam-acne-female-severe.jpg` | 09 | Widespread acne and spot marks |
 
 Re-verify after replacing any file:
 
