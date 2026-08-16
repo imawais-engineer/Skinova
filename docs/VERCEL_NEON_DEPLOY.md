@@ -1,6 +1,8 @@
 # Deploy Skinova on Vercel with Neon (free)
 
-Skinova’s frontend, API routes, and YouCam proxy all run on Vercel. User accounts are stored in **Neon Postgres** (free tier, serverless-friendly).
+Skinova’s frontend, API routes, and YouCam proxy run on Vercel. User accounts are stored in **Neon Postgres** (free tier, serverless-friendly).
+
+Production example: **https://skinova-ai.vercel.app**
 
 ## 1. Create a Neon database (free)
 
@@ -40,10 +42,11 @@ You should see:
 | `DATABASE_URL` | Neon connection string |
 | `AUTH_SECRET` | `openssl rand -base64 32` |
 | `API_KEY` | Your YouCam API key |
+| `SECRET_KEY` | Your YouCam secret (if required by your plan) |
 | `BASE_URL` | `https://yce-api-01.makeupar.com` |
 | `SKINOVA_DEMO_MODE` | `false` (or `true` for demo-only) |
 | `NEXT_PUBLIC_APP_URL` | `https://your-project.vercel.app` |
-| `QWEN_API_KEY` | DashScope API key (server-side only) |
+| `QWEN_API_KEY` | DashScope API key (optional, for live coach LLM) |
 | `QWEN_BASE_URL` | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1` |
 | `COACH_LLM_MODEL` | `qwen3-max` (or `deepseek-v4-flash`) |
 | `EMBEDDING_MODEL` | `text-embedding-v4` |
@@ -57,14 +60,14 @@ After deploy, ingest the skincare knowledge base (one-time per environment):
 npm run knowledge:ingest
 ```
 
-Vercel will run `npm run build` automatically. Auth and YouCam routes run as serverless functions.
+Vercel runs `npm run build` automatically. Auth and YouCam routes run as serverless functions.
 
 ## 4. Verify production
 
-1. Open your Vercel URL.
+1. Open your Vercel URL (e.g. https://skinova-ai.vercel.app).
 2. **Get Started** → sign up.
-3. Go to **Skin Scan** and test a selfie.
-4. Check **Health** for live vs demo mode.
+3. **Skin Scan** — use a bundled sample or upload a selfie.
+4. Log out and confirm **Live status** on the landing page (demo vs live scan mode).
 
 ## Architecture on Vercel
 
@@ -76,6 +79,8 @@ Vercel (Next.js)
    ├── /api/auth/*        → Neon Postgres
    └── /api/skinova/*     → YouCam API (server-side)
 ```
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full system diagram.
 
 ## Why Neon?
 
@@ -104,3 +109,4 @@ npm run dev
 | Auth works locally but not on Vercel | Add all env vars in Vercel project settings |
 | Scans fail | Set `API_KEY` and `SKINOVA_DEMO_MODE=false`, or use demo mode |
 | Session lost | Ensure `AUTH_SECRET` is set and identical across redeploys |
+| Coach returns fallback only | Set `QWEN_API_KEY` and run `npm run knowledge:ingest` |

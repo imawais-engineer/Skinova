@@ -1,22 +1,18 @@
 # Submission Package
 
+Production app: **https://skinova-ai.vercel.app**
+
+Repository: **https://github.com/imawais-engineer/Skinova**
+
 ## Devpost Description
 
-Skinova is a Skin AI consumer skincare intelligence experience built with YouCam API workflow support. It helps users move from a selfie scan to plain-language skin insights, a personalized routine, progress tracking, and an improvement simulation story.
+Skinova is a Skin AI consumer skincare intelligence experience built on the YouCam Skin Analysis API. It helps users move from a selfie scan to plain-language skin insights, a personalized routine, progress tracking, and an improvement simulation story.
 
 The product is designed for people who can see changes in their skin but do not know what those changes mean or what to do next. Skinova avoids medical diagnosis and focuses on skincare education, personalization, and consumer guidance.
 
-## YouCam API Usage Explanation
+**YouCam API:** AI Skin Analysis — file metadata, presigned upload, task creation, polling, and `ui_score` normalization into consumer-facing guidance.
 
-Skinova's selected track is **Skin AI**. The app implements the YouCam Skin Analysis workflow shape:
-
-- file metadata request
-- presigned upload
-- task creation
-- polling
-- result normalization into consumer-facing guidance
-
-The app is configured for live scan testing when credentials and a valid front-facing selfie are available. Real metadata smoke testing passed with YouCam credentials from `.env`; the smoke scripts print sanitized status only.
+**Track:** Skin AI (YouCam API Skin AI & Apparel VTO Hackathon).
 
 ## Repository URL
 
@@ -24,46 +20,46 @@ The app is configured for live scan testing when credentials and a valid front-f
 https://github.com/imawais-engineer/Skinova
 ```
 
-## Demo Video Checklist
+## Demo Video
 
-- Show landing page first.
-- State selected track: Skin AI.
-- Sign up or log in.
-- Show dashboard.
-- Show scan flow.
-- Explain YouCam Skin Analysis workflow.
-- Show results page.
-- Show routine page.
-- Show coach page.
-- Show progress page.
-- Show Health page.
-- Mention safety: education only, not medical diagnosis.
-- Keep video between 1 and 3 minutes.
-- Upload publicly to YouTube, Vimeo, or Youku.
+| Item | Status |
+| --- | --- |
+| Script | Ready — [DEMO_SCRIPT.md](DEMO_SCRIPT.md) |
+| Recording | **To be recorded before Devpost deadline** (app features are complete; owner will publish) |
+| Public URL | **Not published yet** — add YouTube, Vimeo, or Youku link here when the video is live |
 
-## Screenshot Checklist
+Requirements when recording (1–3 minutes):
 
-Capture:
+- Show landing page and **Live status** (demo vs live scan mode)
+- State selected track: Skin AI
+- Sign up or log in
+- Show dashboard and **Skin Scan** (upload or bundled sample + stepper)
+- Explain YouCam Skin Analysis workflow
+- Show Results, Routine, Coach (one question), and Progress
+- Mention safety: education only, not medical diagnosis
+- Upload publicly to YouTube, Vimeo, or Youku
 
-- Landing page
-- Sign up or login
-- Dashboard
-- Skin Scan after scan completed
-- Results
-- Routine
-- Skin Coach with one answer
-- Progress
-- Health
+## Screenshots
 
-Store local copies in:
+Capture per [SCREENSHOTS.md](SCREENSHOTS.md) and store in `public/screenshots/`.
 
-```text
-public/screenshots/
-```
+Current assets:
+
+- `project-cover.png` — landing hero (captured)
+
+Remaining captures: sign up, dashboard, scan complete, results, routine, coach, progress, landing live status.
 
 ## Judge Testing Instructions
 
-### One-command setup
+### Fastest path — production
+
+1. Open https://skinova-ai.vercel.app
+2. **Get Started** → create an account
+3. **Skin Scan** → upload a selfie or choose **Try one of these** (YouCam playground samples)
+4. Review **Results**, **Routine**, **Coach**, **Progress**
+5. Log out and confirm **Live status** on the landing page
+
+### Local one-command setup
 
 Requires Node.js 20+ and git.
 
@@ -88,7 +84,7 @@ This command:
 
 ### Deploy on Vercel
 
-See [docs/VERCEL_NEON_DEPLOY.md](docs/VERCEL_NEON_DEPLOY.md).
+See [VERCEL_NEON_DEPLOY.md](VERCEL_NEON_DEPLOY.md).
 
 ### Configure YouCam (optional, for live scans)
 
@@ -101,39 +97,29 @@ SKINOVA_DEMO_MODE=false
 
 Demo mode works without YouCam credentials (`SKINOVA_DEMO_MODE=true`).
 
-### End-to-end judge flow
-
-1. Open http://localhost:3000
-2. Click **Get Started**
-3. Create an account (name, email, password 8+ characters)
-4. Land on **/dashboard**
-5. Open **Skin Scan** and either:
-   - upload a clear front-facing selfie, or
-   - click **Try one of these** and choose a verified demo sample
-6. Review **Results**, **Routine**, **Coach**, **Progress**, and **Health**
-7. Confirm **Health** shows demo or live scan mode
-
 ### Optional API smoke test
 
 ```bash
 npm run youcam:smoke
 ```
 
-Full upload/task/poll test (requires valid selfie at `Testing/INPUT/selfie.jpg`):
+Full upload/task/poll test (requires valid selfie at `Testing/INPUT/selfie.jpg` or a bundled sample):
 
 ```bash
-npm run youcam:smoke:full
+YOUCAM_TEST_IMAGE_PATH=public/samples/youcam-clear-baseline.jpg npm run youcam:smoke:full
 ```
 
 ## Known Limitations
 
 - Scan history is session-based, not yet stored per user in the database
-- Privacy and Terms pages are placeholders
-- Product recommendations are intentionally deferred
+- Progress uses projected scores, not live YouCam Skin Simulation render output
+- Product recommendations and affiliate commerce are intentionally deferred
 - Full live task testing requires valid YouCam units and a valid front-facing selfie
+- Demo video URL will be added when the recording is published
 
 ## License And Attribution
 
-- Code: MIT unless changed before final submission.
-- YouCam API and Perfect Corp. marks belong to their owners.
-- Do not include copyrighted music or third-party trademarked assets in the demo video unless permission is available.
+- Application source code: [MIT](../LICENSE)
+- YouCam API and Perfect Corp. marks belong to their owners
+- Do not include copyrighted music or third-party trademarked assets in the demo video unless permission is available
+- Sample faces in `public/samples/` are from the YouCam API Playground CDN for demo and smoke testing

@@ -2,11 +2,17 @@
 
 ![Skinova project cover](./public/screenshots/project-cover.png)
 
+**Live demo:** https://skinova-ai.vercel.app
+
 Skinova is a consumer skincare intelligence app for the **YouCam API Skin AI & Apparel VTO Hackathon**.
 
-Selected hackathon track: **FIRST TRACK - Skin AI**.
+Selected hackathon track: **Skin AI**.
 
 Skinova converts a selfie scan into skin insights, routine guidance, progress tracking, and a realistic improvement story. It is positioned as skincare education and consumer guidance, not medical diagnosis.
+
+## Documentation
+
+Full project documentation lives in [docs/README.md](docs/README.md), including architecture, roadmap, API integration, submission package, and testing.
 
 ## Quick Start (one command)
 
@@ -27,6 +33,8 @@ What `npm run setup` does:
 ### Deploy on Vercel (recommended for public demo)
 
 Skinova uses **Neon Postgres** (free tier) for user accounts. See [docs/VERCEL_NEON_DEPLOY.md](docs/VERCEL_NEON_DEPLOY.md).
+
+Production deployment: https://skinova-ai.vercel.app
 
 ### Already have the repo?
 
@@ -51,11 +59,21 @@ Open http://localhost:3000.
 
 ## Judge testing flow
 
-1. Open http://localhost:3000 (public landing page)
+### Option A — production (fastest)
+
+1. Open https://skinova-ai.vercel.app
+2. Click **Get Started** and create an account
+3. Open **Skin Scan** — upload a selfie or pick a bundled YouCam playground sample
+4. Watch the live scan stepper, then review **Results**, **Routine**, **Coach**, and **Progress**
+5. On the landing page (after log out), note **Live status** (demo vs live scan mode)
+
+### Option B — local
+
+1. Open http://localhost:3000
 2. Click **Get Started**
 3. Sign up with name, email, and password (8+ characters)
 4. You are redirected to **/dashboard**
-5. Open **Skin Scan**, upload a clear front-facing selfie
+5. Open **Skin Scan**, upload a clear front-facing selfie or use a demo sample
 6. Review **Results**, **Routine**, **Coach**, and **Progress**
 7. Use **Log out** from the sidebar to return to the public site
 
@@ -88,18 +106,19 @@ Use live YouCam mode only in environments intended to create real scan tasks.
 
 ### Public
 
-1. Landing page explains Skinova at `/`
+1. Landing page explains Skinova at `/` and shows **Live status** via `/api/skinova/health`
 2. Sign up or log in
+3. Privacy and Terms at `/privacy` and `/terms`
 
 ### Authenticated app
 
 1. Dashboard at `/dashboard`
-2. Skin Scan uploads a clear selfie for analysis
-3. Results converts skin scores into plain-language education
-4. Routine generates morning and night guidance
-5. Skin Coach answers bounded skincare questions
-6. Progress shows trend history and improvement simulation story
-7. Health shows app readiness (demo vs live mode)
+2. Skin Scan — upload or pick a sample, then run the six-step live scan flow
+3. Results — plain-language education from YouCam `ui_score` output
+4. Routine — morning and night guidance
+5. Skin Coach — bounded skincare Q&A (optional Qwen LLM + knowledge RAG)
+6. Progress — trend history and improvement simulation story
+7. Settings — clear scan session and coach history
 
 ## Stack
 
@@ -130,11 +149,13 @@ For a full upload/task/poll smoke test, add a valid front-facing selfie:
 Testing/INPUT/selfie.jpg
 ```
 
-Then run:
+Or use bundled samples:
 
 ```bash
-npm run youcam:smoke:full
+YOUCAM_TEST_IMAGE_PATH=public/samples/youcam-clear-baseline.jpg npm run youcam:smoke:full
 ```
+
+See [docs/TESTING.md](docs/TESTING.md) for the full QA checklist.
 
 Do not commit private selfies or `.env`.
 
@@ -152,21 +173,24 @@ Auth routes:
 - `POST /api/auth/logout`
 - `GET /api/auth/session`
 
-## Demo script
+Integration details: [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md)
 
-See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
+## Demo script and submission
 
-## Submission package
-
-See [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md) and [docs/COMPLIANCE_REVIEW.md](docs/COMPLIANCE_REVIEW.md).
+- Demo video script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
+- Devpost copy and checklist: [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md)
+- Compliance matrix: [docs/COMPLIANCE_REVIEW.md](docs/COMPLIANCE_REVIEW.md)
 
 ## Known limitations
 
-- Scan history is session-based in the browser, not yet stored per user in Neon
-- Privacy and Terms pages are placeholders
+- Scan history is session-based in the browser (`sessionStorage`), not yet stored per user in Neon
+- Progress simulation is score projection, not live YouCam Skin Simulation images
 - No email verification or password reset yet
 - Full live scan testing requires valid YouCam units and a front-facing selfie (face should fill most of the frame)
+- Demo video for Devpost: record before submission deadline (script ready; URL to be added when published)
 
 ## License
 
-MIT, unless replaced by a different project license before submission.
+MIT — see [LICENSE](LICENSE).
+
+YouCam API and Perfect Corp. marks belong to their respective owners.

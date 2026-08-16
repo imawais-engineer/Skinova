@@ -1,83 +1,83 @@
-# Skinova Winning Product Strategy
+# Skinova winning product strategy
 
-## One-Sentence Concept
+Production: **https://skinova-ai.vercel.app**
 
-Skinova is an AI skincare intelligence companion that converts a user selfie into understandable skin insights, personalized routines, progress tracking, and realistic improvement simulation using YouCam Skin AI APIs.
+## One-sentence concept
 
-## Target User
+Skinova is an AI skincare intelligence companion that converts a user selfie into understandable skin insights, personalized routines, progress tracking, and a realistic improvement story using the YouCam Skin Analysis API.
+
+## Target user
 
 Skincare consumers who feel uncertain about their skin concerns, product choices, and whether their routine is working.
 
 Secondary audiences:
 
-- Skincare retailers that want guided product discovery.
-- Beauty advisors who want AI-assisted education tools.
-- Consumers preparing to buy skincare products online.
+- Skincare retailers that want guided product discovery
+- Beauty advisors who want AI-assisted education tools
+- Consumers preparing to buy skincare products online
 
-## Core Problem
+## Core problem
 
 Most skin scanner experiences stop at a score. Users still need to know what the score means, what action to take, which ingredients match their skin, and whether their skin is improving over time.
 
-## Minimum Winning Demo
+## Minimum winning demo
 
 1. User opens the Skinova dashboard.
-2. User uploads a valid front-facing selfie.
-3. Skinova runs live skin analysis.
-4. The results dashboard explains acne, pores, redness, texture, oiliness, dryness, and skin health in plain language.
-5. Skinova generates a morning and night routine.
-6. Skinova shows progress history and trend movement.
-7. Skinova shows a skin improvement simulation concept.
-8. Skinova explains the consumer value created by the scan, routine, coach, progress, and health views.
+2. User uploads a selfie or selects a bundled YouCam playground sample.
+3. Skinova runs live skin analysis (or demo mode) with a visible stepper.
+4. Results explain acne, pores, redness, texture, oiliness, dryness, and overall skin health in plain language.
+5. Routine generates morning and night steps.
+6. Progress shows trend movement and an improvement story.
+7. Landing **Live status** shows demo vs live scan readiness.
 
-## Rubric-To-Feature Map
+## Rubric-to-feature map
 
-| Judging Area | Skinova Evidence |
+| Judging area | Skinova evidence |
 | --- | --- |
-| Technological Implementation | Server-side YouCam integration, analysis pipeline, product-level task polling, sanitized status states |
-| Design | Dashboard-first UI, scan flow, results page, routine page, coach, progress view, health |
-| Potential Impact | Helps consumers interpret skin insights and act on them with routine guidance |
-| Quality of Idea | Continuous skincare companion rather than a one-time API wrapper |
+| Technological implementation | Server-side YouCam integration, polling, normalization, demo/live modes |
+| Design | Dashboard-first UI, scan stepper, results, routine, coach, progress |
+| Potential impact | Helps consumers interpret skin insights and act with routine guidance |
+| Quality of idea | Continuous skincare companion rather than a one-time API wrapper |
 
-## Build Now
+## Shipped for hackathon
 
-- Dashboard-first app shell.
-- Upload/scan flow.
-- YouCam-style mock analysis.
-- Results interpretation.
-- Personalized routine generator.
-- Local functional skin coach.
-- Progress/history timeline.
-- Health/readiness page.
-- Safe server-side YouCam integration behind product-level routes.
-- Submission docs and demo script.
+- Dashboard-first app shell with auth
+- Upload/scan flow with six-step progress UI
+- YouCam Skin Analysis (live + mock)
+- Results interpretation and routine generator
+- Skin Coach (RAG + optional Qwen LLM)
+- Progress timeline and simulation story
+- Landing live status, privacy, terms
+- Submission documentation and MIT license
 
-## Defer
+## Deferred
 
-- Full Supabase auth.
-- Payment/product affiliate logic.
-- Real product catalog.
-- Medical condition diagnosis.
-- Multi-user accounts.
-- Native mobile app.
-- Full YouCam Apparel VTO unless project direction changes.
+- Per-user scan history in Neon
+- Live YouCam Skin Simulation imagery on Progress
+- Payment/product affiliate logic
+- Real product catalog
+- Medical condition diagnosis
+- Email verification / password reset
+- Native mobile app
+- Apparel VTO track
 
-## Demo Story
+## Demo story
 
-Skinova starts with a familiar frustration: users can see skin changes, but do not know what they mean or what to do next. The demo shows a selfie upload, AI skin analysis, plain-language explanation, routine plan, and progress/simulation loop. The story is not "we called an API"; it is "we turned technical skin scores into consumer action and confidence."
+Skinova starts with a familiar frustration: users can see skin changes, but do not know what they mean or what to do next. The demo shows a selfie upload, AI skin analysis, plain-language explanation, routine plan, coach Q&A, and progress loop. The story is not "we called an API"; it is "we turned technical skin scores into consumer action and confidence."
 
-## Technical Differentiation
+## Technical differentiation
 
-- Combines multiple YouCam Skin AI capabilities into one product flow.
-- Keeps API keys server-side.
-- Keeps backend configuration out of public UI.
-- Structures analysis into actionable scores, explanations, routine recommendations, and progress tracking.
-- Builds an end-to-end product experience around the APIs.
+- End-to-end product flow around YouCam Skin Analysis
+- API keys stay server-side
+- Consumer-safe unavailable states in demo mode
+- Analysis structured into scores, explanations, routines, and progress
+- Bounded coach prompts (see `AI_PROMPT_CONTRACTS.md`)
 
-## Compliance And Safety
+## Compliance and safety
 
-- Position as skincare education and consumer guidance, not medical diagnosis.
-- Avoid disease claims or treatment promises.
-- Use user consent language for images.
-- Do not expose API secrets.
-- Attribute YouCam API usage and any third-party assets.
-- Keep demo video under three minutes.
+- Skincare education and consumer guidance — not medical diagnosis
+- No disease claims or treatment promises
+- User consent language for images (privacy policy)
+- Do not expose API secrets
+- Attribute YouCam API usage
+- Demo video under three minutes when recorded

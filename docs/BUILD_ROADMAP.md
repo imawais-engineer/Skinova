@@ -1,119 +1,88 @@
-# Skinova Build Roadmap
+# Skinova build roadmap
 
-## Phase 1: Functional Prototype
+This document tracks what shipped for the hackathon and what comes next.
 
-- Create Next.js app shell.
-- Implement dashboard-first dark UI.
-- Add scan upload flow.
-- Add mock analysis endpoint.
-- Add results page and routine page.
-- Add functional local skin coach.
-- Add progress/history page.
-- Add health/readiness page.
+## Shipped (hackathon MVP)
 
-Validation:
+### Phase 1 — Functional prototype ✅
 
-- User can complete the demo path without credentials.
-- No broken navigation.
-- No core placeholder screens.
+- Next.js 15 app shell with dashboard-first dark UI
+- Skin Scan upload flow with six-step live progress stepper
+- Demo mode when YouCam credentials are absent
+- Results, Routine, Coach, Progress, and Settings pages
+- Landing page with **Live status** (`GET /api/skinova/health`)
+- Privacy and Terms pages
+- Bundled YouCam playground sample selfies
 
-## Phase 2: YouCam API Integration Layer
+### Phase 2 — YouCam API integration ✅
 
-- Add server-side upload metadata route.
-- Add presigned upload support boundary.
-- Add task creation route.
-- Add task polling route.
-- Add error mapping.
-- Return product-safe unavailable states when live scan service cannot run.
+- Server-side file metadata, presigned upload, task creation, polling
+- Product routes: `POST /api/skinova/scan`, `GET /api/skinova/scan-status/[taskId]`
+- `youcam.ts` normalization into `AnalysisResult`
+- Sanitized smoke scripts (`npm run youcam:smoke`, `youcam:smoke:full`)
+- Demo vs live mode surfaced in UI
 
-Validation:
+### Phase 3 — Judging-visible completeness ✅
 
-- API routes never expose secrets.
-- Mock mode works locally.
-- UI clearly shows demo/live mode.
+- Neon Postgres auth (signup, login, session cookies)
+- Skin Coach with knowledge RAG and optional Qwen LLM
+- Progress trend cards and improvement simulation story
+- Responsive layout and UI verification script
+- Production deploy at https://skinova-ai.vercel.app
 
-## Phase 3: Judging-Visible Completeness
+### Phase 4 — Submission package ✅
 
-- Polish dashboard metrics.
-- Show API usage clearly.
-- Show improvement simulation concept.
-- Add progress trend cards.
-- Add screenshot-ready sections.
-- Add responsive checks.
+- README, architecture, API integration, compliance, demo script
+- MIT license, screenshot checklist, judge testing instructions
+- Demo video script (recording deferred to owner before Devpost deadline)
 
-Validation:
+## Core demo path (current)
 
-- Judges can understand consumer value in under one minute.
-- Demo flow can finish inside three minutes.
+1. Landing → Live status
+2. Sign up → Dashboard
+3. Skin Scan (upload or sample → stepper → inline results)
+4. Results → Routine → Coach → Progress
+5. Settings (clear session)
 
-## Phase 4: Submission Package
+## Data model (current)
 
-- Update README.
-- Add setup instructions.
-- Add demo script.
-- Add submission description.
-- Add testing instructions.
-- Add compliance notes.
-- Add screenshot checklist.
+| Data | Storage |
+| --- | --- |
+| User accounts | Neon Postgres (`users`) |
+| Coach knowledge | Neon Postgres (embeddings via ingest script) |
+| Latest scan session | Browser `sessionStorage` |
+| Scan images | Not persisted server-side |
 
-Validation:
+## Near-term improvements (post-hackathon)
 
-- Repo is understandable without private context.
-- Required Devpost assets are listed and ready.
+- Persist scan history per user in Neon (`scans`, `analysis_results`)
+- Integrate YouCam **Skin Simulation** API for real before/after imagery on Progress
+- Email verification and password reset
+- Rate limiting on scan and coach routes in production
+- Additional screenshots for Devpost (`docs/SCREENSHOTS.md`)
 
-## Core Demo-Critical Path
+## Deferred (out of scope)
 
-1. Dashboard.
-2. Scan.
-3. Analysis results.
-4. Routine generation.
-5. Progress/simulation.
-6. Health/readiness view.
-7. Demo script and submission docs.
+- Medical diagnosis or treatment claims
+- Product marketplace or affiliate checkout
+- Multi-tenant admin console
+- Native mobile apps
+- Apparel VTO track (Skin AI is the selected track)
 
-## Data Model
+## API integration plan (reference)
 
-Prototype uses local mock data first:
+- Server routes only for `API_KEY`, `SECRET_KEY`, `BASE_URL`
+- Default to mock mode when credentials are absent
+- YouCam flow: file metadata → presigned upload → task → poll → normalize
 
-- `scan`: uploaded image metadata, mode, created time.
-- `analysis`: skin scores, concerns, explanations, YouCam workflow status.
-- `routine`: morning steps, night steps, ingredient guidance.
-- `progressEntry`: date, acne, redness, texture, hydration, overall score.
-- `coachMessage`: user question and local AI-style response.
+## Final V&V checklist
 
-Stable release persistence target:
-
-- Supabase tables for `profiles`, `scans`, `analysis_results`, `routine_plans`, `progress_entries`, `coach_messages`, and `api_runs`.
-
-## API Integration Plan
-
-- Use server routes only for API keys.
-- Use `API_KEY`, `SECRET_KEY`, `BASE_URL`, and `SKINOVA_DEMO_MODE`.
-- Default to mock mode when credentials are absent.
-- Implement YouCam-style flow: file metadata, presigned upload, task creation, polling, result interpretation.
-
-## What Not To Build
-
-- Do not build a medical diagnosis product.
-- Do not build full auth before the core demo.
-- Do not build a large product marketplace.
-- Do not build complete multi-tenant admin.
-- Do not overuse AI chat if the skin analysis flow is incomplete.
-
-## Final V&V Checklist
-
-Verification:
-
-- Working app exists.
-- YouCam API usage is shown.
-- Consumer value is clear.
-- Screenshots and demo script exist.
-- Submission docs exist.
-
-Validation:
-
-- Build passes.
-- Typecheck passes.
-- Main demo path works.
-- Product-safe unavailable states work.
-- UI is readable and responsive.
+| Check | Status |
+| --- | --- |
+| Working app (local + production) | Done |
+| YouCam Skin Analysis integrated | Done |
+| Consumer value clear in under one minute | Done |
+| Docs, architecture, roadmap | Done |
+| Screenshots (partial — see SCREENSHOTS.md) | In progress |
+| Demo video | Record before Devpost deadline |
+| `npm run typecheck` / `npm run build` | Run before each release |

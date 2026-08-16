@@ -1,30 +1,30 @@
-# YouCam API Integration
+# YouCam API integration
 
-## Selected Track
+## Selected track
 
-Selected hackathon track: **FIRST TRACK - Skin AI**.
+**Skin AI** — YouCam API Skin AI & Apparel VTO Hackathon.
 
-Skinova aligns with the Skin AI topic by helping a consumer understand skin analysis and decide what to do next.
+Skinova aligns with the Skin AI topic by helping a consumer understand skin analysis output and decide what to do next (routine, coach, progress).
 
-## Source Documents
+## Official documentation
 
-Local API documentation used:
+Use Perfect Corp. docs as the source of truth (local vendor dumps were removed from this repo):
 
-- `AI_SKIN_ANALYSIS/AI_SKIN_ANALYSIS.md`
-- `AI_SKIN_ANALYSIS/AI_SKIN_ANALYSIS.yaml`
-- `AI_SKIN_SIMULATION/AI_SKIN_SIMULATION.md`
-- `AI_FITZPATRICK_SKIN_TYPE_ANALYSIS/AI_FITZPATRICK_SKIN_TYPE_ANALYSIS.md`
-- `AI_FACIAL_COLOR_TONES_ANALYZER/AI_FACIAL_COLOR_TONES_ANALYZER.md`
-- `AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER/AI_FACE_ATTRIBUTES_&_RATIO_ANALYZER.md`
-- `AI_PHOTO_ENHANCE/ai_photo_enhance.yaml`
+| Resource | URL |
+| --- | --- |
+| Quick start | https://docs.perfectcorp.com/develop/quick_start_guide |
+| AI Skin Analysis reference | https://docs.perfectcorp.com/reference/ai_skin_analysis |
+| API console (keys) | https://yce.makeupar.com/api-console/en/api-keys/ |
+| Product overview | https://yce.perfectcorp.com/ai-api/products/skin-analysis-api |
+| Hackathon | https://youcam-api.devpost.com/ |
 
-## Core Skin Analysis Request Flow
+Implementation in this repo uses **v2.0** endpoints on `BASE_URL` (default `https://yce-api-01.makeupar.com`).
 
-1. Create file metadata:
+## Core Skin Analysis request flow
+
+1. **Create file metadata**
 
    `POST /s2s/v2.0/file/skin-analysis`
-
-   Required payload:
 
    ```json
    {
@@ -38,13 +38,11 @@ Local API documentation used:
    }
    ```
 
-2. Upload the binary to the presigned URL returned in `data.files[0].requests[0].url`.
+2. **Upload** the binary to the presigned URL in `data.files[0].requests[0].url`.
 
-3. Create the task:
+3. **Create task**
 
    `POST /s2s/v2.0/task/skin-analysis`
-
-   Prototype payload:
 
    ```json
    {
@@ -57,67 +55,56 @@ Local API documentation used:
    }
    ```
 
-4. Poll the task:
+4. **Poll**
 
    `GET /s2s/v2.0/task/skin-analysis/{task_id}`
 
-5. Convert completed `ui_score` output into Skinova's consumer guidance model.
+5. **Normalize** completed `ui_score` output into Skinova's `AnalysisResult` (see `app/lib/youcam.ts`).
 
-## Endpoint Corrections Captured
+## Skinova API surface
 
-- Photo Enhance uses `/s2s/v2.0/file/enhance` and `/s2s/v2.0/task/enhance`.
-- Face Attributes uses `/s2s/v2.0/file/face-attr-analysis` and `/s2s/v2.0/task/face-attr-analysis`.
-- Skin Analysis SD and HD `dst_actions` must not be mixed.
-- Polling is required because task execution time is not guaranteed.
+| Route | Purpose |
+| --- | --- |
+| `POST /api/skinova/scan` | Start scan (auth required) |
+| `GET /api/skinova/scan-status/[taskId]` | Poll task (auth required) |
+| `GET /api/skinova/health` | Landing live status |
+| `POST /api/skinova/coach` | Skin Coach (auth required) |
 
-## Security Boundary
+Low-level YouCam proxy routes under `/api/youcam/*` exist for smoke tests and internal use.
 
-- API credentials are read only on the server or local smoke-test script.
-- `.env` values are never printed.
+## Other YouCam APIs (not in primary UI)
+
+| API | Status in Skinova |
+| --- | --- |
+| AI Skin Analysis | **Integrated** — primary user flow |
+| AI Skin Simulation | Library support in `youcam.ts`; Progress uses score projection |
+| Fitzpatrick / skin tone / face analyzer | Stubs only, not exposed in UI |
+
+## Security boundary
+
+- API credentials are read only on the server or in local smoke-test scripts.
+- `.env` values are never printed in logs or client bundles.
 - Client code calls local API routes, not YouCam directly.
-- Live scan mode should be enabled only in environments intended to run real scan tests.
+- Enable live scan mode only in environments intended to consume YouCam units.
 
-## Real API Smoke Result
+## Smoke tests
 
-Latest sanitized metadata smoke result:
-
-- Stage: file metadata
-- Workflow: `skin-analysis`
-- HTTP status: `200`
-- Response status: `200`
-- Upload file id present: yes
-- Presigned upload URL present: yes
-- Upload headers present: yes
-
-Latest sanitized full smoke result using a temporary image outside the repo:
-
-- Stage: poll
-- Workflow: `skin-analysis`
-- HTTP status: `200`
-- Response status: `200`
-- Task status: `success`
-- Analysis output present: yes
-
-Run again with:
+Metadata only:
 
 ```bash
 npm run youcam:smoke
 ```
 
-Run full flow after adding `Testing/INPUT/selfie.jpg`, `.jpeg`, or `.png`:
+Full upload → task → poll (with test image):
 
 ```bash
-npm run youcam:smoke:full
+YOUCAM_TEST_IMAGE_PATH=public/samples/youcam-clear-baseline.jpg npm run youcam:smoke:full
 ```
 
-Or with a temporary remote image:
+Sanitized output includes HTTP status, task status, and whether analysis output is present — never keys, file IDs, or presigned URLs.
 
-```bash
-YOUCAM_TEST_IMAGE_URL=https://example.com/front-facing-selfie.jpg npm run youcam:smoke:full
-```
+## Endpoint notes
 
-Or with a temporary local image outside the repo:
-
-```bash
-YOUCAM_TEST_IMAGE_PATH=/tmp/front-facing-selfie.jpg npm run youcam:smoke:full
-```
+- SD and HD `dst_actions` must not be mixed in a single request.
+- Polling is required; task duration is not guaranteed.
+- Photo Enhance, Face Attributes, and related APIs use different `/file/*` and `/task/*` paths — see official reference if extending Skinova.
