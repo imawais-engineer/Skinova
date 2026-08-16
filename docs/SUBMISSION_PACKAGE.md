@@ -41,13 +41,19 @@ Requirements when recording (1–3 minutes):
 
 ## Screenshots
 
-Capture per [SCREENSHOTS.md](SCREENSHOTS.md) and store in `public/screenshots/`.
+All captures are in `public/screenshots/` (see [SCREENSHOTS.md](SCREENSHOTS.md) and [public/screenshots/README.md](../public/screenshots/README.md)).
 
-Current assets:
-
-- `project-cover.png` — landing hero (captured)
-
-Remaining captures: sign up, dashboard, scan complete, results, routine, coach, progress, landing live status.
+| File | Screen |
+| --- | --- |
+| `project-cover.png` | Landing hero |
+| `landing-live-status.png` | Live status section |
+| `signup.png` | Sign up |
+| `dashboard.png` | Dashboard |
+| `scan-complete.png` | Completed scan |
+| `results.png` | Results |
+| `routine.png` | Routine |
+| `coach.png` | Skin Coach (answered question) |
+| `progress.png` | Progress |
 
 ## Judge Testing Instructions
 

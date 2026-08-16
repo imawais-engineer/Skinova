@@ -13,8 +13,8 @@ Summary of official rules and how Skinova maps to them. Production app: **https:
 | Landing live status, privacy, terms | Shipped |
 | Documentation (`docs/`) | Shipped |
 | MIT license | Shipped |
-| Screenshots | Partial (`SCREENSHOTS.md`) |
-| Demo video | Script ready; recording before Devpost deadline |
+| Screenshots | Complete (`public/screenshots/`) |
+| Demo video | Script ready; recording after DevTest freeze |
 
 Repository: https://github.com/imawais-engineer/Skinova
 
@@ -68,6 +68,6 @@ Sources:
 
 ## Remaining submission assets
 
-1. Finish screenshot set (`docs/SCREENSHOTS.md`)
-2. Record demo video (`docs/DEMO_SCRIPT.md`)
+1. ~~Finish screenshot set (`docs/SCREENSHOTS.md`)~~ — done in `public/screenshots/`
+2. Record demo video (`docs/DEMO_SCRIPT.md`) — after DevTest / app freeze
 3. Add video URL to `docs/SUBMISSION_PACKAGE.md` on Devpost

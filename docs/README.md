@@ -33,5 +33,5 @@ Hackathon track: **Skin AI** ([YouCam API Skin AI & Apparel VTO Hackathon](https
 | Source repository | Public on GitHub |
 | MIT license | `LICENSE` in repo root |
 | Written description | `SUBMISSION_PACKAGE.md` |
-| Screenshots | Capture per `SCREENSHOTS.md` → `public/screenshots/` |
-| Demo video (1–3 min) | **Record before Devpost deadline** — script in `DEMO_SCRIPT.md`; add public URL to `SUBMISSION_PACKAGE.md` when published (only remaining submission gap) |
+| Screenshots | Complete — `public/screenshots/` (9 captures) |
+| Demo video (1–3 min) | **Deferred during DevTest** — script in `DEMO_SCRIPT.md`; record after app freeze |

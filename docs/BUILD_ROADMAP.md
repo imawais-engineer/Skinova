@@ -26,15 +26,16 @@ This document tracks what shipped for the hackathon and what comes next.
 
 - Neon Postgres auth (signup, login, session cookies)
 - Skin Coach with knowledge RAG and optional Qwen LLM
-- Progress trend cards and improvement simulation story
+- Account-backed scan history in Neon (`user_scans`)
+- YouCam Skin Simulation on Progress page
 - Responsive layout and UI verification script
 - Production deploy at https://skinova-ai.vercel.app
 
 ### Phase 4 — Submission package ✅
 
 - README, architecture, API integration, compliance, demo script
-- MIT license, screenshot checklist, judge testing instructions
-- Demo video script (recording deferred to owner before Devpost deadline)
+- MIT license, full screenshot set in `public/screenshots/`
+- Demo video script (recording deferred until after DevTest freeze)
 
 ## Core demo path (current)
 
@@ -49,17 +50,16 @@ This document tracks what shipped for the hackathon and what comes next.
 | Data | Storage |
 | --- | --- |
 | User accounts | Neon Postgres (`users`) |
-| Coach knowledge | Neon Postgres (embeddings via ingest script) |
-| Latest scan session | Browser `sessionStorage` |
-| Scan images | Not persisted server-side |
+| Coach knowledge + history | Neon Postgres (`knowledge_chunks`, `coach_messages`) |
+| Scan history | Neon Postgres (`user_scans`) + browser `sessionStorage` cache |
+| Latest routine plan | Browser `sessionStorage` |
+| Scan images | Not persisted server-side (YouCam `file_id` stored for simulation) |
 
 ## Near-term improvements (post-hackathon)
 
-- Persist scan history per user in Neon (`scans`, `analysis_results`)
-- Integrate YouCam **Skin Simulation** API for real before/after imagery on Progress
 - Email verification and password reset
-- Rate limiting on scan and coach routes in production
-- Additional screenshots for Devpost (`docs/SCREENSHOTS.md`)
+- Rate limiting on scan, simulation, and coach routes in production
+- Demo video recording and Devpost URL
 
 ## Deferred (out of scope)
 
@@ -83,6 +83,6 @@ This document tracks what shipped for the hackathon and what comes next.
 | YouCam Skin Analysis integrated | Done |
 | Consumer value clear in under one minute | Done |
 | Docs, architecture, roadmap | Done |
-| Screenshots (partial — see SCREENSHOTS.md) | In progress |
-| Demo video | Record before Devpost deadline |
+| Screenshots | Done (`public/screenshots/`) |
+| Demo video | After DevTest freeze |
 | `npm run typecheck` / `npm run build` | Run before each release |
