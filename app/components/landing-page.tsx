@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   X
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { SkinovaLogo } from "./skinova-logo";
 import { LandingLiveStatus } from "./landing-live-status";
 
@@ -48,6 +49,63 @@ const capabilities = [
     icon: LineChart
   }
 ];
+
+const journey = [
+  {
+    badge: "01",
+    title: "Analyze",
+    description: "Run a YouCam Skin AI scan from a clear front-facing selfie.",
+    icon: Camera
+  },
+  {
+    badge: "02",
+    title: "Understand",
+    description: "Read concern scores in plain language — acne, pores, redness, texture, hydration.",
+    icon: Activity
+  },
+  {
+    badge: "03",
+    title: "Decide",
+    description: "Follow AI routine cards and ask Skin Coach what fits your scan results.",
+    icon: Bot
+  },
+  {
+    badge: "04",
+    title: "Improve",
+    description: "Track trends across scans and stay consistent with your skincare plan.",
+    icon: LineChart
+  }
+];
+
+function LandingFeatureCard({
+  icon: Icon,
+  badge,
+  title,
+  description,
+  badgeTone = "mint"
+}: {
+  icon: LucideIcon;
+  badge: string;
+  title: string;
+  description: string;
+  badgeTone?: "mint" | "cyan";
+}) {
+  const badgeClass =
+    badgeTone === "cyan"
+      ? "border-cyan-300/20 bg-cyan-300/10 text-cyan-100"
+      : "border-emerald-300/20 bg-emerald-300/10 text-emerald-100";
+
+  return (
+    <div className="glass-panel rounded-2xl p-5">
+      <div className="flex items-start justify-between gap-4">
+        <Icon className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+        <span className={`rounded-full border px-3 py-1 text-xs font-medium ${badgeClass}`}>{badge}</span>
+      </div>
+      <h3 className="mt-4 text-lg font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+    </div>
+  );
+}
 
 const steps = [
   { number: "01", title: "Scan", description: "Take or upload a clear front-facing selfie." },
@@ -253,21 +311,15 @@ export function LandingPage() {
               </p>
             </div>
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
-              {capabilities.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.title} className="glass-panel rounded-2xl p-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <Icon className="h-5 w-5 text-cyan-200" aria-hidden="true" />
-                      <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-medium text-emerald-100">
-                        {item.status}
-                      </span>
-                    </div>
-                    <h3 className="mt-4 text-lg font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
-                  </div>
-                );
-              })}
+              {capabilities.map((item) => (
+                <LandingFeatureCard
+                  key={item.title}
+                  icon={item.icon}
+                  badge={item.status}
+                  title={item.title}
+                  description={item.description}
+                />
+              ))}
             </div>
           </div>
         </section>
@@ -280,6 +332,18 @@ export function LandingPage() {
                 Skinova solves a real consumer problem: turning skin analysis into better understanding, clearer guidance,
                 and continuous improvement over time.
               </p>
+            </div>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              {journey.map((item) => (
+                <LandingFeatureCard
+                  key={item.title}
+                  icon={item.icon}
+                  badge={item.badge}
+                  title={item.title}
+                  description={item.description}
+                  badgeTone="cyan"
+                />
+              ))}
             </div>
           </div>
         </section>
