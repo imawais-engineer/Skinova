@@ -11,7 +11,7 @@ export function ResultsExperience() {
   const result = session?.analysis;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       <PageHeader
         eyebrow="Analysis results"
         title="Plain-language insights from skin scores."

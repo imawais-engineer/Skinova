@@ -9,7 +9,6 @@ export default function ScanPage() {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        density="compact"
         eyebrow="Skin scan"
         title="Run a live skin scan."
         description="Select a photo, start the scan, and watch each analysis step complete with live results."

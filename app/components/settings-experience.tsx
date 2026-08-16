@@ -106,7 +106,6 @@ export function SettingsExperience() {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        density="compact"
         eyebrow="Settings"
         title="Manage your Skinova data."
         description="Reset scan results, routine guidance, progress views, or Skin Coach history. Your account stays signed in."

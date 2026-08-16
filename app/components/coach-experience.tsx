@@ -156,11 +156,8 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
 
   return (
     <Panel className="flex h-full min-h-0 flex-1 flex-col !p-0">
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2.5">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
-          <h1 className="text-sm font-semibold text-white">Skin Coach</h1>
-          <span className="hidden text-slate-500 sm:inline">·</span>
-          <span className="hidden truncate text-xs text-slate-400 sm:inline">Your scan results</span>
           <span
             className={[
               "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
@@ -171,6 +168,8 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
           >
             {coachMode === "live" ? "Live" : "Guided"}
           </span>
+          <span className="text-xs text-slate-500">·</span>
+          <span className="truncate text-xs text-slate-400">Chat</span>
         </div>
         <p className="shrink-0 text-xs text-slate-400">
           {session ? (

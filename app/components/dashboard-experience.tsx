@@ -17,7 +17,6 @@ export function DashboardExperience({ userName }: { userName: string }) {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
-        density="compact"
         eyebrow="Your Skinova workspace"
         title={`Welcome back, ${userName}.`}
         description="Start a scan, review your latest insights, and continue your skincare guidance journey."

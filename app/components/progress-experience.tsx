@@ -13,7 +13,7 @@ export function ProgressExperience() {
   const projected = entries?.[entries.length - 1];
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       <PageHeader
         eyebrow="Progress tracking"
         title="Skinova continues after the first scan."

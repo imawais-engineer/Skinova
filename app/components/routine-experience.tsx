@@ -62,7 +62,7 @@ export function RoutineExperience() {
   }, [session]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       <PageHeader
         eyebrow="Personalized guidance"
         title="AI routine from your face scan."
