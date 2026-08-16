@@ -42,5 +42,27 @@ await sql`
 `;
 await sql`ALTER TABLE coach_messages ADD COLUMN IF NOT EXISTS metadata JSONB`;
 await sql`CREATE INDEX IF NOT EXISTS knowledge_chunks_topic_idx ON knowledge_chunks (topic)`;
+await sql`
+  CREATE TABLE IF NOT EXISTS user_scans (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    mode TEXT NOT NULL,
+    overall_score INTEGER NOT NULL,
+    analysis JSONB NOT NULL,
+    youcam_file_id TEXT,
+    scanned_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )
+`;
+await sql`
+  CREATE TABLE IF NOT EXISTS scan_task_context (
+    task_id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    file_id TEXT,
+    mode TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )
+`;
+await sql`CREATE INDEX IF NOT EXISTS user_scans_user_id_idx ON user_scans (user_id, scanned_at DESC)`;
 
 console.log(JSON.stringify({ ok: true, message: "Neon database schema is ready." }, null, 2));

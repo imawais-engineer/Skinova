@@ -10,10 +10,11 @@ export async function GET() {
     status: "online",
     mode,
     scanReady: true,
+    simulationReady: true,
     coachReady,
     message:
       mode === "live"
-        ? "Skinova is online with live scan and guidance flows."
-        : "Skinova is online in demo mode with representative scan guidance."
+        ? "Skinova is online with live scan, simulation, and guidance flows."
+        : "Skinova is online in demo mode with representative scan and simulation guidance."
   });
 }

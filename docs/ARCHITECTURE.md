@@ -116,7 +116,7 @@ Scan history is **per browser session**, not per user in the database (documente
 | API | Status in Skinova |
 | --- | --- |
 | **AI Skin Analysis** | **Integrated** — primary user flow |
-| AI Skin Simulation | Library support only; Progress uses score projection, not simulation images |
+| AI Skin Simulation | Live task on Progress page with polling and preview image |
 | Fitzpatrick / Skin Tone / Face Analyzer | Library stubs, not exposed in UI |
 
 ## Environment modes

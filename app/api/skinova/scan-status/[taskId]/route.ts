@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
-import { getTaskStatus } from "../../../../lib/youcam";
+import { getSession } from "../../../../lib/auth";
+import {
+  deleteScanTaskContext,
+  getScanTaskContext,
+  saveUserScan
+} from "../../../../lib/scan-db";
+import type { AnalysisResult } from "../../../../lib/skinova-data";
+import { getTaskStatus, normalizeYouCamTaskResult } from "../../../../lib/youcam";
 
 function mapYouCamError(error: unknown) {
   const code = typeof error === "string" ? error : "";
@@ -33,26 +40,58 @@ function mapYouCamError(error: unknown) {
 
 export async function GET(_request: Request, context: { params: Promise<{ taskId: string }> }) {
   const { taskId } = await context.params;
+  const session = await getSession();
   const result = await getTaskStatus("skin-analysis", taskId);
   const body = result.data as {
     task_status?: string;
     status?: string;
-    analysis?: unknown;
+    analysis?: AnalysisResult;
     error?: unknown;
     data?: { task_status?: string; status?: string; error?: unknown };
   };
   const taskStatus = body.task_status || body.status || body.data?.task_status || body.data?.status || "processing";
   const youCamError = body.error || body.data?.error;
+  const analysis = body.analysis || normalizeYouCamTaskResult(result.data) || null;
 
   if (result.status >= 400 || taskStatus === "error" || youCamError) {
+    if (session) {
+      await deleteScanTaskContext(taskId).catch(() => undefined);
+    }
+
     return NextResponse.json(
       { status: "error", error: mapYouCamError(youCamError) },
       { status: result.status >= 400 ? result.status : 502 }
     );
   }
 
-  if (body.analysis) {
-    return NextResponse.json({ status: "success", analysis: body.analysis }, { status: 200 });
+  if (analysis) {
+    const taskContext = session ? await getScanTaskContext(taskId) : null;
+    let scanId: string | null = null;
+    let fileId: string | null = taskContext?.file_id || null;
+
+    if (session && taskContext) {
+      const saved = await saveUserScan({
+        userId: session.id,
+        mode: taskContext.mode,
+        analysis,
+        youcamFileId: taskContext.file_id,
+        scannedAt: new Date().toISOString()
+      });
+      scanId = saved.id;
+      fileId = saved.youcam_file_id;
+      await deleteScanTaskContext(taskId).catch(() => undefined);
+    }
+
+    return NextResponse.json(
+      {
+        status: "success",
+        analysis,
+        scanId,
+        fileId,
+        mode: taskContext?.mode || "live"
+      },
+      { status: 200 }
+    );
   }
 
   if (taskStatus === "success") {

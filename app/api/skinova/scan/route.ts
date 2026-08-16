@@ -1,12 +1,15 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "../../../lib/auth";
 import { getScanSample } from "../../../lib/demo-samples";
 import { normalizeImageContentType, validateImageBuffer } from "../../../lib/image-validation";
+import { saveScanTaskContext } from "../../../lib/scan-db";
 import { runSkinScan } from "../../../lib/run-skin-scan";
 
 export async function POST(request: NextRequest) {
   let formData: FormData;
+  const session = await getSession();
 
   try {
     formData = await request.formData();
@@ -16,6 +19,24 @@ export async function POST(request: NextRequest) {
 
   const sampleId = formData.get("sampleId");
   const file = formData.get("file");
+
+  async function finalizeScanResult(result: Awaited<ReturnType<typeof runSkinScan>>, sample?: string) {
+    const taskId = result.pollingUrl?.split("/").pop();
+
+    if (session && taskId) {
+      await saveScanTaskContext({
+        task_id: decodeURIComponent(taskId),
+        user_id: session.id,
+        file_id: result.fileId || null,
+        mode: result.mode
+      });
+    }
+
+    return NextResponse.json(
+      { ...result, sampleId: sample },
+      { status: 202 }
+    );
+  }
 
   try {
     if (typeof sampleId === "string" && sampleId.trim()) {
@@ -40,7 +61,7 @@ export async function POST(request: NextRequest) {
         buffer: arrayBuffer
       });
 
-      return NextResponse.json({ ...result, sampleId: sample.id }, { status: 202 });
+      return finalizeScanResult(result, sample.id);
     }
 
     if (!(file instanceof File)) {
@@ -60,7 +81,7 @@ export async function POST(request: NextRequest) {
       buffer: arrayBuffer
     });
 
-    return NextResponse.json(result, { status: 202 });
+    return finalizeScanResult(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "The scan could not be completed.";
     return NextResponse.json({ error: message }, { status: 502 });

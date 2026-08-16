@@ -185,8 +185,8 @@ Integration details: [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md)
 
 ## Known limitations
 
-- Scan history is session-based in the browser (`sessionStorage`), not yet stored per user in Neon
-- Progress simulation is score projection, not live YouCam Skin Simulation images
+- Scan history is stored per user in Neon (`user_scans`) and hydrated into the session when you return
+- Progress includes live YouCam Skin Simulation previews when a scan file ID is available
 - No email verification or password reset yet
 - Full live scan testing requires valid YouCam units and a front-facing selfie (face should fill most of the frame)
 - Demo video for Devpost: record before submission deadline (script ready; URL to be added when published)

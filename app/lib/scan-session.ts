@@ -5,6 +5,8 @@ export type ScanSession = {
   analysis: AnalysisResult;
   mode: "demo" | "live";
   scannedAt: string;
+  scanId?: string | null;
+  fileId?: string | null;
 };
 
 const STORAGE_KEY = "skinova:last-scan";
@@ -130,4 +132,49 @@ export function buildProgressFromAnalysis(analysis: AnalysisResult) {
   };
 
   return [current, projected];
+}
+
+export type ScanHistoryEntry = {
+  id: string;
+  scannedAt: string;
+  mode: "demo" | "live";
+  overall: number;
+  acne: number;
+  redness: number;
+  texture: number;
+  hydration: number;
+};
+
+function concernScore(analysis: AnalysisResult, keyword: string, fallback: number) {
+  const match = analysis.concerns.find((concern) => concern.type.toLowerCase().includes(keyword));
+  return match?.score ?? fallback;
+}
+
+export function buildScanHistoryEntries(
+  scans: Array<{ id: string; scannedAt: string; mode: "demo" | "live"; analysis: AnalysisResult }>
+): ScanHistoryEntry[] {
+  return scans.map((scan) => ({
+    id: scan.id,
+    scannedAt: scan.scannedAt,
+    mode: scan.mode,
+    overall: scan.analysis.overallScore,
+    acne: concernScore(scan.analysis, "acne", 64),
+    redness: concernScore(scan.analysis, "redness", 58),
+    texture: concernScore(scan.analysis, "texture", 76),
+    hydration: concernScore(scan.analysis, "hydration", 84)
+  }));
+}
+
+export function formatScanDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
 }

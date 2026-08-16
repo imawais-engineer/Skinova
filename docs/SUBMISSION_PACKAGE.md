@@ -10,7 +10,7 @@ Skinova is a Skin AI consumer skincare intelligence experience built on the YouC
 
 The product is designed for people who can see changes in their skin but do not know what those changes mean or what to do next. Skinova avoids medical diagnosis and focuses on skincare education, personalization, and consumer guidance.
 
-**YouCam API:** AI Skin Analysis — file metadata, presigned upload, task creation, polling, and `ui_score` normalization into consumer-facing guidance.
+**YouCam APIs:** AI Skin Analysis (scan workflow) and AI Skin Simulation (progress preview) — file metadata, presigned upload, task creation, polling, and consumer-facing normalization.
 
 **Track:** Skin AI (YouCam API Skin AI & Apparel VTO Hackathon).
 
@@ -111,11 +111,10 @@ YOUCAM_TEST_IMAGE_PATH=public/samples/youcam-clear-baseline.jpg npm run youcam:s
 
 ## Known Limitations
 
-- Scan history is session-based, not yet stored per user in the database
-- Progress uses projected scores, not live YouCam Skin Simulation render output
+- Demo video URL will be added when the recording is published
 - Product recommendations and affiliate commerce are intentionally deferred
 - Full live task testing requires valid YouCam units and a valid front-facing selfie
-- Demo video URL will be added when the recording is published
+- Skin Simulation preview URLs expire after a few hours per YouCam policy
 
 ## License And Attribution
 

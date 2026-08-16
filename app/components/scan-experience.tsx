@@ -19,6 +19,8 @@ type AnalyzeResponse = {
   error?: string;
   pollingUrl?: string | null;
   message?: string;
+  scanId?: string | null;
+  fileId?: string | null;
 };
 
 type ScanPhase = "pick" | "scanning" | "result" | "error";
@@ -63,11 +65,17 @@ export function ScanExperience() {
     return hasSelection ? "Ready to scan" : "Step 1 · Select a photo";
   }, [hasSelection, phase, scanMode]);
 
-  function persistScanResult(result: AnalysisResult, mode: "demo" | "live") {
+  function persistScanResult(
+    result: AnalysisResult,
+    mode: "demo" | "live",
+    meta?: { scanId?: string | null; fileId?: string | null }
+  ) {
     saveScanSession({
       analysis: result,
       mode,
-      scannedAt: new Date().toISOString()
+      scannedAt: new Date().toISOString(),
+      scanId: meta?.scanId || null,
+      fileId: meta?.fileId || null
     });
     setScanMode(mode);
   }
@@ -97,7 +105,10 @@ export function ScanExperience() {
         return {
           ok: true,
           analysis: data.analysis,
-          message: "Live skin analysis complete. Results are saved to your session."
+          scanId: data.scanId || null,
+          fileId: data.fileId || null,
+          mode: data.mode || "live",
+          message: "Live skin analysis complete. Results are saved to your account."
         };
       }
 
@@ -105,6 +116,9 @@ export function ScanExperience() {
         return {
           ok: true,
           analysis: data.analysis,
+          scanId: data.scanId || null,
+          fileId: data.fileId || null,
+          mode: data.mode || "live",
           message: "Skin scan completed."
         };
       }
@@ -152,7 +166,10 @@ export function ScanExperience() {
         const nextAnalysis = finalResult.analysis || data.analysis || null;
 
         if (nextAnalysis && finalResult.ok) {
-          persistScanResult(nextAnalysis, modeHint || data.mode || "live");
+          persistScanResult(nextAnalysis, finalResult.mode || modeHint || data.mode || "live", {
+            scanId: finalResult.scanId,
+            fileId: finalResult.fileId
+          });
           setAnalysis(nextAnalysis);
           setMessage(finalResult.message);
           setPhase("result");

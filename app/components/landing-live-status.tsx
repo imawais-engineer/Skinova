@@ -8,6 +8,7 @@ type HealthResponse = {
   status: string;
   mode: "demo" | "live";
   scanReady: boolean;
+  simulationReady?: boolean;
   coachReady: boolean;
   message: string;
 };
@@ -50,6 +51,9 @@ export function LandingLiveStatus() {
                 <div className="mt-5 flex flex-wrap gap-2">
                   <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
                     {health.scanReady ? (isLive ? "Live skin scan" : "Demo skin scan") : "Scan unavailable"}
+                  </span>
+                  <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/10 px-3 py-1 text-xs font-medium text-fuchsia-100">
+                    {health.simulationReady ? (isLive ? "Live simulation" : "Demo simulation") : "Simulation checking"}
                   </span>
                   <span className="rounded-full border border-violet-300/20 bg-violet-300/10 px-3 py-1 text-xs font-medium text-violet-100">
                     {health.coachReady ? "Live Skin Coach" : "Guided Skin Coach"}

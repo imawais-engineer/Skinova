@@ -122,6 +122,15 @@ export function mockTaskResult(taskId = "skinova-demo-task") {
   };
 }
 
+export function mockSimulationResult(taskId = "skinova-demo-simulation") {
+  return {
+    mode: "mock",
+    task_id: taskId,
+    task_status: "success",
+    url: "https://plugins-media.makeupar.com/v1/skin-analysis/skin_analysis_05_20240101.png"
+  };
+}
+
 export async function createUploadMetadata(input: UploadMetadataInput) {
   const runtime = getYouCamRuntime();
   const workflow = workflowPaths[input.workflow];
@@ -210,6 +219,10 @@ export async function getTaskStatus(workflow: YouCamWorkflow, taskId: string) {
   const workflowPath = workflowPaths[workflow];
 
   if (runtime.shouldMock) {
+    if (workflow === "skin-simulation") {
+      return { status: 200, data: mockSimulationResult(taskId) };
+    }
+
     return { status: 200, data: mockTaskResult(taskId) };
   }
 
@@ -366,6 +379,27 @@ export function normalizeYouCamTaskResult(payload: unknown): AnalysisResult | nu
     concerns,
     readingSteps: analysisResult.readingSteps
   };
+}
+
+export function normalizeSimulationResult(payload: unknown): { resultUrl: string | null; taskStatus: string } {
+  const root = asRecord(payload);
+  const data = asRecord(root?.data);
+  const nestedData = asRecord(data?.data);
+  const results = asRecord(data?.results) || asRecord(nestedData?.results);
+
+  const url =
+    (typeof root?.url === "string" ? root.url : null) ||
+    (typeof data?.url === "string" ? data.url : null) ||
+    (typeof nestedData?.url === "string" ? nestedData.url : null) ||
+    (typeof results?.url === "string" ? results.url : null);
+
+  const taskStatus =
+    (typeof root?.task_status === "string" ? root.task_status : null) ||
+    (typeof data?.task_status === "string" ? data.task_status : null) ||
+    (typeof nestedData?.task_status === "string" ? nestedData.task_status : null) ||
+    (url ? "success" : "processing");
+
+  return { resultUrl: url, taskStatus };
 }
 
 function asRecord(value: unknown): JsonRecord | null {

@@ -71,27 +71,26 @@ export function SettingsExperience() {
 
     try {
       const clearedParts: string[] = [];
+      const response = await fetch("/api/skinova/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targets })
+      });
+      const data = (await response.json()) as { error?: string; cleared?: string[] };
 
-      if (needsCoachClear) {
-        const response = await fetch("/api/skinova/reset", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ targets })
-        });
-        const data = (await response.json()) as { error?: string };
-
-        if (!response.ok) {
-          throw new Error(data.error || "Reset failed.");
-        }
-
-        window.dispatchEvent(new Event("skinova:coach-reset"));
-        clearedParts.push("Skin Coach history");
+      if (!response.ok) {
+        throw new Error(data.error || "Reset failed.");
       }
 
       if (needsScanClear) {
         clearScanSession();
         window.dispatchEvent(new Event("skinova:session-updated"));
         clearedParts.push("scan, results, routine, and progress");
+      }
+
+      if (needsCoachClear) {
+        window.dispatchEvent(new Event("skinova:coach-reset"));
+        clearedParts.push("Skin Coach history");
       }
 
       setMessage(`Cleared ${clearedParts.join(" and ")}.`);

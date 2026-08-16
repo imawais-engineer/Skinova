@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "../../../lib/auth";
 import { clearCoachMemory } from "../../../lib/coach-memory";
+import { deleteUserScans } from "../../../lib/scan-db";
 
 export type ResetTarget = "scan" | "routine" | "coach";
 
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
   const cleared: ResetTarget[] = [];
 
   if (targets.includes("scan") || targets.includes("routine")) {
+    await deleteUserScans(session.id);
     cleared.push("scan", "routine");
   }
 

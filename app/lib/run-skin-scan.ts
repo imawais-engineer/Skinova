@@ -24,7 +24,8 @@ export async function runSkinScan(input: ScanInput) {
       message: input.forceDemo
         ? "Guided demo scan started. Results use representative Skinova guidance."
         : "Demo scan started. Results use representative Skinova guidance.",
-      pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`
+      pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`,
+      fileId: null as string | null
     };
   }
 
@@ -66,6 +67,7 @@ export async function runSkinScan(input: ScanInput) {
     mode: "live" as const,
     status: "processing" as const,
     message: "Live scan started. Waiting for YouCam Skin Analysis results.",
-    pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`
+    pollingUrl: `/api/skinova/scan-status/${encodeURIComponent(taskId)}`,
+    fileId: fileRecord.file_id
   };
 }
