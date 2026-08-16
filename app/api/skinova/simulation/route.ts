@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceRateLimit } from "../../../lib/api-guard";
 import { getSession } from "../../../lib/auth";
 import { getLatestUserScan, getUserScanById } from "../../../lib/scan-db";
 import { runSkinSimulation } from "../../../lib/run-skin-simulation";
@@ -13,6 +14,11 @@ export async function POST(request: NextRequest) {
 
   if (!session) {
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  }
+
+  const limited = enforceRateLimit(session.id, "simulation");
+  if (limited instanceof NextResponse) {
+    return limited;
   }
 
   const body = (await request.json().catch(() => ({}))) as SimulationBody;
@@ -37,7 +43,7 @@ export async function POST(request: NextRequest) {
       forceDemo: !fileId
     });
 
-    return NextResponse.json(result, { status: 202 });
+    return NextResponse.json(result, { status: 202, headers: limited.headers });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Simulation could not be started.";
     return NextResponse.json({ error: message }, { status: 502 });

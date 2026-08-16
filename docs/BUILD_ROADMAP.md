@@ -52,14 +52,15 @@ This document tracks what shipped for the hackathon and what comes next.
 | User accounts | Neon Postgres (`users`) |
 | Coach knowledge + history | Neon Postgres (`knowledge_chunks`, `coach_messages`) |
 | Scan history | Neon Postgres (`user_scans`) + browser `sessionStorage` cache |
-| Latest routine plan | Browser `sessionStorage` |
+| Routine plans | Neon Postgres (`user_routine_plans`) + browser `sessionStorage` cache |
+| Rate limiting | Per-user limits on scan, simulation, coach, routine routes |
 | Scan images | Not persisted server-side (YouCam `file_id` stored for simulation) |
 
 ## Near-term improvements (post-hackathon)
 
 - Email verification and password reset
-- Rate limiting on scan, simulation, and coach routes in production
 - Demo video recording and Devpost URL
+- Distributed rate limiting (Redis) for multi-instance production
 
 ## Deferred (out of scope)
 

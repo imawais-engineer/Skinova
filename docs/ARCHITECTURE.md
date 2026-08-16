@@ -106,7 +106,7 @@ scripts/                   Setup, smoke tests, DB init, knowledge ingest
 | --- | --- |
 | Dashboard | Latest session + account scan history strip (`GET /api/skinova/scans`) |
 | Results | Latest analysis with personalization + concern mask overlays |
-| Routine | Derived from analysis concerns |
+| Routine | Derived from analysis; persisted in `user_routine_plans` |
 | Coach | User message + optional scan context; Neon knowledge RAG + Qwen LLM (`coach-contract`, `coach-scope`, `rag.ts`) |
 | Progress | Trend cards, scan history, before/after Skin Simulation compare |
 | Settings | Clear scan session / coach history / persisted scans |

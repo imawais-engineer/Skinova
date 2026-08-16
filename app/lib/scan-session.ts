@@ -243,3 +243,12 @@ export function getScanPreviewUrl(analysis: AnalysisResult) {
 
   return DEMO_SCAN_PREVIEW;
 }
+
+export function routineScanKeyFromSession(session: ScanSession) {
+  if (session.scanId) {
+    return session.scanId;
+  }
+
+  const concernKey = session.analysis.concerns.map((concern) => `${concern.type}:${concern.score}`).join("|");
+  return `${session.analysis.overallScore}:${session.scannedAt}:${concernKey}`;
+}

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceRateLimit } from "../../../lib/api-guard";
 import { getSession } from "../../../lib/auth";
 import { loadCoachThread, runCoachConversation } from "../../../lib/coach-service";
 import type { AnalysisResult } from "../../../lib/skinova-data";
@@ -37,6 +38,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   }
 
+  const limited = enforceRateLimit(session.id, "coach");
+  if (limited instanceof NextResponse) {
+    return limited;
+  }
+
   const body = (await request.json().catch(() => ({}))) as CoachRequestBody;
   const message = (body.message || "").trim();
 
@@ -56,5 +62,5 @@ export async function POST(request: NextRequest) {
     scannedAt: body.scannedAt
   });
 
-  return NextResponse.json(result);
+  return NextResponse.json(result, { headers: limited.headers });
 }

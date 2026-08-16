@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
+import { enforceRateLimit } from "../../../lib/api-guard";
 import { getSession } from "../../../lib/auth";
 import { getScanSample } from "../../../lib/demo-samples";
 import { normalizeImageContentType, validateImageBuffer } from "../../../lib/image-validation";
@@ -19,6 +20,13 @@ export async function POST(request: NextRequest) {
 
   const sampleId = formData.get("sampleId");
   const file = formData.get("file");
+
+  if (session) {
+    const limited = enforceRateLimit(session.id, "scan");
+    if (limited instanceof NextResponse) {
+      return limited;
+    }
+  }
 
   async function finalizeScanResult(result: Awaited<ReturnType<typeof runSkinScan>>, sample?: string) {
     const taskId = result.pollingUrl?.split("/").pop();

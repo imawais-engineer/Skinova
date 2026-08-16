@@ -7,6 +7,7 @@ npm run typecheck
 npm run build
 npm run verify:ui
 npm run verify:history
+npm run verify:rate-limit
 npm run youcam:smoke
 npm run personalization:smoke
 npm run coach:smoke "Why is my skin red this week?"

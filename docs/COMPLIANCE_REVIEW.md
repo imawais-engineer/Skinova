@@ -19,7 +19,7 @@ Source of truth:
 | Requirement | Status | Evidence |
 | --- | --- | --- |
 | Working web prototype | Met | https://skinova-ai.vercel.app and local `npm run dev` |
-| At least one YouCam Skin/Fashion API | Met | AI Skin Analysis + AI Skin Simulation |
+| At least one YouCam Skin/Fashion API | Met | 4 APIs: Skin Analysis, Fitzpatrick, Skin Tone, Skin Simulation |
 | Consumer or retail value | Met | Dashboard, scan, results, routine, coach, progress |
 | Not a thin wrapper | Met | End-to-end product flow with education, coaching, and account-backed history |
 | Repository functional for judges | Met | README, `npm run setup`, docs in `docs/` |
@@ -35,7 +35,7 @@ Source of truth:
 - Do not log YouCam API keys, secrets, file IDs, or presigned URLs.
 - Keep YouCam calls server-side (`app/lib/youcam.ts`, API routes).
 - Privacy and Terms pages describe handling at `/privacy` and `/terms`.
-- Consider rate limiting before high-traffic public deployment.
+- Rate limiting on scan, simulation, coach, and routine routes (`app/lib/rate-limit.ts`).
 
 ## Safety positioning
 
@@ -58,8 +58,10 @@ Skinova must not claim to diagnose, treat, cure, or prevent disease.
 ## Pre-submission checklist
 
 - [x] Capture screenshots (`docs/SCREENSHOTS.md`, `public/screenshots/`)
-- [x] Two YouCam APIs integrated (Skin Analysis + Skin Simulation)
+- [x] Four YouCam APIs integrated in product UI
 - [x] Scan history persisted per user in Neon
+- [x] Routine plans persisted per user in Neon
+- [x] Rate limiting on product API routes
 - [ ] Record and publish demo video; add URL to `SUBMISSION_PACKAGE.md` (after DevTest freeze)
 - [ ] Confirm production env vars on Vercel
 - [ ] Run `npm run db:init` on production Neon if not done since scan-history deploy

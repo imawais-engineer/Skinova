@@ -186,7 +186,9 @@ Integration details: [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md)
 ## Known limitations
 
 - Scan history is stored per user in Neon (`user_scans`) and hydrated into the session when you return
+- Routine plans persist per user in Neon (`user_routine_plans`) across devices and reloads
 - Progress includes live YouCam Skin Simulation before/after comparison when a scan file ID is available
+- Product API routes are rate-limited per user (scan, simulation, coach, routine)
 - No email verification or password reset yet
 - Full live scan testing requires valid YouCam units and a front-facing selfie (face should fill most of the frame)
 - Demo video for Devpost: record before submission deadline (script ready; URL to be added when published)

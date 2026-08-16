@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ClipboardList, Loader2, ShieldCheck } from "lucide-react";
-import { getRoutinePlan, saveRoutinePlan } from "../lib/scan-session";
+import { getRoutinePlan, routineScanKeyFromSession, saveRoutinePlan } from "../lib/scan-session";
 import { useScanSession } from "../hooks/use-scan-session";
 import type { StructuredRoutinePlan } from "../lib/routine-types";
 import { EmptyScanState } from "./empty-scan-state";
@@ -26,16 +26,45 @@ export function RoutineExperience() {
       return;
     }
 
+    const scanKey = routineScanKeyFromSession(session);
     let cancelled = false;
     setLoading(true);
     setError("");
 
-    fetch("/api/skinova/routine", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ analysis: session.analysis })
-    })
+    fetch(`/api/skinova/routine?scanKey=${encodeURIComponent(scanKey)}`)
       .then(async (response) => {
+        const data = (await response.json()) as { plan?: StructuredRoutinePlan | null; error?: string };
+        if (!response.ok) {
+          throw new Error(data.error || "Routine lookup failed");
+        }
+        if (data.plan && !cancelled) {
+          saveRoutinePlan(session, data.plan);
+          setPlan(data.plan);
+          setLoading(false);
+          return null;
+        }
+        return scanKey;
+      })
+      .then((key) => {
+        if (!key || cancelled) {
+          return null;
+        }
+
+        return fetch("/api/skinova/routine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            analysis: session.analysis,
+            scanId: session.scanId,
+            scannedAt: session.scannedAt
+          })
+        });
+      })
+      .then(async (response) => {
+        if (!response) {
+          return;
+        }
+
         const data = (await response.json()) as { plan?: StructuredRoutinePlan; error?: string };
         if (!response.ok || !data.plan) {
           throw new Error(data.error || "Routine generation failed");
