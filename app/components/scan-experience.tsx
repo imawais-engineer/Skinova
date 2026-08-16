@@ -235,9 +235,9 @@ export function ScanExperience() {
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(220px,280px)]">
-          <label className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-4 py-6 text-center transition hover:bg-cyan-300/[0.08]">
+          <label className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-4 py-5 text-center transition hover:bg-cyan-300/[0.08]">
             {previewUrl ? (
-              <div className="relative h-40 w-full max-w-xs overflow-hidden rounded-xl border border-white/10">
+              <div className="relative h-28 w-28 overflow-hidden rounded-xl border border-white/10">
                 <Image src={previewUrl} alt="Selected selfie preview" fill className="object-cover" unoptimized />
               </div>
             ) : (
@@ -331,22 +331,28 @@ export function ScanExperience() {
         <Panel className="!p-4 sm:!p-5">
           <h3 className="text-sm font-semibold text-white">Or try a verified sample face</h3>
           <p className="mt-1 text-xs leading-5 text-slate-400">
-            Each sample is a real selfie verified with YouCam Skin AI — different skin traits for testing.
+            Real selfies verified with YouCam — tap to run a live scan.
           </p>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {scanSamples.map((sample) => (
               <button
                 key={sample.id}
                 type="button"
                 onClick={() => void analyzeSample(sample.id)}
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left transition hover:bg-white/[0.05] disabled:opacity-60"
+                className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-2.5 text-left transition hover:bg-white/[0.05]"
               >
-                <div className="relative mb-3 aspect-[4/5] overflow-hidden rounded-lg border border-white/10">
-                  <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="200px" />
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-white/10">
+                  <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="56px" />
                 </div>
-                <StatusBadge tone="mint">{sample.trait}</StatusBadge>
-                <p className="mt-2 text-sm font-semibold text-white">{sample.label}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-400">{sample.description}</p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-semibold text-white">{sample.label}</p>
+                    <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-medium text-emerald-100">
+                      {sample.trait}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-400">{sample.description}</p>
+                </div>
               </button>
             ))}
           </div>
