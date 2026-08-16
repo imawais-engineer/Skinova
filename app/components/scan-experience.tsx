@@ -4,10 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Loader2, RefreshCw, UploadCloud } from "lucide-react";
-import { scanSamples, skinScanRequirements } from "../lib/demo-samples";
+import { getScanSample, scanSamples, skinScanRequirements } from "../lib/demo-samples";
 import { validateImageFile } from "../lib/image-validation";
+import { scanStepIndexForProgress } from "../lib/scan-steps";
 import type { AnalysisResult } from "../lib/skinova-data";
 import { saveScanSession } from "../lib/scan-session";
+import { ScanStepper } from "./scan-stepper";
 import { Panel, ScoreBar, StatusBadge } from "./ui";
 
 type AnalyzeResponse = {
@@ -31,6 +33,13 @@ export function ScanExperience() {
   const [scanMode, setScanMode] = useState<"demo" | "live" | null>(null);
   const [pollStep, setPollStep] = useState(0);
 
+  const selectedSample = useMemo(
+    () => (selectedSampleId ? getScanSample(selectedSampleId) : undefined),
+    [selectedSampleId]
+  );
+
+  const displayPreview = previewUrl || selectedSample?.previewPath || null;
+
   useEffect(() => {
     if (!file) {
       setPreviewUrl(null);
@@ -42,14 +51,17 @@ export function ScanExperience() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  const showSamples = phase === "pick" && !file && !selectedSampleId;
+  const hasSelection = Boolean(file || selectedSampleId);
+  const showSamples = phase === "pick" && !hasSelection;
+
+  const activeStepIndex = scanStepIndexForProgress({ phase, pollStep });
 
   const statusLabel = useMemo(() => {
-    if (phase === "scanning") return "Analyzing";
-    if (phase === "result") return scanMode === "demo" ? "Demo complete" : "Complete";
+    if (phase === "scanning") return "Live scan in progress";
+    if (phase === "result") return scanMode === "demo" ? "Demo complete" : "Scan complete";
     if (phase === "error") return "Needs attention";
-    return file || selectedSampleId ? "Ready to scan" : "Upload a selfie";
-  }, [file, phase, scanMode, selectedSampleId]);
+    return hasSelection ? "Ready to scan" : "Step 1 · Select a photo";
+  }, [hasSelection, phase, scanMode]);
 
   function persistScanResult(result: AnalysisResult, mode: "demo" | "live") {
     saveScanSession({
@@ -105,7 +117,7 @@ export function ScanExperience() {
         };
       }
 
-      setMessage(`YouCam is analyzing your photo… (${attempt}/${maxAttempts})`);
+      setMessage(`Analyzing skin signals with YouCam… (${attempt}/${maxAttempts})`);
     }
 
     return {
@@ -169,32 +181,30 @@ export function ScanExperience() {
     }
   }
 
-  async function analyzeSelectedFile() {
-    if (!file) {
-      setPhase("error");
-      setMessage("Choose a selfie first, or pick one of the verified sample faces below.");
+  async function startScan() {
+    if (file) {
+      const validation = await validateImageFile(file);
+      if (!validation.ok) {
+        setPhase("error");
+        setMessage(validation.message);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      await runScanRequest(formData, "live");
       return;
     }
 
-    const validation = await validateImageFile(file);
-    if (!validation.ok) {
-      setPhase("error");
-      setMessage(validation.message);
+    if (selectedSampleId) {
+      const formData = new FormData();
+      formData.append("sampleId", selectedSampleId);
+      await runScanRequest(formData, "live");
       return;
     }
 
-    setSelectedSampleId(null);
-    const formData = new FormData();
-    formData.append("file", file);
-    await runScanRequest(formData, "live");
-  }
-
-  async function analyzeSample(sampleId: string) {
-    setFile(null);
-    setSelectedSampleId(sampleId);
-    const formData = new FormData();
-    formData.append("sampleId", sampleId);
-    await runScanRequest(formData, "live");
+    setPhase("error");
+    setMessage("Choose a selfie or pick one of the verified YouCam sample faces below.");
   }
 
   async function onFileChange(nextFile: File | null) {
@@ -219,6 +229,14 @@ export function ScanExperience() {
     setFile(nextFile);
   }
 
+  function selectSample(sampleId: string) {
+    setFile(null);
+    setSelectedSampleId(sampleId);
+    setAnalysis(null);
+    setPhase("pick");
+    setMessage("");
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <Panel className="!p-4 sm:!p-5">
@@ -226,19 +244,30 @@ export function ScanExperience() {
           <StatusBadge tone={phase === "result" ? "mint" : phase === "error" ? "rose" : phase === "scanning" ? "cyan" : "slate"}>
             {statusLabel}
           </StatusBadge>
+          {phase !== "pick" ? (
+            <p className="text-xs text-slate-400">
+              Step {Math.min(activeStepIndex + 1, 6)} of 6
+            </p>
+          ) : null}
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-stretch">
           <div className="flex flex-col rounded-xl border border-white/10 bg-white/[0.02] p-4">
-            <h2 className="text-base font-semibold text-white">Upload your selfie</h2>
+            <h2 className="text-base font-semibold text-white">1. Select or upload a photo</h2>
             <p className="mt-1 text-xs leading-5 text-slate-400">
-              Live YouCam analysis — results sync to Results, Routine, and Progress.
+              Use your own selfie or a YouCam-verified sample, then start the live scan.
             </p>
 
             <label className="mt-4 flex min-h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-cyan-300/30 bg-cyan-300/[0.04] px-3 py-4 text-center transition hover:bg-cyan-300/[0.08]">
-              {previewUrl ? (
-                <div className="relative h-24 w-24 overflow-hidden rounded-lg border border-white/10">
-                  <Image src={previewUrl} alt="Selected selfie preview" fill className="object-cover" unoptimized />
+              {displayPreview ? (
+                <div className="relative h-28 w-28 overflow-hidden rounded-lg border border-white/10">
+                  <Image
+                    src={displayPreview}
+                    alt="Selected selfie preview"
+                    fill
+                    className="object-cover"
+                    unoptimized={Boolean(previewUrl)}
+                  />
                 </div>
               ) : (
                 <>
@@ -247,7 +276,11 @@ export function ScanExperience() {
                   <span className="mt-1 text-xs text-slate-400">JPG or PNG</span>
                 </>
               )}
-              {file ? <span className="mt-2 max-w-full truncate text-xs text-slate-300">{file.name}</span> : null}
+              {file ? (
+                <span className="mt-2 max-w-full truncate text-xs text-slate-300">{file.name}</span>
+              ) : selectedSample ? (
+                <span className="mt-2 text-xs text-slate-300">{selectedSample.label} sample selected</span>
+              ) : null}
               <input
                 className="sr-only"
                 type="file"
@@ -260,19 +293,17 @@ export function ScanExperience() {
             </label>
 
             <div className="mt-3 flex flex-col gap-2">
-              {file ? (
+              {hasSelection && phase !== "scanning" ? (
                 <button
                   type="button"
-                  onClick={() => void analyzeSelectedFile()}
-                  disabled={phase === "scanning"}
-                  className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+                  onClick={() => void startScan()}
+                  className="inline-flex h-10 items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
                 >
-                  {phase === "scanning" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
-                  Run live scan
+                  2. Start live scan
                 </button>
               ) : null}
 
-              {(phase === "result" || phase === "error" || file || selectedSampleId) && phase !== "scanning" ? (
+              {(phase === "result" || phase === "error" || hasSelection) && phase !== "scanning" ? (
                 <button
                   type="button"
                   onClick={resetScan}
@@ -295,16 +326,34 @@ export function ScanExperience() {
           </div>
 
           <div className="rounded-xl border border-cyan-300/15 bg-cyan-300/[0.04] p-4">
-            <h2 className="text-base font-semibold text-cyan-100">{skinScanRequirements.title}</h2>
-            <p className="mt-1 text-xs leading-5 text-slate-300">{skinScanRequirements.summary}</p>
-            <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
-              {skinScanRequirements.items.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            {phase === "scanning" || phase === "result" ? (
+              <>
+                <h2 className="text-base font-semibold text-cyan-100">
+                  {phase === "result" ? "Analysis complete" : "Live scan progress"}
+                </h2>
+                <p className="mt-1 text-xs leading-5 text-slate-300">
+                  {phase === "result"
+                    ? "Your photo was analyzed step by step. Review the scores below."
+                    : "YouCam is processing your photo — each step updates in real time."}
+                </p>
+                <div className="mt-3">
+                  <ScanStepper activeIndex={activeStepIndex} isRunning={phase === "scanning"} />
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-base font-semibold text-cyan-100">{skinScanRequirements.title}</h2>
+                <p className="mt-1 text-xs leading-5 text-slate-300">{skinScanRequirements.summary}</p>
+                <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+                  {skinScanRequirements.items.map((item) => (
+                    <li key={item} className="flex gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-200" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         </div>
 
@@ -323,6 +372,15 @@ export function ScanExperience() {
                 <ScoreBar key={concern.type} label={concern.type} score={concern.score} detail={concern.explanation} />
               ))}
             </div>
+            {analysis.readingSteps.length > 0 ? (
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {analysis.readingSteps.map((step) => (
+                  <div key={step} className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs leading-5 text-slate-300">
+                    {step}
+                  </div>
+                ))}
+              </div>
+            ) : null}
             <div className="flex flex-wrap gap-2">
               <Link
                 href="/results"
@@ -344,33 +402,49 @@ export function ScanExperience() {
 
       {showSamples ? (
         <Panel className="!p-4 sm:!p-5">
-          <h3 className="text-sm font-semibold text-white">Or try a verified sample face</h3>
+          <h3 className="text-sm font-semibold text-white">Or try a verified YouCam sample face</h3>
           <p className="mt-1 text-xs leading-5 text-slate-400">
-            Real selfies verified with YouCam — tap to run a live scan.
+            Copied from the YouCam API playground — select a face, then tap Start live scan.
           </p>
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {scanSamples.map((sample) => (
-              <button
-                key={sample.id}
-                type="button"
-                onClick={() => void analyzeSample(sample.id)}
-                className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-2.5 text-left transition hover:bg-white/[0.05]"
-              >
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-white/10">
-                  <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="56px" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-semibold text-white">{sample.label}</p>
-                    <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-medium text-emerald-100">
-                      {sample.trait}
-                    </span>
+            {scanSamples.map((sample) => {
+              const isSelected = selectedSampleId === sample.id;
+              return (
+                <button
+                  key={sample.id}
+                  type="button"
+                  onClick={() => selectSample(sample.id)}
+                  className={`flex items-center gap-3 rounded-lg border p-2.5 text-left transition ${
+                    isSelected
+                      ? "border-cyan-300/40 bg-cyan-300/[0.08]"
+                      : "border-white/10 bg-white/[0.03] hover:bg-white/[0.05]"
+                  }`}
+                >
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-white/10">
+                    <Image src={sample.previewPath} alt={sample.label} fill className="object-cover" sizes="56px" />
                   </div>
-                  <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-400">{sample.description}</p>
-                </div>
-              </button>
-            ))}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-semibold text-white">{sample.label}</p>
+                      <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] font-medium text-emerald-100">
+                        {sample.trait}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-400">{sample.description}</p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
+          {selectedSampleId ? (
+            <button
+              type="button"
+              onClick={() => void startScan()}
+              className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-xl bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 sm:w-auto"
+            >
+              Start live scan with sample
+            </button>
+          ) : null}
         </Panel>
       ) : null}
     </div>

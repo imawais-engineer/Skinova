@@ -12,7 +12,7 @@ export default function ScanPage() {
         density="compact"
         eyebrow="Skin scan"
         title="Run a live skin scan."
-        description="Upload a selfie or use a verified sample below."
+        description="Select a photo, start the scan, and watch each analysis step complete with live results."
       />
       <ScanExperience />
     </div>

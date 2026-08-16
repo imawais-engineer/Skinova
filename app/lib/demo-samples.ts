@@ -21,39 +21,39 @@ export const skinScanRequirements = {
   ]
 };
 
-/** YouCam-verified face selfies bundled in /public/samples */
+/** YouCam API Playground sample faces bundled in /public/samples */
 export const scanSamples: ScanSample[] = [
   {
     id: "clear-baseline",
     label: "Clear skin",
     trait: "Even tone",
-    description: "Healthy-looking complexion with balanced scores.",
-    fileName: "live-selfie-clear.jpg",
-    previewPath: "/samples/live-selfie-clear.jpg"
+    description: "Healthy-looking baseline from the YouCam playground.",
+    fileName: "youcam-clear-baseline.jpg",
+    previewPath: "/samples/youcam-clear-baseline.jpg"
   },
   {
-    id: "acne-case",
-    label: "Active acne",
+    id: "acne-male",
+    label: "Active acne (male)",
     trait: "Breakouts",
-    description: "Visible acne and redness for concern detection.",
-    fileName: "live-selfie-acne.jpg",
-    previewPath: "/samples/live-selfie-acne.jpg"
+    description: "Young man with visible cheek and jawline acne.",
+    fileName: "youcam-acne-male.jpg",
+    previewPath: "/samples/youcam-acne-male.jpg"
   },
   {
-    id: "close-face",
-    label: "Close-up face",
-    trait: "Tight framing",
-    description: "Face fills the frame — ideal upload framing.",
-    fileName: "live-selfie-tight.jpg",
-    previewPath: "/samples/live-selfie-tight.jpg"
+    id: "acne-female-light",
+    label: "Active acne",
+    trait: "Redness",
+    description: "Fair complexion with inflamed cheek breakouts.",
+    fileName: "youcam-acne-female-light.jpg",
+    previewPath: "/samples/youcam-acne-female-light.jpg"
   },
   {
-    id: "texture-case",
-    label: "Texture & pores",
-    trait: "Detail visible",
-    description: "Shows pore and texture scoring on a live scan.",
-    fileName: "live-selfie-2.jpg",
-    previewPath: "/samples/live-selfie-2.jpg"
+    id: "acne-female-severe",
+    label: "Severe acne",
+    trait: "Spots",
+    description: "Widespread acne and post-inflammatory marks.",
+    fileName: "youcam-acne-female-severe.jpg",
+    previewPath: "/samples/youcam-acne-female-severe.jpg"
   }
 ];
 

@@ -1,16 +1,16 @@
-# Demo scan samples
+# YouCam API Playground sample faces
 
-YouCam-verified front-facing selfies for the **Skin Scan** page. Each file has passed a live `youcam:smoke:full` run.
+Front-facing selfies copied from the **YouCam Skin Analysis API Playground** samples tab. Each file is used on the Skin Scan page and has passed image validation (short side ≥ 480px).
 
 | File | Use case |
 | --- | --- |
-| `live-selfie-clear.jpg` | Clear, even complexion baseline |
-| `live-selfie-acne.jpg` | Active acne and redness |
-| `live-selfie-tight.jpg` | Close-up framing (face fills frame) |
-| `live-selfie-2.jpg` | Texture and pore detail |
+| `youcam-clear-baseline.jpg` | Clear / even-tone baseline |
+| `youcam-acne-male.jpg` | Young man with active acne |
+| `youcam-acne-female-light.jpg` | Fair skin with cheek breakouts |
+| `youcam-acne-female-severe.jpg` | Widespread acne and spot marks |
 
 Re-verify after replacing any file:
 
 ```bash
-YOUCAM_TEST_IMAGE_PATH=public/samples/live-selfie-clear.jpg npm run youcam:smoke:full
+YOUCAM_TEST_IMAGE_PATH=public/samples/youcam-clear-baseline.jpg npm run youcam:smoke:full
 ```
