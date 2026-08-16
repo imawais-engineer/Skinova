@@ -17,7 +17,7 @@ Hackathon track: **Skin AI** ([YouCam API Skin AI & Apparel VTO Hackathon](https
 | [BUILD_ROADMAP.md](BUILD_ROADMAP.md) | Build phases and future work |
 | [PRODUCT_STRATEGY.md](PRODUCT_STRATEGY.md) | Product positioning and rubric map |
 | [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md) | Devpost copy, judge instructions, submission checklist |
-| [DEMO_SCRIPT.md](DEMO_SCRIPT.md) | 3-minute demo video script |
+| [DEMO_SCRIPT.md](DEMO_SCRIPT.md) | **Screen-record guide** — silent demo click path (no voiceover) |
 | [SCREENSHOTS.md](SCREENSHOTS.md) | Screenshot capture checklist |
 | [PROGRESS_METRICS.md](PROGRESS_METRICS.md) | **Live scorecard** — rubric scores, gaps, test matrix |
 | [HACKATHON_INTAKE.md](HACKATHON_INTAKE.md) | Official rules summary |
@@ -34,4 +34,4 @@ Hackathon track: **Skin AI** ([YouCam API Skin AI & Apparel VTO Hackathon](https
 | MIT license | `LICENSE` in repo root |
 | Written description | `SUBMISSION_PACKAGE.md` |
 | Screenshots | Complete — `public/screenshots/` (9 captures) |
-| Demo video (1–3 min) | **Deferred during DevTest** — script in `DEMO_SCRIPT.md`; record after app freeze |
+| Demo video (1–3 min) | **App demo-ready** — record with `DEMO_SCRIPT.md`; run `npm run verify:demo` first |

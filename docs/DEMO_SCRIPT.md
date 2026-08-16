@@ -1,53 +1,105 @@
-# 3-Minute Demo Script
+# Demo screen recording guide
 
 Production URL: **https://skinova-ai.vercel.app**
 
-Use this script when recording the Devpost demo video (1–3 minutes). Publish to YouTube, Vimeo, or Youku, then add the link to [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md).
+Use this as a **silent screen-record checklist** (no voiceover required). Record 1–3 minutes while clicking through the app. Publish to YouTube, Vimeo, or Youku, then add the link to [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md).
 
-## 0:00-0:20 — Problem
+Pre-flight (run once before recording):
 
-"Skinova is built for the Skin AI track. Many skincare users get a score from a scanner but still do not know what it means, which routine to follow, or whether their skin is improving."
+```bash
+npm run verify:demo
+```
 
-Show the landing page. Point to **Live status** (online, demo or live scan mode). Click **Get Started**, sign up, and open the dashboard.
+All checks should pass on production.
 
-## 0:20-0:50 — YouCam Skin AI Workflow
+---
 
-"Skinova uses YouCam Skin Analysis as the intelligence layer. The app runs the real scan path: secure file metadata, presigned upload, task creation, polling, and result interpretation — all server-side so API keys never reach the browser."
+## Recording setup
 
-Open **Skin Scan**.
+- Resolution: **1440×900** or **1920×1080** (desktop browser, full window)
+- Browser: Chrome or Edge, zoom **100%**
+- Hide bookmarks bar; use a clean profile or incognito if needed
+- **Do not** show `.env`, API keys, or terminal windows
 
-## 0:50-1:20 — Scan
+---
 
-Upload a valid front-facing selfie, or click **Try one of these** and pick a bundled YouCam playground sample.
+## Click path (~2–3 minutes)
 
-Click **Start scan** and show the six-step progress stepper (select → upload → quality → analyze → insights → complete).
+### 1. Landing (15 sec)
 
-"The scan converts skin indicators into a consumer-friendly view. The app avoids medical claims and focuses on education and routine guidance."
+1. Open https://skinova-ai.vercel.app
+2. Scroll to **Live status** — show **5 YouCam APIs** + **Neon persistence** badges
+3. Click **Get Started**
 
-## 1:20-1:50 — Results
+### 2. Sign up + Dashboard (20 sec)
 
-Open **Results**.
+1. Create account (any test email + password 8+ chars)
+2. On **Dashboard**, point at journey strip and **scan history** area
+3. Click **Skin Scan** in sidebar (note **Analyze → Understand → Decide → Improve** breadcrumb)
 
-"The result is not just raw API output. Skinova explains acne risk, pores, redness, texture, and hydration in plain language."
+### 3. Skin Scan (45 sec)
 
-## 1:50-2:15 — Routine
+1. Under **Try one of these**, click **Clear skin** (or any bundled sample)
+2. Click **Start live scan with sample**
+3. Let the **six-step stepper** run to **Analysis complete**
+4. Click **View results**
 
-Open **Routine**.
+### 4. Results (30 sec)
 
-"The routine generator turns the analysis into morning and night steps, ingredient guidance, and safety notes."
+1. Show **Overall score** and **Concern breakdown**
+2. Scroll to **YouCam personalization** (Fitzpatrick, skin tone, face attributes)
+3. Open a **concern mask** tab
+4. Click **Generate routine** or open **Routine** in sidebar
 
-## 2:15-2:35 — Coach
+### 5. Routine (20 sec)
 
-Open **Skin Coach** and ask: "Why is my skin red this week?"
+1. Show morning/night routine cards (generate if empty)
+2. Briefly scroll ingredient guidance
 
-"The coach is bounded to education, ingredients, and routines — not medical diagnosis."
+### 6. Skin Coach (25 sec)
 
-## 2:35-2:55 — Progress
+1. Open **Skin Coach**
+2. Ask: `What should I focus on from my latest scan?`
+3. Wait for the grounded reply
 
-Open **Progress**.
+### 7. Progress + Simulation (30 sec)
 
-"Skinova tracks changes over time and frames improvement as a visual story, giving consumers a reason to return."
+1. Open **Progress**
+2. Show trend / history summary
+3. Click **Run simulation** (or **Preview improvement**)
+4. Wait for **before/after** panels to appear
 
-## 2:55-3:00 — Close
+### 8. Close (10 sec)
 
-"Skinova is a complete skincare intelligence experience for the Skin AI track: scan, explain, guide, track, and simulate. Try it at skinova-ai.vercel.app."
+1. Return to **Dashboard** or landing
+2. Optional: **Log out** and show landing **Live status** again
+
+---
+
+## Tips for a clean recording
+
+| Do | Avoid |
+| --- | --- |
+| Use bundled **Try one of these** samples | Uploading a random photo that may fail quality checks |
+| Wait for stepper and coach reply to finish | Clicking ahead before API polling completes |
+| Keep one continuous take if possible | Long pauses on loading spinners (re-record if a call fails) |
+
+---
+
+## Automated verification
+
+```bash
+# Full judge-style path against production
+npm run verify:demo
+
+# Refresh submission screenshots
+npm run capture:screenshots
+```
+
+---
+
+## After recording
+
+1. Upload video (public, unlisted is fine)
+2. Paste URL into [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md) and Devpost
+3. Confirm screenshots in `public/screenshots/` match the latest UI

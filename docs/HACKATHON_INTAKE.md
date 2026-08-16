@@ -69,5 +69,6 @@ Sources:
 ## Remaining submission assets
 
 1. ~~Finish screenshot set (`docs/SCREENSHOTS.md`)~~ — done in `public/screenshots/`
-2. Record demo video (`docs/DEMO_SCRIPT.md`) — after DevTest / app freeze
-3. Add video URL to `docs/SUBMISSION_PACKAGE.md` on Devpost
+2. ~~Demo-ready app verification~~ — `npm run verify:demo` passes on production
+3. Record demo video (`docs/DEMO_SCRIPT.md`) — silent screen record (~2–3 min)
+4. Add video URL to `docs/SUBMISSION_PACKAGE.md` on Devpost

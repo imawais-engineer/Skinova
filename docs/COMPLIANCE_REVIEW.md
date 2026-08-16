@@ -25,7 +25,7 @@ Source of truth:
 | Repository functional for judges | Met | README, `npm run setup`, docs in `docs/` |
 | MIT license | Met | `LICENSE` in repo root |
 | Screenshots | Met | Full set in `public/screenshots/` |
-| 1–3 minute public demo video | Deferred (DevTest) | Script in `DEMO_SCRIPT.md`; record after app freeze |
+| 1–3 minute public demo video | Owner records | Screen-record guide in `DEMO_SCRIPT.md`; pre-flight `npm run verify:demo` |
 | English materials | Met | Docs and UI in English |
 | No third-party copyright issues | Met | Original UI; screenshots use test accounts; no copyrighted music |
 
@@ -49,7 +49,7 @@ Skinova must not claim to diagnose, treat, cure, or prevent disease.
 
 | Risk | Mitigation |
 | --- | --- |
-| Demo video not yet published | Intentionally deferred during DevTest; script ready |
+| Demo video not yet published | Owner action only — app verified demo-ready via `npm run verify:demo` |
 | Production DB migration for new tables | Run `npm run db:init` on Neon after deploy |
 | `npm audit` PostCSS advisory via Next pinned dep | Revisit when Next ships patched dependency |
 | Live API unit consumption | Demo mode for judges without keys |

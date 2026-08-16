@@ -24,20 +24,21 @@ https://github.com/imawais-engineer/Skinova
 
 | Item | Status |
 | --- | --- |
-| Script | Ready — [DEMO_SCRIPT.md](DEMO_SCRIPT.md) |
-| Recording | **To be recorded before Devpost deadline** (app features are complete; owner will publish) |
-| Public URL | **Not published yet** — add YouTube, Vimeo, or Youku link here when the video is live |
+| Screen-record guide | Ready — [DEMO_SCRIPT.md](DEMO_SCRIPT.md) (no voiceover required) |
+| Pre-flight check | `npm run verify:demo` (all 9 steps against production) |
+| Recording | **Owner action** — screen-record while clicking through the app |
+| Public URL | Add YouTube, Vimeo, or Youku link here when live |
 
-Requirements when recording (1–3 minutes):
+### Quick record checklist
 
-- Show landing page and **Live status** (demo vs live scan mode)
-- State selected track: Skin AI
-- Sign up or log in
-- Show dashboard and **Skin Scan** (upload or bundled sample + stepper)
-- Explain YouCam Skin Analysis workflow
-- Show Results, Routine, Coach (one question), and Progress
-- Mention safety: education only, not medical diagnosis
-- Upload publicly to YouTube, Vimeo, or Youku
+1. Run `npm run verify:demo` — must pass before recording
+2. Open https://skinova-ai.vercel.app at 1440×900
+3. Follow [DEMO_SCRIPT.md](DEMO_SCRIPT.md) click path (~2–3 min, silent)
+4. Upload video and paste URL below
+
+```text
+DEMO_VIDEO_URL=
+```
 
 ## Screenshots
 
@@ -117,7 +118,7 @@ YOUCAM_TEST_IMAGE_PATH=public/samples/youcam-clear-baseline.jpg npm run youcam:s
 
 ## Known Limitations
 
-- Demo video URL will be added when the recording is published
+- Demo video URL: owner records via [DEMO_SCRIPT.md](DEMO_SCRIPT.md) and adds link above
 - Product recommendations and affiliate commerce are intentionally deferred
 - Full live task testing requires valid YouCam units and a valid front-facing selfie
 - Skin Simulation preview URLs expire after a few hours per YouCam policy

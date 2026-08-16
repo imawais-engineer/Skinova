@@ -8,6 +8,8 @@ npm run build
 npm run verify:ui
 npm run verify:history
 npm run verify:rate-limit
+npm run verify:all
+npm run verify:demo
 npm run youcam:smoke
 npm run personalization:smoke
 npm run coach:smoke "Why is my skin red this week?"
@@ -84,9 +86,17 @@ npm run verify:ui
 
 After Vercel deploy:
 
+```bash
+npm run verify:demo
+```
+
+This runs the full judge-style path against https://skinova-ai.vercel.app (sign up → scan → results → routine → coach → simulation).
+
+Manual spot-check:
+
 1. Sign up on https://skinova-ai.vercel.app
 2. Run one scan (sample recommended)
-3. Confirm `GET /api/skinova/health` returns `online` from the landing page
+3. Confirm `GET /api/skinova/health` returns `online` with `databaseReady: true`
 
 ## Final V&V
 
@@ -102,4 +112,5 @@ After Vercel deploy:
 - `npm run build` passes
 - `npm run youcam:smoke` passes with valid credentials
 - `npm run youcam:smoke:full` passes with a valid test image
+- `npm run verify:demo` passes on production
 - End-to-end judge flow completes in under three minutes

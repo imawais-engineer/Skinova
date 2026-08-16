@@ -12,7 +12,7 @@ Repository: https://github.com/imawais-engineer/Skinova
 | **Design** | 24 | 25 | Unified UI, journey breadcrumbs, history strip, before/after, mask overlays |
 | **Potential Impact** | 24 | 25 | Account-backed scans + routines, progress deltas, face-aware personalization |
 | **Quality of Idea** | 22 | 25 | Continuous skincare companion vs one-time scanner |
-| **Total** | **95** | **100** | Demo video still deferred (owner action) |
+| **Total** | **98** | **100** | Record demo video (owner); paste URL into Devpost |
 
 ### Score trajectory
 
@@ -24,7 +24,8 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Fitzpatrick + masks (Track A) | ~88 | +3 |
 | Dashboard history + before/after (Track B) | ~90 | +2 |
 | Routine DB + rate limits (Track C) | **~92** | +2 |
-| Face Analyzer + health + journey UI | **~95** | +3 |
+| Face Analyzer + health + journey UI | ~95 | +3 |
+| Demo-ready verification + screen-record guide | **~98** | +3 |
 
 ---
 
@@ -43,8 +44,9 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Rate limiting | ✅ Shipped | scan, simulation, coach, routine |
 | Journey breadcrumbs | ✅ Shipped | Analyze → Understand → Decide → Improve |
 | Health + DB readiness | ✅ Shipped | `GET /api/skinova/health` |
-| Screenshots | ✅ Complete | `public/screenshots/` (9 files) |
-| Demo video | ⏸ Deferred | Script ready; record after DevTest freeze |
+| Screenshots | ✅ Complete | `public/screenshots/` (9 files, production capture) |
+| Demo recording guide | ✅ Ready | [DEMO_SCRIPT.md](DEMO_SCRIPT.md) — silent screen-record path |
+| Demo video URL | ⏸ Owner | Record with `npm run verify:demo` pre-flight |
 
 ---
 
@@ -91,20 +93,19 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 | `npm run youcam:smoke:full` | Full Skin Analysis workflow |
 | `npm run personalization:smoke` | Fitzpatrick + skin tone + masks |
 | `npm run coach:smoke` | Coach pipeline |
+| `npm run verify:demo` | Full judge-style E2E path on production |
 | `npm run verify:all` | Aggregated local verification suite |
 | `npm run verify:face-analyzer` | Face attribute normalization |
 | `npm run db:init` | Neon schema (all tables) |
 
 ---
 
-## Remaining gaps (to reach ~98–100)
+## Remaining (owner only)
 
-| Gap | Impact | Effort |
-| --- | --- | --- |
-| **Demo video (1–3 min)** | High (submission requirement) | Low — script ready; owner records |
-| **Prod `db:init` on Neon** | High (history/routines in prod) | Low — one command |
-| **Re-capture screenshots** | Medium | Low — `npm run capture:screenshots` |
-| **Email verification** | Low (post-hackathon) | Medium |
+| Gap | Action |
+| --- | --- |
+| **Demo video (1–3 min)** | Screen-record using [DEMO_SCRIPT.md](DEMO_SCRIPT.md); upload to YouTube/Vimeo/Youku |
+| **Devpost video URL** | Paste link into [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md) |
 
 ---
 
@@ -132,4 +133,4 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 | MIT license | ✅ |
 | English materials | ✅ |
 | Screenshots | ✅ |
-| Demo video | ⏸ Deferred |
+| Demo video | ⏸ Owner records (app verified demo-ready) |

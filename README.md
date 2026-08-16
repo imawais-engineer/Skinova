@@ -67,7 +67,17 @@ Open http://localhost:3000.
 2. Click **Get Started** and create an account
 3. Open **Skin Scan** — upload a selfie or pick a bundled YouCam playground sample
 4. Watch the live scan stepper, then review **Results**, **Routine**, **Coach**, and **Progress**
-5. On the landing page (after log out), note **Live status** (demo vs live scan mode)
+5. On the landing page (after log out), note **Live status** (5 YouCam APIs + Neon ready)
+
+## Record your demo video
+
+The app is **demo-ready** on production. No voiceover needed — screen-record while clicking through.
+
+```bash
+npm run verify:demo    # pre-flight: all 9 steps must pass
+```
+
+Then follow **[docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)** (~2–3 min silent recording). Upload to YouTube/Vimeo/Youku and add the URL to [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md).
 
 ### Option B — local
 
