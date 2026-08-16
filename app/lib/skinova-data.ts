@@ -5,6 +5,17 @@ export type Concern = {
   score: number;
   direction: "improving" | "watch" | "stable";
   explanation: string;
+  maskUrls?: string[];
+};
+
+export type PersonalizationContext = {
+  fitzpatrickScale?: string;
+  fitzpatrickLabel?: string;
+  skinColorHex?: string;
+  eyeColorName?: string;
+  lipColorHex?: string;
+  hairColorName?: string;
+  source?: "live" | "demo";
 };
 
 export type AnalysisResult = {
@@ -14,6 +25,7 @@ export type AnalysisResult = {
   summary: string;
   concerns: Concern[];
   readingSteps: string[];
+  personalization?: PersonalizationContext;
 };
 
 export const analysisResult: AnalysisResult = {
@@ -27,7 +39,8 @@ export const analysisResult: AnalysisResult = {
       type: "Acne risk",
       score: 64,
       direction: "watch",
-      explanation: "Mild breakout risk appears around oil-prone areas. Keep cleansing gentle and avoid stacking harsh actives."
+      explanation: "Mild breakout risk appears around oil-prone areas. Keep cleansing gentle and avoid stacking harsh actives.",
+      maskUrls: ["/samples/youcam-acne-female-light.jpg"]
     },
     {
       type: "Pores",
@@ -57,9 +70,18 @@ export const analysisResult: AnalysisResult = {
   readingSteps: [
     "Image quality is checked before analysis.",
     "Skin signals are converted into clear concern scores.",
-    "Personalization context helps tune routine guidance.",
-    "Progress views turn scans into a clear improvement story."
-  ]
+    "Fitzpatrick and skin tone APIs add personalization context.",
+    "Concern masks show where YouCam detected each signal."
+  ],
+  personalization: {
+    fitzpatrickScale: "III",
+    fitzpatrickLabel: "Fitzpatrick Type III",
+    skinColorHex: "#b9947c",
+    eyeColorName: "Brown",
+    lipColorHex: "#d23245",
+    hairColorName: "Brown",
+    source: "demo"
+  }
 };
 
 export const dashboardMetrics = [

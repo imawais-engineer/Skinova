@@ -6,6 +6,7 @@ import {
   saveUserScan
 } from "../../../../lib/scan-db";
 import type { AnalysisResult } from "../../../../lib/skinova-data";
+import { enrichAnalysisPersonalization } from "../../../../lib/run-personalization";
 import { getTaskStatus, normalizeYouCamTaskResult } from "../../../../lib/youcam";
 
 function mapYouCamError(error: unknown) {
@@ -51,7 +52,7 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
   };
   const taskStatus = body.task_status || body.status || body.data?.task_status || body.data?.status || "processing";
   const youCamError = body.error || body.data?.error;
-  const analysis = body.analysis || normalizeYouCamTaskResult(result.data) || null;
+  let analysis = body.analysis || normalizeYouCamTaskResult(result.data) || null;
 
   if (result.status >= 400 || taskStatus === "error" || youCamError) {
     if (session) {
@@ -68,6 +69,13 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
     const taskContext = session ? await getScanTaskContext(taskId) : null;
     let scanId: string | null = null;
     let fileId: string | null = taskContext?.file_id || null;
+    const scanMode = taskContext?.mode || (taskId.startsWith("mock-skinova-") ? "demo" : "live");
+
+    analysis = await enrichAnalysisPersonalization({
+      analysis,
+      fileId,
+      mode: scanMode
+    });
 
     if (session && taskContext) {
       const saved = await saveUserScan({
@@ -88,7 +96,7 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
         analysis,
         scanId,
         fileId,
-        mode: taskContext?.mode || "live"
+        mode: scanMode
       },
       { status: 200 }
     );

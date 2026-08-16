@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Activity, ArrowRight, Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Activity, ArrowRight, Layers, Palette, Sparkles } from "lucide-react";
 import { useScanSession } from "../hooks/use-scan-session";
 import { EmptyScanState } from "./empty-scan-state";
 import { PageHeader, Panel, ScoreBar, StatusBadge } from "./ui";
@@ -9,13 +11,29 @@ import { PageHeader, Panel, ScoreBar, StatusBadge } from "./ui";
 export function ResultsExperience() {
   const { session, ready } = useScanSession();
   const result = session?.analysis;
+  const [activeMask, setActiveMask] = useState<string | null>(null);
+
+  const concernsWithMasks = useMemo(
+    () => result?.concerns.filter((concern) => concern.maskUrls?.length) ?? [],
+    [result?.concerns]
+  );
+
+  const selectedMaskConcern = useMemo(() => {
+    if (!result || !activeMask) {
+      return concernsWithMasks[0] || null;
+    }
+
+    return result.concerns.find((concern) => concern.type === activeMask) || concernsWithMasks[0] || null;
+  }, [activeMask, concernsWithMasks, result]);
+
+  const personalization = result?.personalization;
 
   return (
     <div className="flex flex-col gap-4">
       <PageHeader
         eyebrow="Analysis results"
         title="Plain-language insights from skin scores."
-        description="Scores become actions: explanation, routine priorities, and progress markers a consumer can understand."
+        description="YouCam Skin Analysis scores, Fitzpatrick typing, skin tone context, and concern masks — turned into actions you can understand."
         action={{ href: "/routine", label: "View routine" }}
       />
 
@@ -28,6 +46,12 @@ export function ResultsExperience() {
           <Panel className="border-emerald-300/20 bg-emerald-300/[0.05]">
             <div className="flex flex-wrap items-center gap-3">
               <StatusBadge tone="mint">{session.mode === "demo" ? "Demo scan" : "Live scan"}</StatusBadge>
+              {personalization?.fitzpatrickLabel ? (
+                <StatusBadge tone="violet">{personalization.fitzpatrickLabel}</StatusBadge>
+              ) : null}
+              {personalization?.skinColorHex ? (
+                <StatusBadge tone="cyan">Skin tone detected</StatusBadge>
+              ) : null}
               <p className="text-sm text-emerald-50/90">
                 Latest scan from {new Date(session.scannedAt).toLocaleString()}.
               </p>
@@ -71,6 +95,88 @@ export function ResultsExperience() {
             </Panel>
           </div>
 
+          {personalization ? (
+            <Panel>
+              <div className="flex flex-wrap items-center gap-3">
+                <Palette className="h-5 w-5 text-violet-200" aria-hidden="true" />
+                <h2 className="text-xl font-semibold text-white">YouCam personalization</h2>
+                <StatusBadge tone={personalization.source === "live" ? "mint" : "cyan"}>
+                  {personalization.source === "live" ? "Live APIs" : "Demo context"}
+                </StatusBadge>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Fitzpatrick Scale Analyzer and Skin Tone Analysis add inclusive personalization context beyond concern scores.
+              </p>
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {personalization.fitzpatrickLabel ? (
+                  <PersonalizationTile label="Fitzpatrick scale" value={personalization.fitzpatrickLabel} />
+                ) : null}
+                {personalization.skinColorHex ? (
+                  <PersonalizationTile
+                    label="Skin color"
+                    value={personalization.skinColorHex}
+                    swatch={personalization.skinColorHex}
+                  />
+                ) : null}
+                {personalization.eyeColorName ? (
+                  <PersonalizationTile label="Eye color" value={personalization.eyeColorName} />
+                ) : null}
+                {personalization.hairColorName ? (
+                  <PersonalizationTile label="Hair color" value={personalization.hairColorName} />
+                ) : null}
+              </div>
+            </Panel>
+          ) : null}
+
+          {concernsWithMasks.length > 0 ? (
+            <Panel>
+              <div className="flex flex-wrap items-center gap-3">
+                <Layers className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+                <h2 className="text-xl font-semibold text-white">Concern detection masks</h2>
+                <StatusBadge tone="mint">YouCam mask overlays</StatusBadge>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Skin Analysis returns mask images showing where each signal was detected on your selfie.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {concernsWithMasks.map((concern) => (
+                  <button
+                    key={concern.type}
+                    type="button"
+                    onClick={() => setActiveMask(concern.type)}
+                    className={[
+                      "rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                      selectedMaskConcern?.type === concern.type
+                        ? "border-cyan-300/40 bg-cyan-300/15 text-cyan-50"
+                        : "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.06]"
+                    ].join(" ")}
+                  >
+                    {concern.type} · {concern.score}%
+                  </button>
+                ))}
+              </div>
+
+              {selectedMaskConcern?.maskUrls?.[0] ? (
+                <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+                  <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2">
+                    <p className="text-sm font-medium text-white">{selectedMaskConcern.type} mask</p>
+                    <p className="text-xs text-slate-400">Score {selectedMaskConcern.score}%</p>
+                  </div>
+                  <div className="relative aspect-[4/5] w-full max-w-md">
+                    <Image
+                      src={selectedMaskConcern.maskUrls[0]}
+                      alt={`${selectedMaskConcern.type} detection mask`}
+                      fill
+                      className="object-contain bg-slate-950"
+                      unoptimized
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </Panel>
+          ) : null}
+
           <Panel>
             <div className="flex items-center gap-3">
               <Sparkles className="h-5 w-5 text-violet-200" aria-hidden="true" />
@@ -86,6 +192,32 @@ export function ResultsExperience() {
           </Panel>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function PersonalizationTile({
+  label,
+  value,
+  swatch
+}: {
+  label: string;
+  value: string;
+  swatch?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+      <p className="text-xs text-slate-400">{label}</p>
+      <div className="mt-2 flex items-center gap-2">
+        {swatch ? (
+          <span
+            className="h-6 w-6 shrink-0 rounded-full border border-white/20"
+            style={{ backgroundColor: swatch }}
+            aria-hidden="true"
+          />
+        ) : null}
+        <p className="text-sm font-semibold text-white">{value}</p>
+      </div>
     </div>
   );
 }

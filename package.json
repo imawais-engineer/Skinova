@@ -16,7 +16,8 @@
     "youcam:smoke": "node --env-file=.env scripts/youcam-smoke-test.mjs",
     "youcam:smoke:full": "node --env-file=.env scripts/youcam-smoke-test.mjs --full",
     "coach:smoke": "node --env-file=.env scripts/coach-smoke-test.mjs",
-    "capture:screenshots": "node scripts/capture-screenshots.mjs"
+    "capture:screenshots": "node scripts/capture-screenshots.mjs",
+    "personalization:smoke": "node --env-file=.env scripts/personalization-smoke-test.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

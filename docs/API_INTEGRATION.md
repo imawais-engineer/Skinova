@@ -76,9 +76,11 @@ Low-level YouCam proxy routes under `/api/youcam/*` exist for smoke tests and in
 
 | API | Status in Skinova |
 | --- | --- |
-| AI Skin Analysis | **Integrated** — primary user flow |
-| AI Skin Simulation | Library support in `youcam.ts`; Progress uses score projection |
-| Fitzpatrick / skin tone / face analyzer | Stubs only, not exposed in UI |
+| AI Skin Analysis | **Integrated** — primary user flow with concern mask overlays |
+| AI Skin Simulation | **Integrated** — Progress page live preview |
+| Fitzpatrick Scale Analyzer | **Integrated** — enriches Results personalization after scan |
+| Skin Tone Analysis | **Integrated** — enriches Results skin/eye/hair tone context |
+| Face analyzer / photo enhance | Stubs only, not exposed in UI |
 
 ## Security boundary
 

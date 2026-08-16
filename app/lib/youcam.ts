@@ -1,4 +1,4 @@
-import { analysisResult, type AnalysisResult, type Concern } from "./skinova-data";
+import { analysisResult, type AnalysisResult, type Concern, type PersonalizationContext } from "./skinova-data";
 
 export type YouCamWorkflow =
   | "skin-analysis"
@@ -117,8 +117,40 @@ export function mockTaskResult(taskId = "skinova-demo-task") {
       type: concern.type.toLowerCase().replaceAll(" ", "_"),
       ui_score: concern.score,
       raw_score: concern.score + 4.27,
-      explanation: concern.explanation
+      explanation: concern.explanation,
+      mask_urls: concern.maskUrls
     }))
+  };
+}
+
+export function mockFitzpatrickResult(taskId = "skinova-demo-fitzpatrick") {
+  return {
+    mode: "mock",
+    task_id: taskId,
+    data: {
+      task_status: "success",
+      results: {
+        fitzpatrick_scale: "III"
+      }
+    }
+  };
+}
+
+export function mockSkinToneResult(taskId = "skinova-demo-skin-tone") {
+  return {
+    mode: "mock",
+    task_id: taskId,
+    data: {
+      task_status: "success",
+      results: {
+        color: {
+          skin_color: "#b9947c",
+          eye_color_name: "Brown",
+          lip_color: "#d23245",
+          hair_color_name: "Brown"
+        }
+      }
+    }
   };
 }
 
@@ -214,16 +246,32 @@ export async function createTask(input: TaskInput) {
   return { mode: "live", status: response.status, data: body };
 }
 
+function isMockTaskId(taskId: string) {
+  return taskId.startsWith("mock-");
+}
+
+function mockTaskStatus(workflow: YouCamWorkflow, taskId: string) {
+  if (workflow === "skin-simulation") {
+    return { status: 200, data: mockSimulationResult(taskId) };
+  }
+
+  if (workflow === "fitzpatrick-scale-analyzer") {
+    return { status: 200, data: mockFitzpatrickResult(taskId) };
+  }
+
+  if (workflow === "skin-tone-analysis") {
+    return { status: 200, data: mockSkinToneResult(taskId) };
+  }
+
+  return { status: 200, data: mockTaskResult(taskId) };
+}
+
 export async function getTaskStatus(workflow: YouCamWorkflow, taskId: string) {
   const runtime = getYouCamRuntime();
   const workflowPath = workflowPaths[workflow];
 
-  if (runtime.shouldMock) {
-    if (workflow === "skin-simulation") {
-      return { status: 200, data: mockSimulationResult(taskId) };
-    }
-
-    return { status: 200, data: mockTaskResult(taskId) };
+  if (runtime.shouldMock || isMockTaskId(taskId)) {
+    return mockTaskStatus(workflow, taskId);
   }
 
   const response = await fetch(`${runtime.baseUrl}/s2s/v2.0/task/${workflowPath.task}/${taskId}`, {
@@ -361,7 +409,8 @@ export function normalizeYouCamTaskResult(payload: unknown): AnalysisResult | nu
       type: toConcernLabel(item.type || "skin indicator"),
       score: clampScore(item.ui_score || 0),
       direction: item.ui_score && item.ui_score >= 75 ? "improving" : item.ui_score && item.ui_score >= 60 ? "stable" : "watch",
-      explanation: `${toConcernLabel(item.type || "skin indicator")} returned a visible care score of ${clampScore(item.ui_score || 0)}. Skinova converts this into education and routine guidance, not diagnosis.`
+      explanation: `${toConcernLabel(item.type || "skin indicator")} returned a visible care score of ${clampScore(item.ui_score || 0)}. Skinova converts this into education and routine guidance, not diagnosis.`,
+      maskUrls: Array.isArray(item.mask_urls) ? item.mask_urls.filter((url): url is string => typeof url === "string") : undefined
     }));
 
   if (!concerns.length) {
@@ -400,6 +449,113 @@ export function normalizeSimulationResult(payload: unknown): { resultUrl: string
     (url ? "success" : "processing");
 
   return { resultUrl: url, taskStatus };
+}
+
+export function getTaskStatusFromPayload(payload: unknown): string {
+  const root = asRecord(payload);
+  const data = asRecord(root?.data);
+  const nestedData = asRecord(data?.data);
+
+  return (
+    (typeof root?.task_status === "string" ? root.task_status : null) ||
+    (typeof data?.task_status === "string" ? data.task_status : null) ||
+    (typeof nestedData?.task_status === "string" ? nestedData.task_status : null) ||
+    "processing"
+  );
+}
+
+export function normalizeFitzpatrickResult(payload: unknown): PersonalizationContext | null {
+  const root = asRecord(payload);
+  const data = asRecord(root?.data);
+  const results = asRecord(data?.results) || asRecord(root?.results);
+
+  const scale = results?.fitzpatrick_scale;
+  if (typeof scale !== "string" || !scale.trim()) {
+    return null;
+  }
+
+  const roman = scale.trim().toUpperCase();
+  return {
+    fitzpatrickScale: roman,
+    fitzpatrickLabel: `Fitzpatrick Type ${roman}`,
+    source: "live"
+  };
+}
+
+export function normalizeSkinToneResult(payload: unknown): PersonalizationContext | null {
+  const root = asRecord(payload);
+  const data = asRecord(root?.data);
+  const results = asRecord(data?.results) || asRecord(root?.results);
+  const color = asRecord(results?.color);
+
+  if (!color) {
+    return null;
+  }
+
+  const skinColorHex = typeof color.skin_color === "string" ? color.skin_color : undefined;
+  const eyeColorName = typeof color.eye_color_name === "string" ? color.eye_color_name : undefined;
+  const lipColorHex = typeof color.lip_color === "string" ? color.lip_color : undefined;
+  const hairColorName = typeof color.hair_color_name === "string" ? color.hair_color_name : undefined;
+
+  if (!skinColorHex && !eyeColorName) {
+    return null;
+  }
+
+  return {
+    skinColorHex,
+    eyeColorName,
+    lipColorHex,
+    hairColorName,
+    source: "live"
+  };
+}
+
+export function mergePersonalization(
+  fitzpatrick: PersonalizationContext | null,
+  skinTone: PersonalizationContext | null
+): PersonalizationContext | null {
+  if (!fitzpatrick && !skinTone) {
+    return null;
+  }
+
+  return {
+    ...skinTone,
+    ...fitzpatrick,
+    fitzpatrickScale: fitzpatrick?.fitzpatrickScale || skinTone?.fitzpatrickScale,
+    fitzpatrickLabel: fitzpatrick?.fitzpatrickLabel || skinTone?.fitzpatrickLabel,
+    skinColorHex: skinTone?.skinColorHex || fitzpatrick?.skinColorHex,
+    eyeColorName: skinTone?.eyeColorName || fitzpatrick?.eyeColorName,
+    lipColorHex: skinTone?.lipColorHex || fitzpatrick?.lipColorHex,
+    hairColorName: skinTone?.hairColorName || fitzpatrick?.hairColorName,
+    source: "live"
+  };
+}
+
+export function applyPersonalizationToAnalysis(
+  analysis: AnalysisResult,
+  personalization: PersonalizationContext | null
+): AnalysisResult {
+  if (!personalization) {
+    return analysis;
+  }
+
+  const skinTypeParts = [analysis.skinType !== "Live scan result" ? analysis.skinType : null, personalization.fitzpatrickLabel]
+    .filter(Boolean)
+    .join(", ");
+
+  const toneParts = [
+    personalization.skinColorHex ? `Skin sample ${personalization.skinColorHex}` : null,
+    personalization.eyeColorName ? `${personalization.eyeColorName} eyes` : null,
+    personalization.hairColorName ? `${personalization.hairColorName} hair` : null
+  ].filter(Boolean);
+
+  return {
+    ...analysis,
+    skinType: skinTypeParts || analysis.skinType,
+    tone: toneParts.length ? toneParts.join(" · ") : analysis.tone,
+    personalization,
+    readingSteps: analysis.readingSteps
+  };
 }
 
 function asRecord(value: unknown): JsonRecord | null {
