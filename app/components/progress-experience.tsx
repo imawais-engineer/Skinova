@@ -18,7 +18,7 @@ export function ProgressExperience() {
         eyebrow="Progress tracking"
         title="Skinova continues after the first scan."
         description="The progress view demonstrates long-term consumer value: trends, goals, and simulation-backed improvement expectations."
-        action={{ href: "/health", label: "App health" }}
+        action={{ href: "/scan", label: "Run scan" }}
       />
 
       {ready && !session ? (

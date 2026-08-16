@@ -9,7 +9,6 @@ const protectedPrefixes = [
   "/routine",
   "/coach",
   "/progress",
-  "/health",
   "/settings"
 ];
 
@@ -45,7 +44,6 @@ export const config = {
     "/routine/:path*",
     "/coach/:path*",
     "/progress/:path*",
-    "/health/:path*",
     "/settings/:path*",
     "/login",
     "/signup"

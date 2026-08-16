@@ -15,6 +15,7 @@ import {
   X
 } from "lucide-react";
 import { SkinovaLogo } from "./skinova-logo";
+import { LandingLiveStatus } from "./landing-live-status";
 
 const navLinks = [
   { href: "#product", label: "Product" },
@@ -291,6 +292,8 @@ export function LandingPage() {
           </div>
         </section>
 
+        <LandingLiveStatus />
+
         <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="glass-panel rounded-3xl p-8 sm:p-10">
@@ -337,6 +340,7 @@ export function LandingPage() {
             <p className="mt-2 text-xs text-slate-500">© {new Date().getFullYear()} Skinova. All rights reserved.</p>
           </div>
           <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+            <a href="#live">Live status</a>
             <a href="#product">Product</a>
             <a href="#how-it-works">How It Works</a>
             <Link href="/login">Login</Link>

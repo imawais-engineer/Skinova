@@ -56,10 +56,10 @@ Open http://localhost:3000.
 3. Sign up with name, email, and password (8+ characters)
 4. You are redirected to **/dashboard**
 5. Open **Skin Scan**, upload a clear front-facing selfie
-6. Review **Results**, **Routine**, **Coach**, **Progress**, and **Health**
+6. Review **Results**, **Routine**, **Coach**, and **Progress**
 7. Use **Log out** from the sidebar to return to the public site
 
-Unauthenticated access to `/scan`, `/results`, `/coach`, `/progress`, `/health`, or `/settings` redirects to `/login`.
+Unauthenticated access to `/scan`, `/results`, `/coach`, `/progress`, or `/settings` redirects to `/login`.
 
 ## Environment
 

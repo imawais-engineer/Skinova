@@ -8,7 +8,6 @@ import {
   Bot,
   Camera,
   ClipboardList,
-  HeartPulse,
   Home,
   LineChart,
   LogOut
@@ -24,8 +23,7 @@ const navItems = [
   { href: "/results", label: "Results", icon: BarChart3 },
   { href: "/routine", label: "Routine", icon: ClipboardList },
   { href: "/coach", label: "Skin Coach", icon: Bot },
-  { href: "/progress", label: "Progress", icon: LineChart },
-  { href: "/health", label: "Health", icon: HeartPulse }
+  { href: "/progress", label: "Progress", icon: LineChart }
 ];
 
 export function AppShell({
