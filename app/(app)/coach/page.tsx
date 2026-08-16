@@ -1,5 +1,5 @@
-import { PageHeader } from "../../components/ui";
 import { CoachExperience } from "../../components/coach-experience";
+import { PageHeader } from "../../components/ui";
 
 export default async function CoachPage({
   searchParams
@@ -9,11 +9,12 @@ export default async function CoachPage({
   const params = await searchParams;
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
       <PageHeader
+        density="compact"
         eyebrow="Skin coach"
-        title="Ask routine and ingredient questions."
-        description="Skin Coach gives skincare education, routine guidance, and ingredient cautions without medical diagnosis claims."
+        title="Ask about your scan results."
+        description="Education on routines and ingredients — not medical diagnosis."
       />
       <CoachExperience initialPrompt={params.prompt} />
     </div>
