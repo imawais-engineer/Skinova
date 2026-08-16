@@ -26,3 +26,4 @@ Uses Playwright against production (or `SKINOVA_CAPTURE_URL`). Requires network 
 
 - No API keys, secrets, or private user data appear in captures.
 - Re-capture after major UI changes before final Devpost submission.
+- **Do not** commit screenshots at the repository root — keep all submission assets in this folder only (`public/screenshots/`).

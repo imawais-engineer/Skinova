@@ -75,3 +75,8 @@ secrets/
 
 # Local auth database
 data/
+
+# Submission screenshots belong in public/screenshots/ only
+/LANDING_PAGE*.png
+/LOG_IN.png
+/SIGN_UP.png
