@@ -127,6 +127,12 @@ export async function saveCoachMessage(input: { id: string; userId: string; role
   `;
 }
 
+export async function deleteCoachMessagesForUser(userId: string) {
+  await ensureKnowledgeSchema();
+  const sql = getSql();
+  await sql`DELETE FROM coach_messages WHERE user_id = ${userId}`;
+}
+
 export function getEmbeddingDimensions() {
   return getAiRuntime().embeddingDimensions;
 }

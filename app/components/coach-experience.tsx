@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Send } from "lucide-react";
 import { coachSamplePrompts } from "../lib/demo-samples";
 import { useScanSession } from "../hooks/use-scan-session";
@@ -26,6 +26,12 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
   const [messages, setMessages] = useState<CoachMessage[]>(starterMessages);
   const [input, setInput] = useState(initialPrompt || "Why is my skin red this week?");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const resetCoach = () => setMessages(starterMessages);
+    window.addEventListener("skinova:coach-reset", resetCoach);
+    return () => window.removeEventListener("skinova:coach-reset", resetCoach);
+  }, []);
 
   async function sendMessage(messageOverride?: string) {
     const trimmed = (messageOverride ?? input).trim();

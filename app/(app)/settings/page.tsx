@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { SettingsExperience } from "../../components/settings-experience";
 
 export default function SettingsPage() {
-  redirect("/dashboard");
+  return <SettingsExperience />;
 }

@@ -10,7 +10,8 @@ import {
   ClipboardList,
   Home,
   LineChart,
-  LogOut
+  LogOut,
+  Settings
 } from "lucide-react";
 import type { AppMode } from "../lib/app-mode";
 import type { SessionUser } from "../lib/session";
@@ -23,7 +24,8 @@ const navItems = [
   { href: "/results", label: "Results", icon: BarChart3 },
   { href: "/routine", label: "Routine", icon: ClipboardList },
   { href: "/coach", label: "Skin Coach", icon: Bot },
-  { href: "/progress", label: "Progress", icon: LineChart }
+  { href: "/progress", label: "Progress", icon: LineChart },
+  { href: "/settings", label: "Settings", icon: Settings }
 ];
 
 export function AppShell({
