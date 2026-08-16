@@ -7,9 +7,5 @@ export default async function CoachPage({
 }) {
   const params = await searchParams;
 
-  return (
-    <div className="flex min-h-[calc(100dvh-8.5rem)] flex-col">
-      <CoachExperience initialPrompt={params.prompt} />
-    </div>
-  );
+  return <CoachExperience initialPrompt={params.prompt} />;
 }

@@ -148,14 +148,14 @@ export function CoachExperience({ initialPrompt }: { initialPrompt?: string }) {
 
   if (!hydrated) {
     return (
-      <Panel className="flex min-h-[24rem] flex-1 items-center justify-center">
+      <Panel className="flex h-full min-h-0 flex-1 items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-cyan-200" aria-hidden="true" />
       </Panel>
     );
   }
 
   return (
-    <Panel className="flex min-h-0 flex-1 flex-col !p-0">
+    <Panel className="flex h-full min-h-0 flex-1 flex-col !p-0">
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2.5">
         <div className="flex min-w-0 items-center gap-2">
           <h1 className="text-sm font-semibold text-white">Skin Coach</h1>

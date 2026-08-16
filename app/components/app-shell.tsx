@@ -52,6 +52,8 @@ export function AppShell({
     }
   }
 
+  const isCoachPage = pathname === "/coach";
+
   return (
     <div className="min-h-screen lg:flex">
       <ScrollToTop />
@@ -114,8 +116,17 @@ export function AppShell({
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:ml-64 lg:px-8 lg:py-6">
-        <div className="mx-auto max-w-7xl">{children}</div>
+      <main
+        className={[
+          "min-w-0 flex-1 px-4 sm:px-6 lg:ml-64 lg:px-8",
+          isCoachPage
+            ? "flex h-dvh max-h-dvh flex-col overflow-hidden py-3 lg:py-4"
+            : "py-5 lg:py-6"
+        ].join(" ")}
+      >
+        <div className={["mx-auto w-full max-w-7xl", isCoachPage ? "flex min-h-0 flex-1 flex-col" : ""].join(" ")}>
+          {children}
+        </div>
       </main>
     </div>
   );
