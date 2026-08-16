@@ -7,6 +7,7 @@ npm run typecheck
 npm run build
 npm run verify:ui
 npm run youcam:smoke
+npm run coach:smoke "Why is my skin red this week?"
 ```
 
 Run from the repository root. `verify:ui` requires the dev server at `http://localhost:3000`.
