@@ -7,6 +7,7 @@ export type ScanSession = {
   scannedAt: string;
   scanId?: string | null;
   fileId?: string | null;
+  previewImageUrl?: string | null;
 };
 
 const STORAGE_KEY = "skinova:last-scan";
@@ -233,6 +234,14 @@ export function describeHistoryDelta(trend: ScanHistoryTrend) {
 }
 
 const DEMO_SCAN_PREVIEW = "/samples/youcam-clear-baseline.jpg";
+
+export function getOriginalScanImageUrl(session: ScanSession) {
+  if (session.previewImageUrl) {
+    return session.previewImageUrl;
+  }
+
+  return DEMO_SCAN_PREVIEW;
+}
 
 export function getScanPreviewUrl(analysis: AnalysisResult) {
   for (const concern of analysis.concerns) {

@@ -48,8 +48,9 @@ All checks should pass on production.
 
 1. Show **Overall score** and **Concern breakdown**
 2. Scroll to **YouCam personalization** (Fitzpatrick, skin tone, face attributes)
-3. Open a **concern mask** tab
-4. Click **Generate routine** or open **Routine** in sidebar
+3. In **Concern detection masks**, switch concern tabs — show **Original scan** vs **mask** side-by-side
+4. On the right, open **YouCam Skin Simulation** → click **Run Skin Simulation** → wait for before/after
+5. Click **Generate routine** or open **Routine** in sidebar
 
 ### 5. Routine (20 sec)
 

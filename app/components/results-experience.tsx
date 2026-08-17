@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Activity, ArrowRight, Layers, Palette, Sparkles } from "lucide-react";
 import { useScanSession } from "../hooks/use-scan-session";
+import { getOriginalScanImageUrl } from "../lib/scan-session";
 import { EmptyScanState } from "./empty-scan-state";
+import { SkinSimulationPanel } from "./skin-simulation-panel";
 import { PageHeader, Panel, ScoreBar, StatusBadge } from "./ui";
 
 export function ResultsExperience() {
@@ -27,6 +29,7 @@ export function ResultsExperience() {
   }, [activeMask, concernsWithMasks, result]);
 
   const personalization = result?.personalization;
+  const originalScanUrl = session ? getOriginalScanImageUrl(session) : null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -141,52 +144,58 @@ export function ResultsExperience() {
           ) : null}
 
           {concernsWithMasks.length > 0 ? (
-            <Panel>
-              <div className="flex flex-wrap items-center gap-3">
-                <Layers className="h-5 w-5 text-cyan-200" aria-hidden="true" />
-                <h2 className="text-xl font-semibold text-white">Concern detection masks</h2>
-                <StatusBadge tone="mint">YouCam mask overlays</StatusBadge>
-              </div>
-              <p className="mt-3 text-sm leading-6 text-slate-300">
-                Skin Analysis returns mask images showing where each signal was detected on your selfie.
-              </p>
+            <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+              <Panel>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Layers className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+                  <h2 className="text-xl font-semibold text-white">Concern detection masks</h2>
+                  <StatusBadge tone="mint">YouCam mask overlays</StatusBadge>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  Compare your original scan with mask images showing where each signal was detected.
+                </p>
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                {concernsWithMasks.map((concern) => (
-                  <button
-                    key={concern.type}
-                    type="button"
-                    onClick={() => setActiveMask(concern.type)}
-                    className={[
-                      "rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                      selectedMaskConcern?.type === concern.type
-                        ? "border-cyan-300/40 bg-cyan-300/15 text-cyan-50"
-                        : "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.06]"
-                    ].join(" ")}
-                  >
-                    {concern.type} · {concern.score}%
-                  </button>
-                ))}
-              </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {concernsWithMasks.map((concern) => (
+                    <button
+                      key={concern.type}
+                      type="button"
+                      onClick={() => setActiveMask(concern.type)}
+                      className={[
+                        "rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                        selectedMaskConcern?.type === concern.type
+                          ? "border-cyan-300/40 bg-cyan-300/15 text-cyan-50"
+                          : "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.06]"
+                      ].join(" ")}
+                    >
+                      {concern.type} · {concern.score}%
+                    </button>
+                  ))}
+                </div>
 
-              {selectedMaskConcern?.maskUrls?.[0] ? (
-                <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
-                  <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2">
-                    <p className="text-sm font-medium text-white">{selectedMaskConcern.type} mask</p>
-                    <p className="text-xs text-slate-400">Score {selectedMaskConcern.score}%</p>
-                  </div>
-                  <div className="relative aspect-[4/5] w-full max-w-md">
-                    <Image
-                      src={selectedMaskConcern.maskUrls[0]}
-                      alt={`${selectedMaskConcern.type} detection mask`}
-                      fill
-                      className="object-contain bg-slate-950"
-                      unoptimized
+                {selectedMaskConcern?.maskUrls?.[0] && originalScanUrl ? (
+                  <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <MaskCompareTile
+                      title="Original scan"
+                      badge="Source photo"
+                      imageUrl={originalScanUrl}
+                      imageAlt="Original scan photo"
+                    />
+                    <MaskCompareTile
+                      title={`${selectedMaskConcern.type} mask`}
+                      badge={`Score ${selectedMaskConcern.score}%`}
+                      imageUrl={selectedMaskConcern.maskUrls[0]}
+                      imageAlt={`${selectedMaskConcern.type} detection mask`}
+                      highlight
                     />
                   </div>
-                </div>
-              ) : null}
-            </Panel>
+                ) : null}
+              </Panel>
+
+              {session ? <SkinSimulationPanel session={session} compact /> : null}
+            </div>
+          ) : session ? (
+            <SkinSimulationPanel session={session} />
           ) : null}
 
           <Panel>
@@ -204,6 +213,37 @@ export function ResultsExperience() {
           </Panel>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function MaskCompareTile({
+  title,
+  badge,
+  imageUrl,
+  imageAlt,
+  highlight = false
+}: {
+  title: string;
+  badge: string;
+  imageUrl: string;
+  imageAlt: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div
+      className={[
+        "overflow-hidden rounded-2xl border",
+        highlight ? "border-cyan-300/25 bg-cyan-300/[0.04]" : "border-white/10 bg-black/20"
+      ].join(" ")}
+    >
+      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2">
+        <p className="text-sm font-medium text-white">{title}</p>
+        <p className="text-xs text-slate-400">{badge}</p>
+      </div>
+      <div className="relative aspect-[4/5] w-full">
+        <Image src={imageUrl} alt={imageAlt} fill className="object-contain bg-slate-950" unoptimized />
+      </div>
     </div>
   );
 }

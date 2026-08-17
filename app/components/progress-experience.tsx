@@ -1,27 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { History, LineChart, Loader2, Sparkles } from "lucide-react";
+import { useMemo } from "react";
+import { History, LineChart, Sparkles } from "lucide-react";
 import {
   buildProgressFromAnalysis,
   describeHistoryDelta,
-  formatScanDate,
-  getScanPreviewUrl
+  formatScanDate
 } from "../lib/scan-session";
 import { useScanHistory } from "../hooks/use-scan-history";
 import { useScanSession } from "../hooks/use-scan-session";
 import { EmptyScanState } from "./empty-scan-state";
-import { SimulationCompare } from "./simulation-compare";
+import { SkinSimulationPanel } from "./skin-simulation-panel";
 import { PageHeader, Panel, StatusBadge } from "./ui";
-
-type SimulationResponse = {
-  status?: string;
-  resultUrl?: string;
-  mode?: "demo" | "live";
-  error?: string;
-  pollingUrl?: string;
-  message?: string;
-};
 
 export function ProgressExperience() {
   const { session, ready } = useScanSession();
@@ -29,15 +19,6 @@ export function ProgressExperience() {
   const entries = session ? buildProgressFromAnalysis(session.analysis) : null;
   const current = entries?.[0];
   const projected = entries?.[entries.length - 1];
-  const [simulationUrl, setSimulationUrl] = useState<string | null>(null);
-  const [simulationMode, setSimulationMode] = useState<"demo" | "live" | null>(null);
-  const [simulationStatus, setSimulationStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
-  const [simulationMessage, setSimulationMessage] = useState("");
-
-  const currentPreviewUrl = useMemo(
-    () => (session ? getScanPreviewUrl(session.analysis) : null),
-    [session]
-  );
 
   const historySummary = useMemo(() => {
     if (!trend) {
@@ -52,72 +33,6 @@ export function ProgressExperience() {
       direction: trend.direction
     });
   }, [trend]);
-
-  async function pollSimulation(pollingUrl: string) {
-    for (let attempt = 1; attempt <= 12; attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, attempt === 1 ? 1200 : 2000));
-      const response = await fetch(pollingUrl);
-      const data = (await response.json()) as SimulationResponse;
-
-      if (data.resultUrl) {
-        return { ok: true, resultUrl: data.resultUrl, mode: data.mode || "live" };
-      }
-
-      if (!response.ok || data.status === "error" || data.error) {
-        return { ok: false, message: data.error || "Simulation could not be completed." };
-      }
-    }
-
-    return { ok: false, message: "Simulation is taking longer than expected. Please try again." };
-  }
-
-  async function runSimulation() {
-    if (!session) {
-      return;
-    }
-
-    setSimulationStatus("loading");
-    setSimulationMessage("Starting YouCam Skin Simulation…");
-    setSimulationUrl(null);
-
-    try {
-      const response = await fetch("/api/skinova/simulation", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scanId: session.scanId, fileId: session.fileId })
-      });
-      const data = (await response.json()) as SimulationResponse;
-
-      if (!response.ok || data.error) {
-        setSimulationStatus("error");
-        setSimulationMessage(data.error || "Simulation could not be started.");
-        return;
-      }
-
-      if (data.pollingUrl) {
-        setSimulationMessage(data.message || "Rendering improvement preview…");
-        const result = await pollSimulation(data.pollingUrl);
-
-        if (result.ok && result.resultUrl) {
-          setSimulationUrl(result.resultUrl);
-          setSimulationMode(result.mode || "live");
-          setSimulationStatus("ready");
-          setSimulationMessage("Before/after comparison is ready below.");
-          return;
-        }
-
-        setSimulationStatus("error");
-        setSimulationMessage(result.message || "Simulation failed.");
-        return;
-      }
-
-      setSimulationStatus("error");
-      setSimulationMessage("No simulation task was returned.");
-    } catch {
-      setSimulationStatus("error");
-      setSimulationMessage("Network error while running simulation.");
-    }
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -167,53 +82,27 @@ export function ProgressExperience() {
               </div>
             </Panel>
 
-            <Panel className="gradient-border">
-              <Sparkles className="h-6 w-6 text-violet-200" aria-hidden="true" />
-              <h2 className="mt-4 text-xl font-semibold text-white">YouCam Skin Simulation</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-300">
-                Compare your current scan signals with a YouCam simulation preview — education and motivation, not a guaranteed result.
-              </p>
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                  <p className="text-xs text-slate-400">Current</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{current.overall}%</p>
-                </div>
-                <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4">
-                  <p className="text-xs text-emerald-100/80">Projected</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{projected.overall}%</p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => void runSimulation()}
-                disabled={simulationStatus === "loading"}
-                className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-violet-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-violet-200 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {simulationStatus === "loading" ? (
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                ) : (
-                  <Sparkles className="h-4 w-4" aria-hidden="true" />
-                )}
-                {simulationStatus === "loading" ? "Running simulation…" : "Run Skin Simulation"}
-              </button>
-
-              {simulationMessage ? (
-                <p className={`mt-3 text-xs leading-5 ${simulationStatus === "error" ? "text-rose-200" : "text-slate-400"}`}>
-                  {simulationMessage}
+            <div>
+              <Panel className="gradient-border mb-5">
+                <Sparkles className="h-6 w-6 text-violet-200" aria-hidden="true" />
+                <h2 className="mt-4 text-xl font-semibold text-white">Projected improvement</h2>
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  Trend projection based on your latest concern scores — a companion to the live YouCam simulation preview.
                 </p>
-              ) : null}
+                <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                    <p className="text-xs text-slate-400">Current</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{current.overall}%</p>
+                  </div>
+                  <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4">
+                    <p className="text-xs text-emerald-100/80">Projected</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{projected.overall}%</p>
+                  </div>
+                </div>
+              </Panel>
 
-              {currentPreviewUrl ? (
-                <SimulationCompare
-                  currentLabel={session.mode === "live" ? "Live scan" : "Demo scan"}
-                  currentImageUrl={currentPreviewUrl}
-                  currentScore={current.overall}
-                  simulatedImageUrl={simulationUrl}
-                  simulatedMode={simulationMode}
-                />
-              ) : null}
-            </Panel>
+              <SkinSimulationPanel session={session} compact />
+            </div>
           </div>
 
           {history.length > 0 ? (

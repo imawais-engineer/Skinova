@@ -68,14 +68,15 @@ export function ScanExperience() {
   function persistScanResult(
     result: AnalysisResult,
     mode: "demo" | "live",
-    meta?: { scanId?: string | null; fileId?: string | null }
+    meta?: { scanId?: string | null; fileId?: string | null; previewImageUrl?: string | null }
   ) {
     saveScanSession({
       analysis: result,
       mode,
       scannedAt: new Date().toISOString(),
       scanId: meta?.scanId || null,
-      fileId: meta?.fileId || null
+      fileId: meta?.fileId || null,
+      previewImageUrl: meta?.previewImageUrl || displayPreview || null
     });
     setScanMode(mode);
   }

@@ -50,9 +50,9 @@ try {
   record("skin scan complete", true);
 
   await page.goto(`${baseUrl}/results`, { waitUntil: "networkidle", timeout: 90000 });
-  const resultsHeading = await page.locator("text=Concern breakdown").count();
-  const personalization = await page.locator("text=YouCam personalization").count();
-  record("results page", resultsHeading > 0, personalization > 0 ? "personalization visible" : "scores visible");
+  await page.getByText("Concern breakdown").waitFor({ timeout: 30000 });
+  await page.getByText("YouCam Skin Simulation").waitFor({ timeout: 30000 });
+  record("results page", true, "masks + simulation panel visible");
 
   await page.goto(`${baseUrl}/routine`, { waitUntil: "networkidle", timeout: 90000 });
   await page.getByText(/Morning routine|Night routine|Building your routine|Ingredient safety notes/).first().waitFor({
