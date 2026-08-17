@@ -1,6 +1,6 @@
 # Skinova architecture
 
-Skinova is a Next.js 15 full-stack web app. The browser never calls YouCam directly; all Skin AI requests run through server-side API routes. User accounts persist in Neon Postgres; the latest scan session persists in the browser until the user clears it or runs a new scan.
+Skinova is a Next.js 15 full-stack web app. The browser never calls YouCam directly; all Skin AI requests run through server-side API routes. User accounts, scan history, routines, coach memory, and simulation previews persist in **Neon Postgres**; the browser keeps a fast `sessionStorage` cache hydrated from `/api/skinova/scans`.
 
 **Visual diagram:** [architecture.html](architecture.html) — full layer view (frontend → API → YouCam / Qwen / Neon) with module connectivity and primary data flows.
 
@@ -19,6 +19,8 @@ flowchart TB
     SCAN["/api/skinova/scan"]
     POLL["/api/skinova/scan-status"]
     SIM["/api/skinova/simulation"]
+    SIM_POLL["/api/skinova/simulation-status"]
+    SCANS["/api/skinova/scans"]
     COACH["/api/skinova/coach"]
     HEALTH["/api/skinova/health"]
     LIB[app/lib/youcam.ts]
@@ -34,6 +36,8 @@ flowchart TB
   APP --> SCAN
   APP --> POLL
   APP --> SIM
+  APP --> SIM_POLL
+  APP --> SCANS
   APP --> COACH
   APP --> SS
   AUTH --> NEON
@@ -89,7 +93,7 @@ scripts/                   Setup, smoke tests, DB init, knowledge ingest
    - `POST /s2s/v2.0/task/skin-analysis` → `task_id`
 4. Client polls `GET /api/skinova/scan-status/[taskId]` until analysis is ready.
 5. `youcam.ts` maps YouCam `ui_score` output → `AnalysisResult` (scores, concerns, mask URLs, reading steps).
-6. `run-personalization.ts` enriches with Fitzpatrick Scale + Skin Tone APIs when a `file_id` is available.
+6. `run-personalization.ts` enriches with Fitzpatrick Scale, Skin Tone, and Face Analyzer APIs when a `file_id` is available.
 7. Result saved to Neon `user_scans` (authenticated), `sessionStorage`, and shown across Results, Routine, Coach, Progress, Dashboard.
 
 **Demo mode** (`SKINOVA_DEMO_MODE=true` or missing `API_KEY`): mock task IDs and representative analysis data — no YouCam units consumed.

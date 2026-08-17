@@ -163,7 +163,7 @@
       </div>
       <div class="card fe">
         <strong>Client state</strong>
-        <p><code>sessionStorage</code> holds latest scan analysis for Results, Routine, Coach, and Progress. Middleware blocks unauthenticated routes.</p>
+        <p><code>sessionStorage</code> caches the latest scan for fast UI; <strong>Neon</strong> is the source of truth via <code>GET /api/skinova/scans</code>. Middleware blocks unauthenticated routes.</p>
       </div>
     </div>
   </section>
@@ -275,7 +275,7 @@
         </div>
         <div class="card db">
           <strong>user_scans · user_routine_plans</strong>
-          <p>Per-user scan history and AI/template routine plans — hydrated into session on return</p>
+          <p>Scan history (<code>preview_image_url</code>, <code>sample_id</code>, analysis JSON) and AI/template routines — hydrated into session on return</p>
         </div>
         <div class="card db">
           <strong>user_simulation_results · scan_task_context</strong>
@@ -318,7 +318,7 @@
     <h3>Primary data flows</h3>
     <ol>
       <li><strong>Auth:</strong> Browser <code>POST /api/auth/signup|login</code> → Neon <code>users</code> → HTTP-only JWT session cookie → middleware allows <code>/dashboard</code>, <code>/scan</code>, etc.</li>
-      <li><strong>Skin scan (live):</strong> Browser uploads selfie → <code>POST /api/skinova/scan</code> → YouCam file API + presigned PUT + task create → client polls <code>GET /api/skinova/scan-status/[taskId]</code> → Fitzpatrick + skin tone + face analyzer enrichment → <code>AnalysisResult</code> saved to Neon <code>user_scans</code> + <code>sessionStorage</code> → Results / Routine / Coach / Progress.</li>
+      <li><strong>Skin scan (live):</strong> Browser uploads selfie → <code>POST /api/skinova/scan</code> → YouCam file API + presigned PUT + task create → client polls <code>GET /api/skinova/scan-status/[taskId]</code> → Fitzpatrick + skin tone + face analyzer enrichment → <code>AnalysisResult</code> saved to Neon <code>user_scans</code> (with <code>preview_image_url</code> / <code>sample_id</code>) + <code>sessionStorage</code> → Results / Routine / Coach / Progress.</li>
       <li><strong>Skin Simulation:</strong> Progress page <code>POST /api/skinova/simulation</code> → YouCam simulation task → poll <code>GET /api/skinova/simulation-status/[taskId]</code> → before/after preview saved to <code>user_simulation_results</code>.</li>
       <li><strong>Skin Coach (live):</strong> Browser <code>POST /api/skinova/coach</code> with message + scan context → scope guard → embed query (Qwen) → retrieve <code>knowledge_chunks</code> (pgvector + topic boost) → Qwen chat completion with grounded prompt → validate → store in <code>coach_messages</code> → JSON answer to UI.</li>
       <li><strong>Health / status:</strong> Landing <code>GET /api/skinova/health</code> reports <code>mode</code> (live/demo), <code>scanReady</code>, and <code>coachReady</code> without exposing secrets.</li>
@@ -334,7 +334,7 @@
       <li><strong>Scan core:</strong> <code>app/lib/youcam.ts</code> · <code>run-skin-scan.ts</code> · <code>run-personalization.ts</code> · <code>scan-session.ts</code> · <code>scan-steps.ts</code></li>
       <li><strong>Simulation:</strong> <code>run-skin-simulation.ts</code> · <code>simulation-db.ts</code> · <code>use-skin-simulation.ts</code></li>
       <li><strong>Coach core:</strong> <code>coach-service.ts</code> · <code>coach-llm.ts</code> · <code>coach-contract.ts</code> · <code>coach-scope.ts</code> · <code>rag.ts</code> · <code>embeddings.ts</code></li>
-      <li><strong>Data:</strong> <code>db.ts</code> · <code>auth.ts</code> · <code>knowledge-db.ts</code> · <code>knowledge-seed.ts</code></li>
+      <li><strong>Data:</strong> <code>db.ts</code> · <code>auth.ts</code> · <code>scan-db.ts</code> · <code>simulation-db.ts</code> · <code>routine-db.ts</code> · <code>knowledge-db.ts</code></li>
       <li><strong>Ops:</strong> <code>scripts/setup-and-run.sh</code> · <code>youcam-smoke-test.mjs</code> · <code>coach-smoke-test.mjs</code> · <code>ingest-knowledge.mjs</code></li>
     </ol>
   </div>
