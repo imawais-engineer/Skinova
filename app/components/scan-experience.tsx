@@ -65,18 +65,43 @@ export function ScanExperience() {
     return hasSelection ? "Ready to scan" : "Step 1 · Select a photo";
   }, [hasSelection, phase, scanMode]);
 
-  function persistScanResult(
+  async function persistPreviewUrl(url: string | null) {
+    if (!url) {
+      return null;
+    }
+
+    if (!url.startsWith("blob:")) {
+      return url;
+    }
+
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("Could not read preview image."));
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  async function persistScanResult(
     result: AnalysisResult,
     mode: "demo" | "live",
     meta?: { scanId?: string | null; fileId?: string | null; previewImageUrl?: string | null }
   ) {
+    const previewImageUrl = await persistPreviewUrl(meta?.previewImageUrl || displayPreview || null);
+
     saveScanSession({
       analysis: result,
       mode,
       scannedAt: new Date().toISOString(),
       scanId: meta?.scanId || null,
       fileId: meta?.fileId || null,
-      previewImageUrl: meta?.previewImageUrl || displayPreview || null
+      previewImageUrl
     });
     setScanMode(mode);
   }
@@ -167,7 +192,7 @@ export function ScanExperience() {
         const nextAnalysis = finalResult.analysis || data.analysis || null;
 
         if (nextAnalysis && finalResult.ok) {
-          persistScanResult(nextAnalysis, finalResult.mode || modeHint || data.mode || "live", {
+          await persistScanResult(nextAnalysis, finalResult.mode || modeHint || data.mode || "live", {
             scanId: finalResult.scanId,
             fileId: finalResult.fileId
           });
@@ -184,7 +209,7 @@ export function ScanExperience() {
       }
 
       if (data.analysis) {
-        persistScanResult(data.analysis, data.mode || "demo");
+        await persistScanResult(data.analysis, data.mode || "demo");
         setAnalysis(data.analysis);
         setMessage(data.message || "Skin scan completed.");
         setPhase("result");

@@ -13,7 +13,7 @@ export function SimulationCompare({
   placeholder = "Run Skin Simulation to preview improvement direction."
 }: {
   currentLabel: string;
-  currentImageUrl: string;
+  currentImageUrl?: string | null;
   currentScore: number;
   simulatedImageUrl?: string | null;
   simulatedMode?: "demo" | "live" | null;

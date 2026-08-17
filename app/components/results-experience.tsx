@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowRight, Layers, Palette, Sparkles } from "lucide-react";
 import { useScanSession } from "../hooks/use-scan-session";
 import { getOriginalScanImageUrl } from "../lib/scan-session";
@@ -29,6 +29,10 @@ export function ResultsExperience() {
 
   const personalization = result?.personalization;
   const originalScanUrl = session ? getOriginalScanImageUrl(session) : null;
+
+  useEffect(() => {
+    setActiveMask(null);
+  }, [session?.scannedAt]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -171,15 +175,24 @@ export function ResultsExperience() {
                 ))}
               </div>
 
-              {selectedMaskConcern?.maskUrls?.[0] && originalScanUrl ? (
-                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {selectedMaskConcern?.maskUrls?.[0] ? (
+                <div
+                  className={[
+                    "mt-5 grid grid-cols-1 gap-4",
+                    originalScanUrl ? "sm:grid-cols-2" : ""
+                  ].join(" ")}
+                >
+                  {originalScanUrl ? (
+                    <MaskCompareTile
+                      key={`original-${session.scannedAt}-${originalScanUrl}`}
+                      title="Original scan"
+                      badge="Source photo"
+                      imageUrl={originalScanUrl}
+                      imageAlt="Original scan photo"
+                    />
+                  ) : null}
                   <MaskCompareTile
-                    title="Original scan"
-                    badge="Source photo"
-                    imageUrl={originalScanUrl}
-                    imageAlt="Original scan photo"
-                  />
-                  <MaskCompareTile
+                    key={`mask-${session.scannedAt}-${selectedMaskConcern.type}-${selectedMaskConcern.maskUrls[0]}`}
                     title={`${selectedMaskConcern.type} mask`}
                     badge={`Score ${selectedMaskConcern.score}%`}
                     imageUrl={selectedMaskConcern.maskUrls[0]}
@@ -235,7 +248,14 @@ function MaskCompareTile({
         <p className="text-xs text-slate-400">{badge}</p>
       </div>
       <div className="relative aspect-[4/5] w-full">
-        <Image src={imageUrl} alt={imageAlt} fill className="object-contain bg-slate-950" unoptimized />
+        <Image
+          key={imageUrl}
+          src={imageUrl}
+          alt={imageAlt}
+          fill
+          className="object-contain bg-slate-950"
+          unoptimized
+        />
       </div>
     </div>
   );

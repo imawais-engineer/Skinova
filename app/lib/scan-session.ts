@@ -24,6 +24,7 @@ export function saveScanSession(session: ScanSession) {
   }
 
   window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  window.dispatchEvent(new Event("skinova:session-updated"));
 }
 
 export function getScanSession(): ScanSession | null {
@@ -235,24 +236,8 @@ export function describeHistoryDelta(trend: ScanHistoryTrend) {
   return `${trend.scanCount} scans · overall ${verb} ${points} point${points === 1 ? "" : "s"} since your last scan.`;
 }
 
-const DEMO_SCAN_PREVIEW = "/samples/youcam-clear-baseline.jpg";
-
 export function getOriginalScanImageUrl(session: ScanSession) {
-  if (session.previewImageUrl) {
-    return session.previewImageUrl;
-  }
-
-  return DEMO_SCAN_PREVIEW;
-}
-
-export function getScanPreviewUrl(analysis: AnalysisResult) {
-  for (const concern of analysis.concerns) {
-    if (concern.maskUrls?.[0]) {
-      return concern.maskUrls[0];
-    }
-  }
-
-  return DEMO_SCAN_PREVIEW;
+  return session.previewImageUrl || null;
 }
 
 export function routineScanKeyFromSession(session: ScanSession) {
