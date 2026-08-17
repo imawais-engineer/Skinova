@@ -9,6 +9,7 @@ import {
   Camera,
   LineChart,
   Menu,
+  Play,
   ShieldCheck,
   X
 } from "lucide-react";
@@ -203,6 +204,15 @@ export function LandingPage() {
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </Link>
+              <a
+                href="https://youtu.be/3twwbGyQqWA"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Watch Demo
+                <Play className="ml-2 h-4 w-4" aria-hidden="true" />
+              </a>
               <a
                 href="#how-it-works"
                 className="inline-flex h-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-semibold text-white transition hover:bg-white/10"

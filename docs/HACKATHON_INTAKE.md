@@ -14,7 +14,7 @@ Summary of official rules and how Skinova maps to them. Production app: **https:
 | Documentation (`docs/`) | Shipped |
 | MIT license | Shipped |
 | Screenshots | Complete (`public/screenshots/`) |
-| Demo video | Script ready; recording after DevTest freeze |
+| Demo video | Published — https://youtu.be/3twwbGyQqWA |
 
 Repository: https://github.com/imawais-engineer/Skinova
 
@@ -70,5 +70,5 @@ Sources:
 
 1. ~~Finish screenshot set (`docs/SCREENSHOTS.md`)~~ — done in `public/screenshots/`
 2. ~~Demo-ready app verification~~ — `npm run verify:demo` passes on production
-3. Record demo video (`docs/DEMO_SCRIPT.md`) — silent screen record (~2–3 min)
-4. Add video URL to `docs/SUBMISSION_PACKAGE.md` on Devpost
+3. ~~Record demo video (`docs/DEMO_SCRIPT.md`)~~ — https://youtu.be/3twwbGyQqWA
+4. ~~Add video URL to `docs/SUBMISSION_PACKAGE.md` on Devpost~~ — done

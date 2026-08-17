@@ -2,7 +2,9 @@
 
 Production URL: **https://skinova-ai.vercel.app**
 
-Use this as a **silent screen-record checklist** (no voiceover required). Record 1–3 minutes while clicking through the app. Publish to YouTube, Vimeo, or Youku, then add the link to [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md).
+Published demo: **https://youtu.be/3twwbGyQqWA**
+
+Use this as a **silent screen-record checklist** (no voiceover required). Record 1–3 minutes while clicking through the app. Title, description, and Devpost copy live in [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md).
 
 Pre-flight (run once before recording):
 
@@ -49,8 +51,7 @@ All checks should pass on production.
 1. Show **Overall score** and **Concern breakdown**
 2. Scroll to **YouCam personalization** (Fitzpatrick, skin tone, face attributes)
 3. In **Concern detection masks**, switch concern tabs — show **Original scan** vs **mask** side-by-side
-4. On the right, open **YouCam Skin Simulation** → click **Run Skin Simulation** → wait for before/after
-5. Click **Generate routine** or open **Routine** in sidebar
+4. Click **Generate routine** or open **Routine** in sidebar
 
 ### 5. Routine (20 sec)
 
@@ -63,10 +64,11 @@ All checks should pass on production.
 2. Ask: `What should I focus on from my latest scan?`
 3. Wait for the grounded reply
 
-### 7. Progress (20 sec)
+### 7. Progress (30 sec)
 
 1. Open **Progress**
-2. Show trend / history summary (simulation lives on **Results** only)
+2. Show trend / history summary
+3. Scroll to **YouCam Skin Simulation** → click **Run Skin Simulation** → wait for before/after compare
 
 ### 8. Close (10 sec)
 
@@ -99,6 +101,6 @@ npm run capture:screenshots
 
 ## After recording
 
-1. Upload video (public, unlisted is fine)
+1. Upload video (public or unlisted)
 2. Paste URL into [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md) and Devpost
 3. Confirm screenshots in `public/screenshots/` match the latest UI

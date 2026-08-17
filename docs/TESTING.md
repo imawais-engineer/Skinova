@@ -90,7 +90,7 @@ After Vercel deploy:
 npm run verify:demo
 ```
 
-This runs the full judge-style path against https://skinova-ai.vercel.app (sign up → scan → results → routine → coach → simulation).
+This runs the full judge-style path against https://skinova-ai.vercel.app (sign up → scan → results → routine → coach → progress simulation).
 
 Manual spot-check:
 

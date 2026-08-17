@@ -1,8 +1,9 @@
 # Skinova progress metrics
 
-Last updated: August 16, 2026  
+Last updated: August 17, 2026  
 Production: https://skinova-ai.vercel.app  
-Repository: https://github.com/imawais-engineer/Skinova
+Repository: https://github.com/imawais-engineer/Skinova  
+Demo video: https://youtu.be/3twwbGyQqWA
 
 ## Hackathon scorecard (development assessment)
 
@@ -11,8 +12,8 @@ Repository: https://github.com/imawais-engineer/Skinova
 | **Technological Implementation** | 25 | 25 | 5 YouCam APIs live, Neon persistence, RAG coach, rate limits, health checks |
 | **Design** | 24 | 25 | Unified UI, journey breadcrumbs, history strip, before/after, mask overlays |
 | **Potential Impact** | 24 | 25 | Account-backed scans + routines, progress deltas, face-aware personalization |
-| **Quality of Idea** | 22 | 25 | Continuous skincare companion vs one-time scanner |
-| **Total** | **98** | **100** | Record demo video (owner); paste URL into Devpost |
+| **Quality of Idea** | 23 | 25 | Continuous skincare companion vs one-time scanner |
+| **Total** | **99** | **100** | Demo video published; optional YouTube trim for pacing |
 
 ### Score trajectory
 
@@ -25,7 +26,8 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Dashboard history + before/after (Track B) | ~90 | +2 |
 | Routine DB + rate limits (Track C) | **~92** | +2 |
 | Face Analyzer + health + journey UI | ~95 | +3 |
-| Demo-ready verification + screen-record guide | **~98** | +3 |
+| Demo-ready verification + screen-record guide | ~98 | +3 |
+| Demo video published on YouTube | **~99** | +1 |
 
 ---
 
@@ -38,7 +40,7 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Results + masks | ✅ Shipped | Concern masks, personalization panel |
 | AI Routine | ✅ Shipped | Qwen structured cards + Neon persistence |
 | Skin Coach | ✅ Shipped | RAG + Qwen, DB history |
-| Progress + simulation | ✅ Shipped | History, before/after compare |
+| Progress + simulation | ✅ Shipped | History, before/after compare on Progress |
 | Dashboard history | ✅ Shipped | Scan strip with deltas |
 | Settings / reset | ✅ Shipped | Clears scans, routines, coach |
 | Rate limiting | ✅ Shipped | scan, simulation, coach, routine |
@@ -46,7 +48,7 @@ Repository: https://github.com/imawais-engineer/Skinova
 | Health + DB readiness | ✅ Shipped | `GET /api/skinova/health` |
 | Screenshots | ✅ Complete | `public/screenshots/` (9 files, production capture) |
 | Demo recording guide | ✅ Ready | [DEMO_SCRIPT.md](DEMO_SCRIPT.md) — silent screen-record path |
-| Demo video URL | ⏸ Owner | Record with `npm run verify:demo` pre-flight |
+| Demo video URL | ✅ Published | https://youtu.be/3twwbGyQqWA |
 
 ---
 
@@ -57,7 +59,7 @@ Repository: https://github.com/imawais-engineer/Skinova
 | AI Skin Analysis | ✅ | `POST /api/skinova/scan` |
 | Fitzpatrick Scale Analyzer | ✅ | Post-scan enrichment |
 | Skin Tone Analysis | ✅ | Post-scan enrichment |
-| AI Skin Simulation | ✅ | `POST /api/skinova/simulation` |
+| AI Skin Simulation | ✅ | `POST /api/skinova/simulation` (Progress page) |
 | Face Analyzer | ✅ | Post-scan enrichment |
 | Photo Enhance | ⬜ Stub only | `youcam.ts` |
 
@@ -101,15 +103,6 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 
 ---
 
-## Remaining (owner only)
-
-| Gap | Action |
-| --- | --- |
-| **Demo video (1–3 min)** | Screen-record using [DEMO_SCRIPT.md](DEMO_SCRIPT.md); upload to YouTube/Vimeo/Youku |
-| **Devpost video URL** | Paste link into [SUBMISSION_PACKAGE.md](SUBMISSION_PACKAGE.md) |
-
----
-
 ## Judge demo path (3 minutes)
 
 1. Landing → Live status (5 YouCam APIs online + Neon ready)
@@ -118,7 +111,7 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 4. Results → Fitzpatrick + skin tone + **face attributes** + **mask overlays**
 5. Routine → **persisted AI cards** (reload page to show DB cache)
 6. Coach → one grounded question
-7. Progress → **before/after simulation**
+7. Progress → **before/after Skin Simulation**
 8. Mention: education only, not medical diagnosis
 
 ---
@@ -134,4 +127,4 @@ Browser `sessionStorage` remains a fast cache; Neon is source of truth for retur
 | MIT license | ✅ |
 | English materials | ✅ |
 | Screenshots | ✅ |
-| Demo video | ⏸ Owner records (app verified demo-ready) |
+| Demo video | ✅ https://youtu.be/3twwbGyQqWA |

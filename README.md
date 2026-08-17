@@ -4,6 +4,8 @@
 
 **Live demo:** https://skinova-ai.vercel.app
 
+**Demo video:** https://youtu.be/3twwbGyQqWA
+
 Skinova is a consumer skincare intelligence app for the **YouCam API Skin AI & Apparel VTO Hackathon**.
 
 Selected hackathon track: **Skin AI**.
@@ -77,7 +79,7 @@ The app is **demo-ready** on production. No voiceover needed — screen-record w
 npm run verify:demo    # pre-flight: all 9 steps must pass
 ```
 
-Then follow **[docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)** (~2–3 min silent recording). Upload to YouTube/Vimeo/Youku and add the URL to [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md).
+Published demo: **https://youtu.be/3twwbGyQqWA** — recorded with [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (~2–3 min silent screen capture). Full copy and Devpost text in [docs/SUBMISSION_PACKAGE.md](docs/SUBMISSION_PACKAGE.md).
 
 ### Option B — local
 
@@ -202,7 +204,7 @@ Integration details: [docs/API_INTEGRATION.md](docs/API_INTEGRATION.md)
 - Product API routes are rate-limited per user (scan, simulation, coach, routine)
 - No email verification or password reset yet
 - Full live scan testing requires valid YouCam units and a front-facing selfie (face should fill most of the frame)
-- Demo video for Devpost: record before submission deadline (script ready; URL to be added when published)
+- Demo video: https://youtu.be/3twwbGyQqWA (silent screen demo; trim dead time on YouTube if needed)
 
 ## License
 

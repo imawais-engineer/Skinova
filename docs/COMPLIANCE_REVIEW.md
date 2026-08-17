@@ -1,6 +1,6 @@
 # Compliance review
 
-Last reviewed: August 16, 2026
+Last reviewed: August 17, 2026
 
 ## Official requirements
 
@@ -25,7 +25,7 @@ Source of truth:
 | Repository functional for judges | Met | README, `npm run setup`, docs in `docs/` |
 | MIT license | Met | `LICENSE` in repo root |
 | Screenshots | Met | Full set in `public/screenshots/` |
-| 1–3 minute public demo video | Owner records | Screen-record guide in `DEMO_SCRIPT.md`; pre-flight `npm run verify:demo` |
+| 1–3 minute public demo video | Met | https://youtu.be/3twwbGyQqWA — silent screen demo per `DEMO_SCRIPT.md` |
 | English materials | Met | Docs and UI in English |
 | No third-party copyright issues | Met | Original UI; screenshots use test accounts; no copyrighted music |
 
@@ -49,7 +49,7 @@ Skinova must not claim to diagnose, treat, cure, or prevent disease.
 
 | Risk | Mitigation |
 | --- | --- |
-| Demo video not yet published | Owner action only — app verified demo-ready via `npm run verify:demo` |
+| Demo video not yet published | Resolved — https://youtu.be/3twwbGyQqWA |
 | Production DB migration for new tables | Run `npm run db:init` on Neon after deploy |
 | `npm audit` PostCSS advisory via Next pinned dep | Revisit when Next ships patched dependency |
 | Live API unit consumption | Demo mode for judges without keys |
@@ -58,11 +58,11 @@ Skinova must not claim to diagnose, treat, cure, or prevent disease.
 ## Pre-submission checklist
 
 - [x] Capture screenshots (`docs/SCREENSHOTS.md`, `public/screenshots/`)
-- [x] Four YouCam APIs integrated in product UI
+- [x] Five YouCam APIs integrated in product UI
 - [x] Scan history persisted per user in Neon
 - [x] Routine plans persisted per user in Neon
 - [x] Rate limiting on product API routes
-- [ ] Record and publish demo video; add URL to `SUBMISSION_PACKAGE.md` (after DevTest freeze)
+- [x] Record and publish demo video — https://youtu.be/3twwbGyQqWA
 - [ ] Confirm production env vars on Vercel
 - [ ] Run `npm run db:init` on production Neon if not done since scan-history deploy
 - [ ] Run `npm run youcam:smoke:full` against a sample before final tag

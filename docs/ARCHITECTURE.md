@@ -14,10 +14,11 @@ flowchart TB
     SS[sessionStorage scan session]
   end
 
-  subgraph vercel [Vercel — Next.js]
+    subgraph vercel [Vercel — Next.js]
     AUTH["/api/auth/*"]
     SCAN["/api/skinova/scan"]
     POLL["/api/skinova/scan-status"]
+    SIM["/api/skinova/simulation"]
     COACH["/api/skinova/coach"]
     HEALTH["/api/skinova/health"]
     LIB[app/lib/youcam.ts]
@@ -25,18 +26,20 @@ flowchart TB
 
   subgraph external [External services]
     NEON[(Neon Postgres)]
-    YOUCAM[YouCam Skin Analysis API]
+    YOUCAM[YouCam Skin AI APIs]
     LLM[Optional Qwen coach LLM]
   end
 
   LP --> HEALTH
   APP --> SCAN
   APP --> POLL
+  APP --> SIM
   APP --> COACH
   APP --> SS
   AUTH --> NEON
   SCAN --> LIB
   POLL --> LIB
+  SIM --> LIB
   LIB --> YOUCAM
   COACH --> NEON
   COACH --> LLM
@@ -53,7 +56,7 @@ app/
     dashboard/ scan/ results/ routine/ coach/ progress/ settings/
   api/
     auth/                  Signup, login, logout, session
-    skinova/               Product API (scan, coach, health, reset)
+    skinova/               Product API (scan, simulation, coach, health, reset)
     youcam/                Low-level YouCam proxy (internal / smoke)
   components/              UI experiences per page
   lib/

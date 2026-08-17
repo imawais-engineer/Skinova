@@ -124,9 +124,10 @@
       <span class="badge accent">Next.js 15 + React 19</span>
       <span class="badge">Vercel Serverless</span>
       <span class="badge">Neon Postgres + pgvector</span>
-      <span class="badge">YouCam Skin Analysis API</span>
+      <span class="badge">YouCam Skin AI (5 APIs)</span>
       <span class="badge">Qwen Cloud DashScope</span>
       <span class="badge">skinova-ai.vercel.app</span>
+      <span class="badge"><a href="https://youtu.be/3twwbGyQqWA" style="color:inherit;text-decoration:none">Demo video ↗</a></span>
     </div>
   </header>
 
@@ -172,6 +173,8 @@
     <span class="chip">POST /api/auth/*</span>
     <span class="chip">POST /api/skinova/scan</span>
     <span class="chip">GET /api/skinova/scan-status/[id]</span>
+    <span class="chip">POST /api/skinova/simulation</span>
+    <span class="chip">GET /api/skinova/simulation-status/[id]</span>
     <span class="chip">POST /api/skinova/coach</span>
     <span class="chip">GET /api/skinova/health</span>
     JSON ↑
@@ -194,8 +197,12 @@
         <p><code>coach-scope</code> guard → <code>rag.ts</code> hybrid retrieval → <code>coach-llm.ts</code> Qwen call → <code>coach-validator</code> · conversation history from Neon</p>
       </div>
       <div class="card be">
+        <strong>Personalization + simulation</strong>
+        <p><code>run-personalization.ts</code> (Fitzpatrick, skin tone, face analyzer) · <code>run-skin-simulation.ts</code> → poll · save to <code>user_simulation_results</code></p>
+      </div>
+      <div class="card be">
         <strong>Product routes</strong>
-        <p><code>/api/skinova/scan</code> · <code>scan-status</code> · <code>coach</code> · <code>health</code> · <code>reset</code> · internal <code>/api/youcam/*</code> proxy for smoke tests</p>
+        <p><code>/api/skinova/scan</code> · <code>scan-status</code> · <code>simulation</code> · <code>simulation-status</code> · <code>coach</code> · <code>routine</code> · <code>scans</code> · <code>health</code> · <code>reset</code></p>
       </div>
       <div class="card be">
         <strong>Knowledge ingest</strong>
@@ -216,19 +223,23 @@
   <!-- LAYER 3: EXTERNAL SERVICES (split) -->
   <div class="split-3">
     <section class="layer yc">
-      <h2>3 · YouCam API (Perfect Corp.)</h2>
+      <h2>3 · YouCam API (Perfect Corp.) — 5 integrated</h2>
       <div class="cards">
         <div class="card yc">
           <strong>AI Skin Analysis</strong>
-          <p><code>POST /s2s/v2.0/file/skin-analysis</code> → presigned upload → <code>POST /task/skin-analysis</code> → poll <code>GET /task/.../{id}</code></p>
+          <p>Primary scan flow — file metadata, presigned upload, task create, poll, <code>ui_score</code> normalization</p>
         </div>
         <div class="card yc">
-          <strong>Output normalization</strong>
-          <p><code>ui_score</code> for acne, pores, texture, redness, moisture, oiliness, wrinkles → Skinova concern cards &amp; routine generator</p>
+          <strong>Personalization APIs</strong>
+          <p>Fitzpatrick Scale · Skin Tone · Face Analyzer — post-scan enrichment on Results</p>
+        </div>
+        <div class="card yc">
+          <strong>AI Skin Simulation</strong>
+          <p>Progress page before/after preview — <code>POST /api/skinova/simulation</code> → poll → Neon <code>user_simulation_results</code></p>
         </div>
         <div class="card yc">
           <strong>Modes</strong>
-          <p><strong>Live</strong> when <code>API_KEY</code> set &amp; <code>SKINOVA_DEMO_MODE=false</code> · <strong>Demo</strong> mock analysis when credentials absent</p>
+          <p><strong>Live</strong> when <code>API_KEY</code> set &amp; <code>SKINOVA_DEMO_MODE=false</code> · <strong>Demo</strong> mock when credentials absent</p>
         </div>
       </div>
     </section>
@@ -259,12 +270,16 @@
           <p>Account records — name, email, bcrypt password hash · created via signup</p>
         </div>
         <div class="card db">
-          <strong>knowledge_chunks</strong>
-          <p>Skinova curated skincare knowledge (38 chunks) · vector(1536) · hybrid RAG source for coach</p>
+          <strong>knowledge_chunks · coach_messages</strong>
+          <p>Skinova curated skincare knowledge (38 chunks) · vector(1536) hybrid RAG · per-user coach thread history</p>
         </div>
         <div class="card db">
-          <strong>coach_messages</strong>
-          <p>Per-user coach conversation history (last turns used for multi-turn context)</p>
+          <strong>user_scans · user_routine_plans</strong>
+          <p>Per-user scan history and AI/template routine plans — hydrated into session on return</p>
+        </div>
+        <div class="card db">
+          <strong>user_simulation_results · scan_task_context</strong>
+          <p>Simulation preview URLs per scan · in-flight YouCam file IDs for re-simulation</p>
         </div>
       </div>
     </section>
@@ -303,7 +318,8 @@
     <h3>Primary data flows</h3>
     <ol>
       <li><strong>Auth:</strong> Browser <code>POST /api/auth/signup|login</code> → Neon <code>users</code> → HTTP-only JWT session cookie → middleware allows <code>/dashboard</code>, <code>/scan</code>, etc.</li>
-      <li><strong>Skin scan (live):</strong> Browser uploads selfie → <code>POST /api/skinova/scan</code> → YouCam file API + presigned PUT + task create → client polls <code>GET /api/skinova/scan-status/[taskId]</code> → <code>AnalysisResult</code> saved to <code>sessionStorage</code> → Results / Routine / Progress pages.</li>
+      <li><strong>Skin scan (live):</strong> Browser uploads selfie → <code>POST /api/skinova/scan</code> → YouCam file API + presigned PUT + task create → client polls <code>GET /api/skinova/scan-status/[taskId]</code> → Fitzpatrick + skin tone + face analyzer enrichment → <code>AnalysisResult</code> saved to Neon <code>user_scans</code> + <code>sessionStorage</code> → Results / Routine / Coach / Progress.</li>
+      <li><strong>Skin Simulation:</strong> Progress page <code>POST /api/skinova/simulation</code> → YouCam simulation task → poll <code>GET /api/skinova/simulation-status/[taskId]</code> → before/after preview saved to <code>user_simulation_results</code>.</li>
       <li><strong>Skin Coach (live):</strong> Browser <code>POST /api/skinova/coach</code> with message + scan context → scope guard → embed query (Qwen) → retrieve <code>knowledge_chunks</code> (pgvector + topic boost) → Qwen chat completion with grounded prompt → validate → store in <code>coach_messages</code> → JSON answer to UI.</li>
       <li><strong>Health / status:</strong> Landing <code>GET /api/skinova/health</code> reports <code>mode</code> (live/demo), <code>scanReady</code>, and <code>coachReady</code> without exposing secrets.</li>
       <li><strong>Knowledge maintenance:</strong> Edit <code>content/knowledge/skincare.json</code> → <code>npm run knowledge:ingest -- --force</code> → re-embed all chunks into Neon.</li>
@@ -314,8 +330,9 @@
   <div class="flow-note" style="margin-top: 16px;">
     <h3>Module map (repository)</h3>
     <ol>
-      <li><strong>UI:</strong> <code>app/components/*</code> — <code>scan-experience</code>, <code>coach-experience</code>, <code>landing-live-status</code>, <code>app-shell</code></li>
-      <li><strong>Scan core:</strong> <code>app/lib/youcam.ts</code> · <code>run-skin-scan.ts</code> · <code>scan-session.ts</code> · <code>scan-steps.ts</code></li>
+      <li><strong>UI:</strong> <code>app/components/*</code> — <code>scan-experience</code>, <code>results-experience</code>, <code>progress-experience</code>, <code>skin-simulation-panel</code>, <code>coach-experience</code>, <code>landing-live-status</code>, <code>app-shell</code></li>
+      <li><strong>Scan core:</strong> <code>app/lib/youcam.ts</code> · <code>run-skin-scan.ts</code> · <code>run-personalization.ts</code> · <code>scan-session.ts</code> · <code>scan-steps.ts</code></li>
+      <li><strong>Simulation:</strong> <code>run-skin-simulation.ts</code> · <code>simulation-db.ts</code> · <code>use-skin-simulation.ts</code></li>
       <li><strong>Coach core:</strong> <code>coach-service.ts</code> · <code>coach-llm.ts</code> · <code>coach-contract.ts</code> · <code>coach-scope.ts</code> · <code>rag.ts</code> · <code>embeddings.ts</code></li>
       <li><strong>Data:</strong> <code>db.ts</code> · <code>auth.ts</code> · <code>knowledge-db.ts</code> · <code>knowledge-seed.ts</code></li>
       <li><strong>Ops:</strong> <code>scripts/setup-and-run.sh</code> · <code>youcam-smoke-test.mjs</code> · <code>coach-smoke-test.mjs</code> · <code>ingest-knowledge.mjs</code></li>
