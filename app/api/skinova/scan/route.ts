@@ -28,20 +28,29 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  async function finalizeScanResult(result: Awaited<ReturnType<typeof runSkinScan>>, sample?: string) {
+  async function finalizeScanResult(
+    result: Awaited<ReturnType<typeof runSkinScan>>,
+    sample?: string
+  ) {
     const taskId = result.pollingUrl?.split("/").pop();
+    const sampleMeta = sample ? getScanSample(sample) : undefined;
 
     if (session && taskId) {
       await saveScanTaskContext({
         task_id: decodeURIComponent(taskId),
         user_id: session.id,
         file_id: result.fileId || null,
-        mode: result.mode
+        mode: result.mode,
+        sample_id: sample || null
       });
     }
 
     return NextResponse.json(
-      { ...result, sampleId: sample },
+      {
+        ...result,
+        sampleId: sample || null,
+        previewImageUrl: sampleMeta?.previewPath || null
+      },
       { status: 202 }
     );
   }

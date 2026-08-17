@@ -175,22 +175,15 @@ export function ResultsExperience() {
                 ))}
               </div>
 
-              {selectedMaskConcern?.maskUrls?.[0] ? (
-                <div
-                  className={[
-                    "mt-5 grid grid-cols-1 gap-4",
-                    originalScanUrl ? "sm:grid-cols-2" : ""
-                  ].join(" ")}
-                >
-                  {originalScanUrl ? (
-                    <MaskCompareTile
-                      key={`original-${session.scannedAt}-${originalScanUrl}`}
-                      title="Original scan"
-                      badge="Source photo"
-                      imageUrl={originalScanUrl}
-                      imageAlt="Original scan photo"
-                    />
-                  ) : null}
+              {selectedMaskConcern?.maskUrls?.[0] && originalScanUrl ? (
+                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <MaskCompareTile
+                    key={`original-${session.scannedAt}-${originalScanUrl}`}
+                    title="Original scan"
+                    badge="Source photo"
+                    imageUrl={originalScanUrl}
+                    imageAlt="Original scan photo"
+                  />
                   <MaskCompareTile
                     key={`mask-${session.scannedAt}-${selectedMaskConcern.type}-${selectedMaskConcern.maskUrls[0]}`}
                     title={`${selectedMaskConcern.type} mask`}

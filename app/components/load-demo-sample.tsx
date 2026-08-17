@@ -1,17 +1,20 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { demoSessionAnalysis } from "../lib/demo-samples";
+import { demoSessionAnalysis, getScanSample } from "../lib/demo-samples";
 import { saveScanSession } from "../lib/scan-session";
 
 export function LoadDemoSampleButton({ label = "Load demo sample data" }: { label?: string }) {
   function loadDemoSample() {
+    const sample = getScanSample("clear-baseline");
+
     saveScanSession({
       analysis: demoSessionAnalysis,
       mode: "demo",
-      scannedAt: new Date().toISOString()
+      scannedAt: new Date().toISOString(),
+      sampleId: sample?.id || "clear-baseline",
+      previewImageUrl: sample?.previewPath || "/samples/youcam-clear-baseline.jpg"
     });
-    window.dispatchEvent(new Event("skinova:session-updated"));
   }
 
   return (

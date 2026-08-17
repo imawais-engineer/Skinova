@@ -1,4 +1,5 @@
 import type { AnalysisResult } from "./skinova-data";
+import { getScanSample } from "./demo-samples";
 import type { StructuredRoutinePlan } from "./routine-types";
 
 export type ScanSession = {
@@ -8,6 +9,7 @@ export type ScanSession = {
   scanId?: string | null;
   fileId?: string | null;
   previewImageUrl?: string | null;
+  sampleId?: string | null;
 };
 
 const STORAGE_KEY = "skinova:last-scan";
@@ -237,7 +239,35 @@ export function describeHistoryDelta(trend: ScanHistoryTrend) {
 }
 
 export function getOriginalScanImageUrl(session: ScanSession) {
-  return session.previewImageUrl || null;
+  if (session.previewImageUrl) {
+    return session.previewImageUrl;
+  }
+
+  if (session.sampleId) {
+    return getScanSample(session.sampleId)?.previewPath ?? null;
+  }
+
+  return null;
+}
+
+export function toScanSessionFromApi(scan: {
+  id: string;
+  analysis: AnalysisResult;
+  mode: "demo" | "live";
+  scannedAt: string;
+  fileId?: string | null;
+  previewImageUrl?: string | null;
+  sampleId?: string | null;
+}): ScanSession {
+  return {
+    analysis: scan.analysis,
+    mode: scan.mode,
+    scannedAt: scan.scannedAt,
+    scanId: scan.id,
+    fileId: scan.fileId ?? null,
+    previewImageUrl: scan.previewImageUrl ?? null,
+    sampleId: scan.sampleId ?? null
+  };
 }
 
 export function routineScanKeyFromSession(session: ScanSession) {

@@ -114,7 +114,7 @@ scripts/                   Setup, smoke tests, DB init, knowledge ingest
 | Progress | Trend cards, scan history, before/after Skin Simulation compare |
 | Settings | Clear scan session / coach history / persisted scans |
 
-Scan history is stored in Neon **`user_scans`** per authenticated user and hydrated into the browser session on return visits.
+Scan history is stored in Neon **`user_scans`** per authenticated user (including `preview_image_url` and `sample_id` for original-scan display) and hydrated into the browser session on return visits.
 
 ## YouCam API surface in production
 

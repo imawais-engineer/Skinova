@@ -10,6 +10,8 @@ export type UserScanRecord = {
   overall_score: number;
   analysis: AnalysisResult;
   youcam_file_id: string | null;
+  preview_image_url: string | null;
+  sample_id: string | null;
   scanned_at: string;
   created_at: string;
 };
@@ -19,6 +21,7 @@ export type ScanTaskContext = {
   user_id: string;
   file_id: string | null;
   mode: "demo" | "live";
+  sample_id?: string | null;
 };
 
 function getSql() {
@@ -59,6 +62,9 @@ export async function ensureScanSchema() {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS user_scans_user_id_idx ON user_scans (user_id, scanned_at DESC)`;
+      await sql`ALTER TABLE scan_task_context ADD COLUMN IF NOT EXISTS sample_id TEXT`;
+      await sql`ALTER TABLE user_scans ADD COLUMN IF NOT EXISTS preview_image_url TEXT`;
+      await sql`ALTER TABLE user_scans ADD COLUMN IF NOT EXISTS sample_id TEXT`;
     })();
   }
 
@@ -70,12 +76,13 @@ export async function saveScanTaskContext(input: ScanTaskContext) {
   const sql = getSql();
 
   await sql`
-    INSERT INTO scan_task_context (task_id, user_id, file_id, mode)
-    VALUES (${input.task_id}, ${input.user_id}, ${input.file_id}, ${input.mode})
+    INSERT INTO scan_task_context (task_id, user_id, file_id, mode, sample_id)
+    VALUES (${input.task_id}, ${input.user_id}, ${input.file_id}, ${input.mode}, ${input.sample_id || null})
     ON CONFLICT (task_id) DO UPDATE SET
       user_id = EXCLUDED.user_id,
       file_id = EXCLUDED.file_id,
-      mode = EXCLUDED.mode
+      mode = EXCLUDED.mode,
+      sample_id = EXCLUDED.sample_id
   `;
 }
 
@@ -83,7 +90,7 @@ export async function getScanTaskContext(taskId: string): Promise<ScanTaskContex
   await ensureScanSchema();
   const sql = getSql();
   const rows = await sql`
-    SELECT task_id, user_id, file_id, mode
+    SELECT task_id, user_id, file_id, mode, sample_id
     FROM scan_task_context
     WHERE task_id = ${taskId}
     LIMIT 1
@@ -98,7 +105,8 @@ export async function getScanTaskContext(taskId: string): Promise<ScanTaskContex
     task_id: String(row.task_id),
     user_id: String(row.user_id),
     file_id: row.file_id ? String(row.file_id) : null,
-    mode: row.mode === "live" ? "live" : "demo"
+    mode: row.mode === "live" ? "live" : "demo",
+    sample_id: row.sample_id ? String(row.sample_id) : null
   };
 }
 
@@ -113,6 +121,8 @@ export async function saveUserScan(input: {
   mode: "demo" | "live";
   analysis: AnalysisResult;
   youcamFileId?: string | null;
+  previewImageUrl?: string | null;
+  sampleId?: string | null;
   scannedAt: string;
   id?: string;
 }) {
@@ -121,7 +131,17 @@ export async function saveUserScan(input: {
   const id = input.id || randomUUID();
 
   const rows = await sql`
-    INSERT INTO user_scans (id, user_id, mode, overall_score, analysis, youcam_file_id, scanned_at)
+    INSERT INTO user_scans (
+      id,
+      user_id,
+      mode,
+      overall_score,
+      analysis,
+      youcam_file_id,
+      preview_image_url,
+      sample_id,
+      scanned_at
+    )
     VALUES (
       ${id},
       ${input.userId},
@@ -129,6 +149,8 @@ export async function saveUserScan(input: {
       ${input.analysis.overallScore},
       ${JSON.stringify(input.analysis)}::jsonb,
       ${input.youcamFileId || null},
+      ${input.previewImageUrl || null},
+      ${input.sampleId || null},
       ${input.scannedAt}
     )
     RETURNING
@@ -138,6 +160,8 @@ export async function saveUserScan(input: {
       overall_score,
       analysis,
       youcam_file_id,
+      preview_image_url,
+      sample_id,
       scanned_at::text AS scanned_at,
       created_at::text AS created_at
   `;
@@ -156,6 +180,8 @@ export async function listUserScans(userId: string, limit = 12): Promise<UserSca
       overall_score,
       analysis,
       youcam_file_id,
+      preview_image_url,
+      sample_id,
       scanned_at::text AS scanned_at,
       created_at::text AS created_at
     FROM user_scans
@@ -183,6 +209,8 @@ export async function getUserScanById(userId: string, scanId: string): Promise<U
       overall_score,
       analysis,
       youcam_file_id,
+      preview_image_url,
+      sample_id,
       scanned_at::text AS scanned_at,
       created_at::text AS created_at
     FROM user_scans
@@ -198,4 +226,46 @@ export async function deleteUserScans(userId: string) {
   const sql = getSql();
   await sql`DELETE FROM user_scans WHERE user_id = ${userId}`;
   await sql`DELETE FROM scan_task_context WHERE user_id = ${userId}`;
+}
+
+export function serializeUserScan(scan: UserScanRecord) {
+  return {
+    id: scan.id,
+    analysis: scan.analysis,
+    mode: scan.mode,
+    scannedAt: scan.scanned_at,
+    fileId: scan.youcam_file_id,
+    previewImageUrl: scan.preview_image_url,
+    sampleId: scan.sample_id
+  };
+}
+
+export async function updateUserScanPreview(
+  userId: string,
+  scanId: string,
+  input: { previewImageUrl?: string | null; sampleId?: string | null }
+) {
+  await ensureScanSchema();
+  const sql = getSql();
+
+  const rows = await sql`
+    UPDATE user_scans
+    SET
+      preview_image_url = COALESCE(${input.previewImageUrl ?? null}, preview_image_url),
+      sample_id = COALESCE(${input.sampleId ?? null}, sample_id)
+    WHERE user_id = ${userId} AND id = ${scanId}
+    RETURNING
+      id,
+      user_id,
+      mode,
+      overall_score,
+      analysis,
+      youcam_file_id,
+      preview_image_url,
+      sample_id,
+      scanned_at::text AS scanned_at,
+      created_at::text AS created_at
+  `;
+
+  return (rows[0] as UserScanRecord | undefined) || null;
 }

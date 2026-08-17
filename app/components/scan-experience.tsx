@@ -21,6 +21,9 @@ type AnalyzeResponse = {
   message?: string;
   scanId?: string | null;
   fileId?: string | null;
+  sampleId?: string | null;
+  previewImageUrl?: string | null;
+  scannedAt?: string;
 };
 
 type ScanPhase = "pick" | "scanning" | "result" | "error";
@@ -88,21 +91,58 @@ export function ScanExperience() {
     }
   }
 
+  async function syncScanPreviewToServer(input: {
+    scanId: string;
+    previewImageUrl: string | null;
+    sampleId: string | null;
+  }) {
+    try {
+      await fetch("/api/skinova/scans", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input)
+      });
+    } catch {
+      // Local session remains usable; Neon sync can retry on next hydrate.
+    }
+  }
+
   async function persistScanResult(
     result: AnalysisResult,
     mode: "demo" | "live",
-    meta?: { scanId?: string | null; fileId?: string | null; previewImageUrl?: string | null }
+    meta?: {
+      scanId?: string | null;
+      fileId?: string | null;
+      previewImageUrl?: string | null;
+      sampleId?: string | null;
+      scannedAt?: string;
+    }
   ) {
-    const previewImageUrl = await persistPreviewUrl(meta?.previewImageUrl || displayPreview || null);
+    const sampleId = meta?.sampleId || selectedSampleId || null;
+    const samplePreview = sampleId ? getScanSample(sampleId)?.previewPath ?? null : null;
+    const previewImageUrl = await persistPreviewUrl(
+      meta?.previewImageUrl || samplePreview || displayPreview || null
+    );
+    const scannedAt = meta?.scannedAt || new Date().toISOString();
 
     saveScanSession({
       analysis: result,
       mode,
-      scannedAt: new Date().toISOString(),
+      scannedAt,
       scanId: meta?.scanId || null,
       fileId: meta?.fileId || null,
-      previewImageUrl
+      previewImageUrl,
+      sampleId
     });
+
+    if (meta?.scanId && (previewImageUrl || sampleId)) {
+      await syncScanPreviewToServer({
+        scanId: meta.scanId,
+        previewImageUrl,
+        sampleId
+      });
+    }
+
     setScanMode(mode);
   }
 
@@ -134,6 +174,9 @@ export function ScanExperience() {
           scanId: data.scanId || null,
           fileId: data.fileId || null,
           mode: data.mode || "live",
+          previewImageUrl: data.previewImageUrl || null,
+          sampleId: data.sampleId || null,
+          scannedAt: data.scannedAt || new Date().toISOString(),
           message: "Live skin analysis complete. Results are saved to your account."
         };
       }
@@ -145,6 +188,9 @@ export function ScanExperience() {
           scanId: data.scanId || null,
           fileId: data.fileId || null,
           mode: data.mode || "live",
+          previewImageUrl: data.previewImageUrl || null,
+          sampleId: data.sampleId || null,
+          scannedAt: data.scannedAt || new Date().toISOString(),
           message: "Skin scan completed."
         };
       }
@@ -194,7 +240,10 @@ export function ScanExperience() {
         if (nextAnalysis && finalResult.ok) {
           await persistScanResult(nextAnalysis, finalResult.mode || modeHint || data.mode || "live", {
             scanId: finalResult.scanId,
-            fileId: finalResult.fileId
+            fileId: finalResult.fileId,
+            previewImageUrl: finalResult.previewImageUrl || data.previewImageUrl || null,
+            sampleId: finalResult.sampleId || data.sampleId || selectedSampleId,
+            scannedAt: finalResult.scannedAt
           });
           setAnalysis(nextAnalysis);
           setMessage(finalResult.message);

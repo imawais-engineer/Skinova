@@ -6,6 +6,7 @@ import {
   saveUserScan
 } from "../../../../lib/scan-db";
 import type { AnalysisResult } from "../../../../lib/skinova-data";
+import { getScanSample } from "../../../../lib/demo-samples";
 import { enrichAnalysisPersonalization } from "../../../../lib/run-personalization";
 import { getTaskStatus, normalizeYouCamTaskResult } from "../../../../lib/youcam";
 
@@ -78,16 +79,36 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
     });
 
     if (session && taskContext) {
+      const sampleId = taskContext.sample_id || null;
+      const previewImageUrl = sampleId ? getScanSample(sampleId)?.previewPath ?? null : null;
+      const scannedAt = new Date().toISOString();
+
       const saved = await saveUserScan({
         userId: session.id,
         mode: taskContext.mode,
         analysis,
         youcamFileId: taskContext.file_id,
-        scannedAt: new Date().toISOString()
+        previewImageUrl,
+        sampleId,
+        scannedAt
       });
       scanId = saved.id;
       fileId = saved.youcam_file_id;
       await deleteScanTaskContext(taskId).catch(() => undefined);
+
+      return NextResponse.json(
+        {
+          status: "success",
+          analysis,
+          scanId,
+          fileId,
+          mode: scanMode,
+          previewImageUrl: saved.preview_image_url,
+          sampleId: saved.sample_id,
+          scannedAt
+        },
+        { status: 200 }
+      );
     }
 
     return NextResponse.json(

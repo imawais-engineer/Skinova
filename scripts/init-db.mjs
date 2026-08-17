@@ -64,6 +64,9 @@ await sql`
   )
 `;
 await sql`CREATE INDEX IF NOT EXISTS user_scans_user_id_idx ON user_scans (user_id, scanned_at DESC)`;
+await sql`ALTER TABLE scan_task_context ADD COLUMN IF NOT EXISTS sample_id TEXT`;
+await sql`ALTER TABLE user_scans ADD COLUMN IF NOT EXISTS preview_image_url TEXT`;
+await sql`ALTER TABLE user_scans ADD COLUMN IF NOT EXISTS sample_id TEXT`;
 await sql`
   CREATE TABLE IF NOT EXISTS user_routine_plans (
     user_id TEXT NOT NULL,

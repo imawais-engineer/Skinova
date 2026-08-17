@@ -79,6 +79,8 @@ Demo video: https://youtu.be/3twwbGyQqWA
 | `user_routine_plans` | AI/template routines per scan |
 | `user_simulation_results` | Skin simulation previews per scan |
 
+`user_scans` also stores `preview_image_url` (sample path or upload data URL) and `sample_id` so Results mask comparisons survive reloads and device changes.
+
 Browser `sessionStorage` remains a fast cache; Neon is source of truth for return visits.
 
 ---
