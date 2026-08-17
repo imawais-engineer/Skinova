@@ -10,6 +10,7 @@ import {
 import { useScanHistory } from "../hooks/use-scan-history";
 import { useScanSession } from "../hooks/use-scan-session";
 import { EmptyScanState } from "./empty-scan-state";
+import { SkinSimulationPanel } from "./skin-simulation-panel";
 import { PageHeader, Panel, StatusBadge } from "./ui";
 
 export function ProgressExperience() {
@@ -38,8 +39,8 @@ export function ProgressExperience() {
       <PageHeader
         eyebrow="Progress tracking"
         title="Skinova continues after the first scan."
-        description="Dashboard history and trend deltas show how your skin scores move over time. Run Skin Simulation from Results after each scan."
-        action={{ href: "/results", label: "View results" }}
+        description="Follow your routine, track score trends, then preview how consistent care could look with YouCam Skin Simulation."
+        action={{ href: "/routine", label: "View routine" }}
       />
 
       {ready && !session ? (
@@ -84,7 +85,7 @@ export function ProgressExperience() {
             <Panel className="gradient-border">
               <h2 className="text-xl font-semibold text-white">Projected improvement</h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                Trend projection based on your latest concern scores. For a live YouCam before/after preview, open Results and run Skin Simulation there.
+                Trend projection based on your latest concern scores — the story that leads into your simulation preview below.
               </p>
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -98,6 +99,8 @@ export function ProgressExperience() {
               </div>
             </Panel>
           </div>
+
+          <SkinSimulationPanel session={session} />
 
           {history.length > 0 ? (
             <Panel>
