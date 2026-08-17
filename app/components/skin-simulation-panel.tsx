@@ -33,7 +33,7 @@ export function SkinSimulationPanel({
         type="button"
         onClick={() => void runSimulation()}
         disabled={simulationStatus === "loading" || !hydrated}
-        className="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-violet-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-violet-200 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-violet-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-violet-200 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {simulationStatus === "loading" ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -55,7 +55,6 @@ export function SkinSimulationPanel({
         currentScore={session.analysis.overallScore}
         simulatedImageUrl={simulationUrl}
         simulatedMode={simulationMode}
-        compact={compact}
       />
     </Panel>
   );
