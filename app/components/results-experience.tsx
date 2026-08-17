@@ -174,7 +174,7 @@ export function ResultsExperience() {
                 </div>
 
                 {selectedMaskConcern?.maskUrls?.[0] && originalScanUrl ? (
-                  <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <MaskCompareTile
                       title="Original scan"
                       badge="Source photo"
@@ -237,11 +237,11 @@ function MaskCompareTile({
         highlight ? "border-cyan-300/25 bg-cyan-300/[0.04]" : "border-white/10 bg-black/20"
       ].join(" ")}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2">
+      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-1.5">
         <p className="text-sm font-medium text-white">{title}</p>
         <p className="text-xs text-slate-400">{badge}</p>
       </div>
-      <div className="relative aspect-[4/5] w-full">
+      <div className="relative aspect-[3/4] max-h-[200px] w-full">
         <Image src={imageUrl} alt={imageAlt} fill className="object-contain bg-slate-950" unoptimized />
       </div>
     </div>

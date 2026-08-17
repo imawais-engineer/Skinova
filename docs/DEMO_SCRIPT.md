@@ -63,12 +63,10 @@ All checks should pass on production.
 2. Ask: `What should I focus on from my latest scan?`
 3. Wait for the grounded reply
 
-### 7. Progress + Simulation (30 sec)
+### 7. Progress (20 sec)
 
 1. Open **Progress**
-2. Show trend / history summary
-3. Click **Run simulation** (or **Preview improvement**)
-4. Wait for **before/after** panels to appear
+2. Show trend / history summary (simulation lives on **Results** only)
 
 ### 8. Close (10 sec)
 

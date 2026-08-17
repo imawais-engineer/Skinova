@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import type { ScanSession } from "../lib/scan-session";
+import { useEffect, useState } from "react";
+import {
+  getSimulationResult,
+  routineScanKeyFromSession,
+  saveSimulationResult,
+  type ScanSession
+} from "../lib/scan-session";
 
 type SimulationResponse = {
   status?: string;
@@ -10,6 +15,14 @@ type SimulationResponse = {
   error?: string;
   pollingUrl?: string;
   message?: string;
+};
+
+type SavedSimulationResponse = {
+  result?: {
+    resultUrl: string;
+    mode: "demo" | "live";
+    updatedAt?: string;
+  } | null;
 };
 
 async function pollSimulation(pollingUrl: string) {
@@ -35,12 +48,63 @@ export function useSkinSimulation(session: ScanSession | null) {
   const [simulationMode, setSimulationMode] = useState<"demo" | "live" | null>(null);
   const [simulationStatus, setSimulationStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [simulationMessage, setSimulationMessage] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    if (!session) {
+      setSimulationUrl(null);
+      setSimulationMode(null);
+      setSimulationStatus("idle");
+      setSimulationMessage("");
+      setHydrated(true);
+      return;
+    }
+
+    let cancelled = false;
+    const scanKey = routineScanKeyFromSession(session);
+    const cached = getSimulationResult(session);
+
+    if (cached?.resultUrl) {
+      setSimulationUrl(cached.resultUrl);
+      setSimulationMode(cached.mode);
+      setSimulationStatus("ready");
+      setSimulationMessage("Saved simulation preview restored from your account.");
+    }
+
+    fetch(`/api/skinova/simulation?scanKey=${encodeURIComponent(scanKey)}`)
+      .then(async (response) => {
+        const data = (await response.json()) as SavedSimulationResponse;
+        if (!response.ok || !data.result?.resultUrl || cancelled) {
+          return;
+        }
+
+        saveSimulationResult(session, {
+          resultUrl: data.result.resultUrl,
+          mode: data.result.mode
+        });
+        setSimulationUrl(data.result.resultUrl);
+        setSimulationMode(data.result.mode);
+        setSimulationStatus("ready");
+        setSimulationMessage("Saved simulation preview restored from your account.");
+      })
+      .catch(() => null)
+      .finally(() => {
+        if (!cancelled) {
+          setHydrated(true);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session]);
 
   async function runSimulation() {
     if (!session) {
       return;
     }
 
+    const scanKey = routineScanKeyFromSession(session);
     setSimulationStatus("loading");
     setSimulationMessage("Starting YouCam Skin Simulation…");
     setSimulationUrl(null);
@@ -49,7 +113,11 @@ export function useSkinSimulation(session: ScanSession | null) {
       const response = await fetch("/api/skinova/simulation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scanId: session.scanId, fileId: session.fileId })
+        body: JSON.stringify({
+          scanId: session.scanId,
+          fileId: session.fileId,
+          scanKey
+        })
       });
       const data = (await response.json()) as SimulationResponse;
 
@@ -64,10 +132,14 @@ export function useSkinSimulation(session: ScanSession | null) {
         const result = await pollSimulation(data.pollingUrl);
 
         if (result.ok && result.resultUrl) {
+          saveSimulationResult(session, {
+            resultUrl: result.resultUrl,
+            mode: result.mode || "live"
+          });
           setSimulationUrl(result.resultUrl);
           setSimulationMode(result.mode || "live");
           setSimulationStatus("ready");
-          setSimulationMessage("Before/after comparison is ready below.");
+          setSimulationMessage("Simulation saved to your account until you clear scan data.");
           return;
         }
 
@@ -89,6 +161,7 @@ export function useSkinSimulation(session: ScanSession | null) {
     simulationMode,
     simulationStatus,
     simulationMessage,
-    runSimulation
+    runSimulation,
+    hydrated
   };
 }

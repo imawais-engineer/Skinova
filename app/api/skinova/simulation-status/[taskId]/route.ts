@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "../../../../lib/auth";
+import { saveUserSimulationResult } from "../../../../lib/simulation-db";
 import { getTaskStatus, normalizeSimulationResult } from "../../../../lib/youcam";
 
-export async function GET(_request: Request, context: { params: Promise<{ taskId: string }> }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ taskId: string }> }) {
   const { taskId } = await context.params;
+  const scanKey = request.nextUrl.searchParams.get("scanKey");
   const result = await getTaskStatus("skin-simulation", taskId);
   const body = result.data as {
     task_status?: string;
@@ -22,11 +25,25 @@ export async function GET(_request: Request, context: { params: Promise<{ taskId
   }
 
   if (normalized.resultUrl) {
+    const mode = taskId.startsWith("mock-simulation-") ? ("demo" as const) : ("live" as const);
+
+    if (scanKey) {
+      const session = await getSession();
+      if (session) {
+        await saveUserSimulationResult({
+          userId: session.id,
+          scanKey,
+          resultUrl: normalized.resultUrl,
+          mode
+        });
+      }
+    }
+
     return NextResponse.json(
       {
         status: "success",
         resultUrl: normalized.resultUrl,
-        mode: taskId.startsWith("mock-simulation-") ? "demo" : "live"
+        mode
       },
       { status: 200 }
     );

@@ -75,5 +75,16 @@ await sql`
   )
 `;
 await sql`CREATE INDEX IF NOT EXISTS user_routine_plans_user_idx ON user_routine_plans (user_id, updated_at DESC)`;
+await sql`
+  CREATE TABLE IF NOT EXISTS user_simulation_results (
+    user_id TEXT NOT NULL,
+    scan_key TEXT NOT NULL,
+    result_url TEXT NOT NULL,
+    mode TEXT NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_id, scan_key)
+  )
+`;
+await sql`CREATE INDEX IF NOT EXISTS user_simulation_results_user_idx ON user_simulation_results (user_id, updated_at DESC)`;
 
 console.log(JSON.stringify({ ok: true, message: "Neon database schema is ready." }, null, 2));

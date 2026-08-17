@@ -54,6 +54,24 @@ try {
   await page.getByText("YouCam Skin Simulation").waitFor({ timeout: 30000 });
   record("results page", true, "masks + simulation panel visible");
 
+  const simulateButton = page.getByRole("button", { name: /Run Skin Simulation/i });
+  if (await simulateButton.count()) {
+    await simulateButton.click();
+    await page
+      .getByText(/saved to your account|After · simulation|Live YouCam|Demo preview/i)
+      .first()
+      .waitFor({ timeout: 120000 })
+      .catch(() => null);
+    const simulationReady = await page.getByText(/After · simulation|Live YouCam|Demo preview/).count();
+    record("skin simulation", simulationReady > 0);
+  } else {
+    record("skin simulation", true, "skipped");
+  }
+
+  await page.goto(`${baseUrl}/results`, { waitUntil: "networkidle", timeout: 30000 });
+  const restored = await page.getByText(/saved to your account|Live YouCam|Demo preview/).count();
+  record("simulation persistence", restored > 0);
+
   await page.goto(`${baseUrl}/routine`, { waitUntil: "networkidle", timeout: 90000 });
   await page.getByText(/Morning routine|Night routine|Building your routine|Ingredient safety notes/).first().waitFor({
     timeout: 90000
@@ -69,22 +87,8 @@ try {
   record("skin coach reply", coachMessages > 0);
 
   await page.goto(`${baseUrl}/progress`, { waitUntil: "networkidle", timeout: 90000 });
-  await page.getByText("YouCam Skin Simulation").waitFor({ timeout: 30000 });
+  await page.getByText("Scan-based trend").waitFor({ timeout: 30000 });
   record("progress page", true);
-
-  const simulateButton = page.getByRole("button", { name: /Run Skin Simulation/i });
-  if (await simulateButton.count()) {
-    await simulateButton.click();
-    await page
-      .getByText(/Before\/after comparison is ready below|After · simulation|Live YouCam|Demo preview/i)
-      .first()
-      .waitFor({ timeout: 120000 })
-      .catch(() => null);
-    const simulationReady = await page.getByText(/After · simulation|Live YouCam|Demo preview/).count();
-    record("skin simulation", simulationReady > 0);
-  } else {
-    record("skin simulation", true, "skipped");
-  }
 } catch (error) {
   record("demo flow", false, error instanceof Error ? error.message : String(error));
 } finally {

@@ -3,6 +3,7 @@ import { getSession } from "../../../lib/auth";
 import { clearCoachMemory } from "../../../lib/coach-memory";
 import { deleteUserRoutinePlans } from "../../../lib/routine-db";
 import { deleteUserScans } from "../../../lib/scan-db";
+import { deleteUserSimulationResults } from "../../../lib/simulation-db";
 
 export type ResetTarget = "scan" | "routine" | "coach";
 
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
   if (targets.includes("scan") || targets.includes("routine")) {
     await deleteUserScans(session.id);
     await deleteUserRoutinePlans(session.id);
+    await deleteUserSimulationResults(session.id);
     cleared.push("scan", "routine");
   }
 
@@ -51,7 +53,7 @@ function buildResetMessage(cleared: ResetTarget[]) {
   }
 
   if (cleared.includes("routine")) {
-    parts.push("routine and progress views");
+    parts.push("routine, simulation previews, and progress views");
   }
 
   if (cleared.includes("coach")) {

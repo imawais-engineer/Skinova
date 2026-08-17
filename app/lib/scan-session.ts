@@ -12,6 +12,7 @@ export type ScanSession = {
 
 const STORAGE_KEY = "skinova:last-scan";
 const ROUTINE_KEY = "skinova:routine-plan";
+const SIMULATION_KEY = "skinova:simulation-result";
 
 function routineCacheKey(session: ScanSession) {
   return `${session.scannedAt}:${session.analysis.overallScore}`;
@@ -49,6 +50,7 @@ export function clearScanSession() {
 
   window.sessionStorage.removeItem(STORAGE_KEY);
   window.sessionStorage.removeItem(ROUTINE_KEY);
+  window.sessionStorage.removeItem(SIMULATION_KEY);
 }
 
 export function saveRoutinePlan(session: ScanSession, plan: StructuredRoutinePlan) {
@@ -260,4 +262,36 @@ export function routineScanKeyFromSession(session: ScanSession) {
 
   const concernKey = session.analysis.concerns.map((concern) => `${concern.type}:${concern.score}`).join("|");
   return `${session.analysis.overallScore}:${session.scannedAt}:${concernKey}`;
+}
+
+export function saveSimulationResult(
+  session: ScanSession,
+  result: { resultUrl: string; mode: "demo" | "live" }
+) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.setItem(
+    SIMULATION_KEY,
+    JSON.stringify({ key: routineScanKeyFromSession(session), ...result })
+  );
+}
+
+export function getSimulationResult(session: ScanSession) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const raw = window.sessionStorage.getItem(SIMULATION_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as { key: string; resultUrl: string; mode: "demo" | "live" };
+    return parsed.key === routineScanKeyFromSession(session) ? parsed : null;
+  } catch {
+    return null;
+  }
 }

@@ -75,6 +75,7 @@ Repository: https://github.com/imawais-engineer/Skinova
 | `user_scans` | Scan history per user |
 | `scan_task_context` | In-flight scan file IDs |
 | `user_routine_plans` | AI/template routines per scan |
+| `user_simulation_results` | Skin simulation previews per scan |
 
 Browser `sessionStorage` remains a fast cache; Neon is source of truth for return visits.
 

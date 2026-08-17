@@ -7,7 +7,8 @@ const REQUIRED_TABLES = [
   "coach_messages",
   "user_scans",
   "scan_task_context",
-  "user_routine_plans"
+  "user_routine_plans",
+  "user_simulation_results"
 ] as const;
 
 export type DatabaseHealth = {

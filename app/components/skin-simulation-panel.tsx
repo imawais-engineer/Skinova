@@ -14,7 +14,7 @@ export function SkinSimulationPanel({
   session: ScanSession;
   compact?: boolean;
 }) {
-  const { simulationUrl, simulationMode, simulationStatus, simulationMessage, runSimulation } =
+  const { simulationUrl, simulationMode, simulationStatus, simulationMessage, runSimulation, hydrated } =
     useSkinSimulation(session);
   const currentPreviewUrl = getOriginalScanImageUrl(session);
 
@@ -32,8 +32,8 @@ export function SkinSimulationPanel({
       <button
         type="button"
         onClick={() => void runSimulation()}
-        disabled={simulationStatus === "loading"}
-        className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-violet-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-violet-200 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        disabled={simulationStatus === "loading" || !hydrated}
+        className="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-violet-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-violet-200 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {simulationStatus === "loading" ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -55,6 +55,7 @@ export function SkinSimulationPanel({
         currentScore={session.analysis.overallScore}
         simulatedImageUrl={simulationUrl}
         simulatedMode={simulationMode}
+        compact={compact}
       />
     </Panel>
   );

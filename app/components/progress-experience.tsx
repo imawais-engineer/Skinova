@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { History, LineChart, Sparkles } from "lucide-react";
+import { History, LineChart } from "lucide-react";
 import {
   buildProgressFromAnalysis,
   describeHistoryDelta,
@@ -10,7 +10,6 @@ import {
 import { useScanHistory } from "../hooks/use-scan-history";
 import { useScanSession } from "../hooks/use-scan-session";
 import { EmptyScanState } from "./empty-scan-state";
-import { SkinSimulationPanel } from "./skin-simulation-panel";
 import { PageHeader, Panel, StatusBadge } from "./ui";
 
 export function ProgressExperience() {
@@ -39,12 +38,12 @@ export function ProgressExperience() {
       <PageHeader
         eyebrow="Progress tracking"
         title="Skinova continues after the first scan."
-        description="Dashboard history, trend deltas, and a before/after Skin Simulation story show long-term consumer value."
-        action={{ href: "/scan", label: "Run scan" }}
+        description="Dashboard history and trend deltas show how your skin scores move over time. Run Skin Simulation from Results after each scan."
+        action={{ href: "/results", label: "View results" }}
       />
 
       {ready && !session ? (
-        <EmptyScanState message="No progress baseline yet. Run a scan to anchor trend cards, scan history, and simulation previews to your account." />
+        <EmptyScanState message="No progress baseline yet. Run a scan to anchor trend cards and scan history to your account." />
       ) : null}
 
       {session && entries && current && projected ? (
@@ -64,7 +63,7 @@ export function ProgressExperience() {
                 <LineChart className="h-5 w-5 text-cyan-200" aria-hidden="true" />
                 <h2 className="text-xl font-semibold text-white">Scan-based trend</h2>
               </div>
-              <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {entries.map((entry) => (
                   <div key={entry.date} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                     <div className="flex items-center justify-between gap-3">
@@ -82,27 +81,22 @@ export function ProgressExperience() {
               </div>
             </Panel>
 
-            <div>
-              <Panel className="gradient-border mb-5">
-                <Sparkles className="h-6 w-6 text-violet-200" aria-hidden="true" />
-                <h2 className="mt-4 text-xl font-semibold text-white">Projected improvement</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-300">
-                  Trend projection based on your latest concern scores — a companion to the live YouCam simulation preview.
-                </p>
-                <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                    <p className="text-xs text-slate-400">Current</p>
-                    <p className="mt-2 text-2xl font-semibold text-white">{current.overall}%</p>
-                  </div>
-                  <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4">
-                    <p className="text-xs text-emerald-100/80">Projected</p>
-                    <p className="mt-2 text-2xl font-semibold text-white">{projected.overall}%</p>
-                  </div>
+            <Panel className="gradient-border">
+              <h2 className="text-xl font-semibold text-white">Projected improvement</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Trend projection based on your latest concern scores. For a live YouCam before/after preview, open Results and run Skin Simulation there.
+              </p>
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <p className="text-xs text-slate-400">Current</p>
+                  <p className="mt-2 text-2xl font-semibold text-white">{current.overall}%</p>
                 </div>
-              </Panel>
-
-              <SkinSimulationPanel session={session} compact />
-            </div>
+                <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4">
+                  <p className="text-xs text-emerald-100/80">Projected</p>
+                  <p className="mt-2 text-2xl font-semibold text-white">{projected.overall}%</p>
+                </div>
+              </div>
+            </Panel>
           </div>
 
           {history.length > 0 ? (
