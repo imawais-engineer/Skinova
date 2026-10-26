@@ -219,7 +219,7 @@ into:
 
 ---
 
-## What we learned
+## Key engineering insights
 
 - **API integration is only half the product.** Judges and users care about what happens *after* the scan.
 - **YouCam's image requirements matter.** Front-facing selfies with the face filling an appropriate portion of the frame and sufficient lighting produce better results.
