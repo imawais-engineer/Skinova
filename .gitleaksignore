@@ -1,0 +1,7 @@
+# False positives: placeholder auth headers copied from Perfect Corp API docs (no real keys)
+b2dc7b3458a360c2685a695a3a653f169de4b568:ai_skin_analysis.yaml:curl-auth-header:54
+b2dc7b3458a360c2685a695a3a653f169de4b568:ai_skin_analysis.yaml:curl-auth-header:146
+b2dc7b3458a360c2685a695a3a653f169de4b568:ai_skin_analysis.yaml:curl-auth-header:198
+2dacb9f369117792166bd74ffa1fb29b3640f012:docs.perfectcorp.com_reference_ai_skin_analysis_section_overview_js-camera-kit.2026-07-20T17_33_17.979Z.md:curl-auth-header:65
+2dacb9f369117792166bd74ffa1fb29b3640f012:docs.perfectcorp.com_reference_ai_skin_analysis_section_overview_js-camera-kit.2026-07-20T17_33_17.979Z.md:curl-auth-header:142
+2dacb9f369117792166bd74ffa1fb29b3640f012:docs.perfectcorp.com_reference_ai_skin_analysis_section_overview_js-camera-kit.2026-07-20T17_33_17.979Z.md:curl-auth-header:184
